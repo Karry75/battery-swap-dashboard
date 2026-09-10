@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>换电运营平台 - 登录</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-body">
+<div class="login-box">
+  <h1>换电运营平台</h1>
+  <p class="login-sub">换电柜 · 电池 · 告警监控</p>
+  <form id="loginForm">
+    <label>用户名</label>
+    <input type="text" id="username" autocomplete="username" required>
+    <label>密码</label>
+    <input type="password" id="password" autocomplete="current-password" required>
+    <div id="loginMsg" class="login-msg"></div>
+    <button type="submit" class="btn btn-primary btn-block">登 录</button>
+  </form>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const msg = document.getElementById('loginMsg');
+  msg.textContent = '';
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  try {
+    const resp = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, password}),
+    });
+    const json = await resp.json();
+    if (json.code === 0) {
+      window.location.href = '/';
+    } else {
+      msg.textContent = json.msg || '登录失败';
+    }
+  } catch (err) {
+    msg.textContent = '网络错误，请稍后重试';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+# 设备预警看板 - 业务配置
+# 表名与字段映射基于真实数据库探测结果（AnalyticDB MySQL 兼容）
+
+database:
+  tables:
+    battery: cb_battery
+    battery_status: cb_battery_status
+    battery_last_upload: cb_battery_last_upload
+    battery_not_in: cb_battery_not_in
+    exchange: cb_exchange
+    exchange_status: cb_exchange_status
+    exchange_last_upload: cb_exchange_last_upload
+    exchange_store: cb_exchange_store
+    exchange_last_store: cb_exchange_last_store
+    monitor_event: cb_monitor_ex_event
+    monitor_event_battery: cb_monitor_ex_event_battery
+    monitor_event_exchange: cb_monitor_ex_event_exchange
+    monitor_task: cb_monitor_task
+    oem: sys_oem
+
+# 告警判定阈值
+alarm:
+  battery:
+    hungry:
+      enabled: true
+      power_value: "0"            # 电量等于该值视为 0%
+      voltage_threshold: 40.0     # 电压低于该值（伏）判定欠压饿死
+      voltage_bad_value: "0"      # 电压异常脏值（如0）按欠压处理
+  exchange:
+    smoke: true
+    flooded: true
+    slot: true
+
+# 告警优先级（数字越小越优先）
+priority:
+  battery:
+    hungry: 1          # 饿死（欠压+0%）
+    unrecognized: 1    # 无法识别（电池未到位）
+    break_charge: 2    # 断充（有电压但充电中断）
+  exchange:
+    smoke: 1           # 烟感告警
+    flooded: 1         # 水浸告警
+    slot: 2            # 仓位告警
+
+# 事件表名称 → 业务告警类型映射
+event_type_map:
+  battery:
+    unrecognized: "换电柜未识别电池"
+    break_charge: "换电柜断充"
+  exchange:
+    smoke: "换电柜烟感告警"
+    flooded: "换电柜水浸告警"
+    slot_unknown: "换电柜未识别电池"
+    slot_full: "换电柜满仓"

@@ -1,0 +1,36 @@
+# 凭据与本地配置
+.env
+*.secret.key
+
+# 内置用户库（SQLite，含用户数据）
+board.db
+
+# 业务数据缓存（含真实设备/用户/营收数据，禁止提交）
+board_cache.db
+board_cache.db-journal
+
+# 数据库结构探测结果（内部表结构）
+temp_schema_probe.json
+
+# 真实业务截图（含运营数据）
+web/screenshots/
+
+# 备份/临时文件
+*.bak
+*.bak_*
+web/index_2*.html
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 运行时
+logs/
+*.log
+
+# 系统
+Thumbs.db
+.DS_Store

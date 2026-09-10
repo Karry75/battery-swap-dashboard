@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>换电运营平台</title>
+<link rel="stylesheet" href="/css/style.css?v=20260822">
+</head>
+<body>
+<div class="layout">
+  <!-- 左侧菜单 -->
+  <aside class="sidebar">
+    <div class="side-brand">
+      <div class="brand-title">换电运营平台</div>
+      <div class="brand-sub">OPERATION PLATFORM</div>
+    </div>
+    <nav class="side-nav" id="sideNav"></nav>
+    <div class="side-foot">
+      <div class="user-mini" id="userMini"></div>
+    </div>
+  </aside>
+
+  <!-- 主区 -->
+  <div class="main">
+    <header class="topbar">
+      <div class="breadcrumb" id="breadcrumb">运维看板</div>
+      <div class="topbar-right">
+        <div class="user-menu" id="userMenuWrap">
+          <button class="btn btn-user" id="btnUserMenu"></button>
+          <div class="dropdown" id="userDropdown" style="display:none">
+            <div class="dropdown-item disabled" id="dropRole"></div>
+            <div class="dropdown-item" id="dropAdmin" style="display:none">用户管理</div>
+            <div class="dropdown-item" id="dropRoleAdmin" style="display:none">角色管理</div>
+            <div class="dropdown-item danger" id="dropLogout">退出登录</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content" id="content">
+      <div id="connBanner" class="banner banner-error" style="display:none"></div>
+      <div id="page"></div>
+    </main>
+  </div>
+</div>
+
+<!-- 用户管理弹窗 -->
+<div id="adminModal" class="modal-mask" style="display:none">
+  <div class="modal">
+    <div class="modal-head"><h3>用户管理</h3><button class="btn btn-ghost-dark" onclick="closeAdmin()">关闭</button></div>
+    <form id="userForm" class="modal-form">
+      <input type="hidden" id="u_id">
+      <input type="text" id="u_username" placeholder="用户名" required>
+      <input type="password" id="u_password" placeholder="密码（修改时留空则不修改，新建必填）">
+      <select id="u_role">
+        <option value="viewer">查看者</option>
+        <option value="manager">客户经理</option>
+        <option value="admin">管理员</option>
+      </select>
+      <input type="text" id="u_oem_ids" placeholder="客户ID（逗号分隔，仅客户经理生效）">
+      <input type="text" id="u_display_name" placeholder="显示名称">
+      <button type="submit" class="btn btn-primary">保存</button>
+    </form>
+    <table id="adminUserTable" class="table">
+      <thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>客户范围</th><th>操作</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 角色管理弹窗 -->
+<div id="roleModal" class="modal-mask" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3>角色管理</h3><button class="btn btn-ghost-dark" onclick="closeRole()">关闭</button></div>
+    <div class="role-create">
+      <input type="text" id="r_key" class="input" placeholder="角色标识（英文，如 city_manager）">
+      <input type="text" id="r_name" class="input" placeholder="角色名称（如 城市经理）">
+      <button class="btn btn-primary" onclick="createRole()">新增角色</button>
+      <span class="muted">创建后可在下方为该角色勾选可查看的模块菜单</span>
+    </div>
+    <div id="roleList"></div>
+  </div>
+</div>
+
+<script src="/lib/echarts.min.js"></script>
+<script src="/js/app.js?v=20260822c"></script>
+</body>
+</html>
