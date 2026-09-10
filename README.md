@@ -145,12 +145,23 @@ ADMIN_PASSWORD=初始管理员密码
 
 | 配置项 | 说明 |
 |--------|------|
-| `database.tables` | 逻辑名 → 物理表名映射 |
+| `database.tables` | 业务别名 → 逻辑表名（真实物理表名见 6.3） |
 | `alarm.battery.hungry.voltage_threshold` | 电池饿死判定电压阈值 |
 | `priority` | 告警优先级（数字越小越优先） |
 | `event_type_map` | 事件类型 → 业务告警名称 |
 
-> 部署到自己的数据库时，按实际库表名调整 `database.tables` 与各聚合模块中的表名即可。
+### 6.3 表名映射（逻辑表名 → 物理表名）
+
+仓库内**只保留逻辑表名**（`t_site`、`t_exchange_order` …），真实物理表名不随源码外泄，通过本地文件 `config/schema.local.yaml`（已列入 `.gitignore`）注入：
+
+```yaml
+# config/schema.local.yaml（本地文件，不提交）
+tables:
+  t_site: your_site_table
+  t_exchange_order: your_order_table
+```
+
+运行期由 `core/db.py` 调用 `core/schema.py`，在 SQL 执行前完成「逻辑名 → 物理名」替换；缓存 key 基于替换后的 SQL 计算，与历史缓存保持一致。未提供该文件时按逻辑表名原样执行，便于对接任意库表结构。
 
 ---
 
@@ -214,6 +225,7 @@ board/
 
 - 数据库凭据仅存于 `.env`，代码零硬编码，日志与前端不回显
 - 内置用户库为独立 SQLite，密码哈希存储，与业务库凭据隔离
+- 仓库内只保留**逻辑表名**，真实物理表名由本地 `config/schema.local.yaml` 注入（已 `.gitignore`），不随源码外泄
 - 业务数据缓存、内置用户库、运行日志、真实业务截图均已在 `.gitignore` 中排除，不会被提交
 - 服务默认监听 `0.0.0.0`，建议通过防火墙 / 白名单限制访问来源；公网部署请前置 HTTPS
 

@@ -11,7 +11,7 @@ import time
 import pymysql
 
 import config.settings as settings
-from core import cache
+from core import cache, schema
 
 logger = logging.getLogger("board.db")
 
@@ -48,7 +48,8 @@ def query(sql: str, params=None, database: str = None):
     并通过 FALLBACK / FALLBACK_TIME 标记本次降级。
     """
     global FALLBACK, FALLBACK_TIME, _CIRCUIT_OPEN_UNTIL
-    sql = sql.strip().lstrip("(")
+    # 逻辑表名 -> 物理表名（本地映射，见 config/schema.local.yaml）
+    sql = schema.translate(sql.strip().lstrip("("))
     if not sql.lower().startswith("select") and not sql.lower().startswith("with"):
         raise ValueError("只允许执行 SELECT 查询")
     ckey = cache.key_for(sql, params, database)

@@ -46,6 +46,14 @@ _config_path = BASE_DIR / "config" / "config.yaml"
 with open(_config_path, encoding="utf-8") as f:
     CONFIG = yaml.safe_load(f) or {}
 
+# ---- 逻辑表名 -> 物理表名 本地映射（config/schema.local.yaml，已列入 .gitignore） ----
+# 仓库内仅保留逻辑表名（t_*），真实库表结构由本地映射文件注入，避免随源码外泄
+_schema_path = BASE_DIR / "config" / "schema.local.yaml"
+SCHEMA_MAP = {}
+if _schema_path.exists():
+    with open(_schema_path, encoding="utf-8") as f:
+        SCHEMA_MAP = (yaml.safe_load(f) or {}).get("tables", {}) or {}
+
 
 def get(path: str, default=None):
     """按 'a.b.c' 路径读取业务配置"""

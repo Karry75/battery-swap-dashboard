@@ -2,19 +2,19 @@
 """设备列表查询：换电柜管理 / 电池管理（分页 + 筛选 + 统计）
 
 数据源：
-- cb_exchange（换电柜主表：在线状态/位置/上报时间）+ cb_exchange_last_upload（名称/烟感/水浸/火警）+ cb_exchange_last_store（仓位聚合）
-- cb_battery（电池主表：SN/状态/位置/所在柜）+ cb_battery_last_upload（电量/电压/充电，每电池取最新一条）
+- t_exchange（换电柜主表：在线状态/位置/上报时间）+ t_exchange_last_upload（名称/烟感/水浸/火警）+ t_exchange_last_store（仓位聚合）
+- t_battery（电池主表：SN/状态/位置/所在柜）+ t_battery_last_upload（电量/电压/充电，每电池取最新一条）
 """
 from core import db
 from core.customers import get_customer_map
 import config.settings as settings
 
 T = settings.get("database.tables", {})
-BATTERY = T.get("battery", "cb_battery")
-EXCHANGE = T.get("exchange", "cb_exchange")
-BATTERY_UPLOAD = T.get("battery_last_upload", "cb_battery_last_upload")
-EXCHANGE_UPLOAD = T.get("exchange_last_upload", "cb_exchange_last_upload")
-EXCHANGE_LAST_STORE = T.get("exchange_last_store", "cb_exchange_last_store")
+BATTERY = T.get("battery", "t_battery")
+EXCHANGE = T.get("exchange", "t_exchange")
+BATTERY_UPLOAD = T.get("battery_last_upload", "t_battery_last_upload")
+EXCHANGE_UPLOAD = T.get("exchange_last_upload", "t_exchange_last_upload")
+EXCHANGE_LAST_STORE = T.get("exchange_last_store", "t_exchange_last_store")
 
 _customer_map = None
 
@@ -57,7 +57,7 @@ def _attach_customer(items):
 def exchange_list(oem_ids=None, status="", keyword="", page=1, page_size=50, args=None):
     """换电柜管理列表 + 统计（支持城市/区域/网点/代理商/品牌/SN 等维度筛选）"""
     from core.filters import FilterSet, EXCHANGE_COLUMNS
-    joins = " LEFT JOIN cb_site s ON s.id=e.site_id AND s.is_del=0 "
+    joins = " LEFT JOIN t_site s ON s.id=e.site_id AND s.is_del=0 "
     where = f"e.is_del=0{_oem_filter(oem_ids, 'e')}"
     if status in ("online", "offline"):
         where += f" AND e.online_status='{status}'"

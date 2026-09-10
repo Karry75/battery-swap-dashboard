@@ -3,20 +3,20 @@
 
 database:
   tables:
-    battery: cb_battery
-    battery_status: cb_battery_status
-    battery_last_upload: cb_battery_last_upload
-    battery_not_in: cb_battery_not_in
-    exchange: cb_exchange
-    exchange_status: cb_exchange_status
-    exchange_last_upload: cb_exchange_last_upload
-    exchange_store: cb_exchange_store
-    exchange_last_store: cb_exchange_last_store
-    monitor_event: cb_monitor_ex_event
-    monitor_event_battery: cb_monitor_ex_event_battery
-    monitor_event_exchange: cb_monitor_ex_event_exchange
-    monitor_task: cb_monitor_task
-    oem: sys_oem
+    battery: t_battery
+    battery_status: t_battery_status
+    battery_last_upload: t_battery_last_upload
+    battery_not_in: t_battery_not_in
+    exchange: t_exchange
+    exchange_status: t_exchange_status
+    exchange_last_upload: t_exchange_last_upload
+    exchange_store: t_exchange_store
+    exchange_last_store: t_exchange_last_store
+    monitor_event: t_monitor_ex_event
+    monitor_event_battery: t_monitor_ex_event_battery
+    monitor_event_exchange: t_monitor_ex_event_exchange
+    monitor_task: t_monitor_task
+    oem: t_oem
 
 # 告警判定阈值
 alarm:

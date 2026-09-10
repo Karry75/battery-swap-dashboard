@@ -8,8 +8,8 @@ from core.cabinet_alarms import exchange_alarms
 import config.settings as settings
 
 T = settings.get("database.tables", {})
-BATTERY = T.get("battery", "cb_battery")
-EXCHANGE = T.get("exchange", "cb_exchange")
+BATTERY = T.get("battery", "t_battery")
+EXCHANGE = T.get("exchange", "t_exchange")
 
 _customer_map = None
 
@@ -34,7 +34,7 @@ def device_totals(oem_ids=None, args=None):
     bq = f"SELECT COUNT(*) total, SUM(b.online_status='online') online, SUM(b.online_status='offline') offline " \
          f"FROM {BATTERY} b WHERE b.is_del=0{_oem_filter(oem_ids, 'b')}"
     eq = f"SELECT COUNT(*) total, SUM(e.online_status='online') online, SUM(e.online_status='offline') offline " \
-         f"FROM {EXCHANGE} e LEFT JOIN cb_site s ON s.id=e.site_id AND s.is_del=0 " \
+         f"FROM {EXCHANGE} e LEFT JOIN t_site s ON s.id=e.site_id AND s.is_del=0 " \
          f"WHERE e.is_del=0{_oem_filter(oem_ids, 'e')}"
     if args:
         from core.filters import FilterSet, BATTERY_COLUMNS, EXCHANGE_COLUMNS

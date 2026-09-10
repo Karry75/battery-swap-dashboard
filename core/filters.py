@@ -168,7 +168,7 @@ def now_ms():
 # 供各 core 模块构造 FilterSet 使用；未声明的维度自动忽略。
 # ============================================================================
 
-# 用户表 cb_user（别名 u）
+# 用户表 t_user（别名 u）
 USER_COLUMNS = {
     "time": "u.create_time",
     "city": "u.city",
@@ -176,12 +176,12 @@ USER_COLUMNS = {
     "user_phone": "u.phone",
 }
 
-# 协议主表 cb_exchange_agreement（别名 a）
+# 协议主表 t_exchange_agreement（别名 a）
 AGREEMENT_COLUMNS = {
     "time": "a.create_time",
     "activation_time": "a.activation_time",   # 协议激活时间（ms）act_start/act_end
     "stop_time": "a.stop_time",                 # 协议终止时间（ms）stop_start/stop_end
-    "city": "a.sys_city_name",
+    "city": "a.t_city_name",
     "agency_id": "a.agency_id",
     "battery_product_id": "a.battery_product_id",
     "site_id": "a.site_id",
@@ -191,7 +191,7 @@ AGREEMENT_COLUMNS = {
     "merchant_id": "a.sign_site_business_id",
 }
 
-# 换电订单表 cb_exchange_order（别名 o）
+# 换电订单表 t_exchange_order（别名 o）
 ORDER_COLUMNS = {
     "time": "o.create_time",
     "city": "o.site_city",
@@ -206,23 +206,23 @@ ORDER_COLUMNS = {
     "employee_id": "o.sign_site_store_employee_id",
 }
 
-# 服务单 cb_exchange_service_order（别名 s）
+# 服务单 t_exchange_service_order（别名 s）
 SERVICE_COLUMNS = {
     "time": "s.create_time",
-    "city": "s.sys_city_name",
+    "city": "s.t_city_name",
     "agency_id": "s.sign_agency_id",
     "battery_product_id": "s.battery_product_id",
     "site_id": "s.sign_site_id",
     "user_phone": "s.buyer_user_phone",
 }
 
-# 租期卡 cb_user_exchange_rent（别名 r）
+# 租期卡 t_user_exchange_rent（别名 r）
 RENT_COLUMNS = {
     "time": "r.create_time",
     "battery_product_id": "r.battery_product_id",
 }
 
-# 网点表 cb_site（别名 s）
+# 网点表 t_site（别名 s）
 SITE_COLUMNS = {
     "time": "s.create_time",
     "op_time": "s.start_open_time",            # 网点开业时间 op_start/op_end
@@ -236,7 +236,7 @@ SITE_COLUMNS = {
     "battery_product_id": "s.battery_product_id",
 }
 
-# 工单表 cb_work_order（别名 w）
+# 工单表 t_work_order（别名 w）
 WORK_ORDER_COLUMNS = {
     "time": "w.create_time",
     "city": "w.city",
@@ -246,14 +246,14 @@ WORK_ORDER_COLUMNS = {
     "agency_id": "w.agency_id",
 }
 
-# 客诉表 cb_exchange_order_complaint（别名 c）
+# 客诉表 t_exchange_order_complaint（别名 c）
 COMPLAINT_COLUMNS = {
     "time": "c.create_time",
     "user_phone": "c.user_phone",
     "device_sn": "c.battery_sn",
 }
 
-# 换电柜 cb_exchange（别名 e；城市/区域/街道/社区经 join cb_site 别名 s 关联）
+# 换电柜 t_exchange（别名 e；城市/区域/街道/社区经 join t_site 别名 s 关联）
 EXCHANGE_COLUMNS = {
     "time": "e.create_time",
     "city": "s.city",
@@ -266,20 +266,20 @@ EXCHANGE_COLUMNS = {
     "device_sn": "e.device_sn",
 }
 
-# 电池 cb_battery（别名 b；无网点直连列，城市/网点筛选请经设备链路或不下发此类筛选）
+# 电池 t_battery（别名 b；无网点直连列，城市/网点筛选请经设备链路或不下发此类筛选）
 BATTERY_COLUMNS = {
     "agency_id": "b.agency_id",
     "brand_id": "b.brand_id",
     "device_sn": "b.device_sn",
 }
 
-# 财务支出单 cb_expense_bill（别名 b）
+# 财务支出单 t_expense_bill（别名 b）
 EXPENSE_COLUMNS = {
     "time": "b.create_time",
     "bu_id": "b.bu_id",
 }
 
-# 优惠券 cb_coupon（别名 c）
+# 优惠券 t_coupon（别名 c）
 COUPON_COLUMNS = {
     "time": "c.create_time",
     "battery_product_id": "c.battery_product_id",

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """业务板块模块：用户看板 / 销售看板 / 网点看板 / 客服服务台
 
-数据来自实时主表 cb_user / cb_exchange_agreement / cb_exchange_service_order /
-cb_user_exchange_rent / cb_exchange_order / cb_site / cb_work_order 等。
+数据来自实时主表 t_user / t_exchange_agreement / t_exchange_service_order /
+t_user_exchange_rent / t_exchange_order / t_site / t_work_order 等。
 """
 import datetime
 import time
@@ -27,7 +27,7 @@ AGREEMENT_COLUMNS = {
     "time": "a.create_time",
     "activation_time": "a.activation_time",
     "stop_time": "a.stop_time",
-    "city": "a.sys_city_name",
+    "city": "a.t_city_name",
     "agency_id": "a.agency_id",
     "battery_product_id": "a.battery_product_id",
     "site_id": "a.site_id",
@@ -53,7 +53,7 @@ ORDER_COLUMNS = {
 
 SERVICE_COLUMNS = {
     "time": "s.create_time",
-    "city": "s.sys_city_name",
+    "city": "s.t_city_name",
     "agency_id": "s.sign_agency_id",
     "battery_product_id": "s.battery_product_id",
     "site_id": "s.sign_site_id",
@@ -134,8 +134,8 @@ def _pager(page, size, total, items):
 def users_summary(oem_ids=None, args=None):
     """用户看板 KPI：总用户 / 今日新增 / 协议数 / 在租 / 押金在押 / 30天活跃
 
-    统一筛选（args 中的用户维度：时间/城市/区域/手机号）施加于主表 cb_user，
-    协议/租期卡/30天活跃子统计 join cb_user 承接同一筛选，保证各指标口径一致。
+    统一筛选（args 中的用户维度：时间/城市/区域/手机号）施加于主表 t_user，
+    协议/租期卡/30天活跃子统计 join t_user 承接同一筛选，保证各指标口径一致。
     """
     flt_u = _flt(args, USER_COLUMNS)
     fw = flt_u.and_clause() if flt_u else ""
@@ -144,28 +144,28 @@ def users_summary(oem_ids=None, args=None):
         w += _oem_where(oem_ids, "u")
     w += fw
     r = db.query(
-        f"SELECT COUNT(*) c FROM cb_user u WHERE {w}")[0]
+        f"SELECT COUNT(*) c FROM t_user u WHERE {w}")[0]
     today = int(time.mktime((time.localtime().tm_year, time.localtime().tm_mon,
                              time.localtime().tm_mday, 0, 0, 0, 0, 0, -1)) * 1000)
-    r2 = db.query(f"SELECT COUNT(*) c FROM cb_user u WHERE {w} AND u.create_time>{today}")[0]
+    r2 = db.query(f"SELECT COUNT(*) c FROM t_user u WHERE {w} AND u.create_time>{today}")[0]
     wa = "a.is_del=0 AND u.is_del=0" + _oem_where(oem_ids, "a") + fw
     ag = db.query(
         f"SELECT COUNT(*) c, SUM(a.status='working') using_cnt, "
         f"SUM(a.status IN ('stop','cancelled')) stop_cnt, "
         f"SUM(CASE WHEN a.deposit_status='on' THEN COALESCE(a.deposit_real_fee,0) ELSE 0 END) deposit_on "
-        f"FROM cb_exchange_agreement a JOIN cb_user u ON a.user_id=u.id WHERE {wa}")[0]
+        f"FROM t_exchange_agreement a JOIN t_user u ON a.user_id=u.id WHERE {wa}")[0]
     wr = "r.is_del=0 AND u.is_del=0" + _oem_where(oem_ids, "r") + fw
     rent = db.query(
-        f"SELECT COUNT(*) c FROM cb_user_exchange_rent r JOIN cb_user u ON r.user_id=u.id "
+        f"SELECT COUNT(*) c FROM t_user_exchange_rent r JOIN t_user u ON r.user_id=u.id "
         f"WHERE {wr} AND r.card_status='using'")[0]
     start30 = _now_ms() - 30 * DAY_MS
     wact = "o.is_del=0 AND u.is_del=0" + _oem_where(oem_ids, "o") + fw
     act = db.query(
-        f"SELECT COUNT(DISTINCT o.take_user_id) c FROM cb_exchange_order o JOIN cb_user u ON o.take_user_id=u.id "
+        f"SELECT COUNT(DISTINCT o.take_user_id) c FROM t_exchange_order o JOIN t_user u ON o.take_user_id=u.id "
         f"WHERE {wact} AND o.create_time>{start30}")[0]
     city = db.query(
         f"SELECT COALESCE(NULLIF(u.city,''),'未知') city, COUNT(*) cnt "
-        f"FROM cb_user u WHERE {w} GROUP BY city ORDER BY cnt DESC LIMIT 10")
+        f"FROM t_user u WHERE {w} GROUP BY city ORDER BY cnt DESC LIMIT 10")
     return {
         "user_total": int(r["c"] or 0),
         "new_30d": int(r2["c"] or 0),
@@ -202,11 +202,11 @@ def users_list(oem_ids=None, keyword="", city="", page=1, page_size=50, args=Non
         where += f" AND (u.phone LIKE '%%{kw}%%' OR u.username LIKE '%%{kw}%%')"
     if city:
         where += f" AND u.city LIKE '%%{city}%%'"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_user u WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_user u WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT u.id, u.oem_id, u.username, u.phone, u.gender, u.city, u.area, "
         f"u.user_status, u.register_source, u.owner_bike_id, u.create_time, u.update_time "
-        f"FROM cb_user u WHERE {where} ORDER BY u.create_time DESC LIMIT {page_size} OFFSET {(page - 1) * page_size}")
+        f"FROM t_user u WHERE {where} ORDER BY u.create_time DESC LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     out = []
     cmap = _customers()
     for r in rows:
@@ -228,12 +228,12 @@ def user_agreements(oem_ids=None, user_phone="", status="", page=1, page_size=50
         where += f" AND a.user_phone LIKE '%%{user_phone.strip()}%%'"
     if status:
         where += f" AND a.status='{status}'"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_exchange_agreement a WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_exchange_agreement a WHERE {where}")[0]["c"]
     rows = db.query(
-        f"SELECT a.id, a.oem_id, a.type, a.user_id, a.user_name, a.user_phone, a.sys_city_name, "
+        f"SELECT a.id, a.oem_id, a.type, a.user_id, a.user_name, a.user_phone, a.t_city_name, "
         f"a.battery_product_id, a.rent_package_id, a.deposit_status, a.deposit_fee, a.deposit_real_fee, "
         f"a.rent_expire_time, a.activation_time, a.stop_time, a.is_contract, a.status "
-        f"FROM cb_exchange_agreement a WHERE {where} ORDER BY a.create_time DESC "
+        f"FROM t_exchange_agreement a WHERE {where} ORDER BY a.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     cmap = _customers()
     status_map = {"working": "使用中", "owe_rent": "欠费", "paused": "已暂停", "unsubscribing": "退订中", "wait_activate": "待生效", "stop": "已停用", "cancelled": "已取消"}
@@ -254,15 +254,15 @@ def user_rents(oem_ids=None, user_phone="", card_status="", page=1, page_size=50
     flt = _flt(args, RENT_COLUMNS)
     where += flt.and_clause() if flt else ""
     if user_phone:
-        where += f" AND r.user_id IN (SELECT id FROM cb_user WHERE phone LIKE '%%{user_phone.strip()}%%')"
+        where += f" AND r.user_id IN (SELECT id FROM t_user WHERE phone LIKE '%%{user_phone.strip()}%%')"
     if card_status:
         where += f" AND r.card_status='{card_status}'"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_user_exchange_rent r WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_user_exchange_rent r WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT r.id, r.oem_id, r.user_id, r.battery_product_id, r.package_id, r.package_name, "
         f"r.valid_days, r.is_permanent_valid, r.work_time, r.card_status, r.expire_time, r.power_fee, "
         f"r.is_refund, r.create_time "
-        f"FROM cb_user_exchange_rent r WHERE {where} ORDER BY r.create_time DESC "
+        f"FROM t_user_exchange_rent r WHERE {where} ORDER BY r.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     status_map = {"using": "使用中", "used": "已使用完", "refunded": "已退", "unused": "未使用", "stop": "已停用", "working": "生效中"}
     for r in rows:
@@ -281,13 +281,13 @@ def user_orders(oem_ids=None, user_phone="", page=1, page_size=50, args=None):
     where += flt.and_clause() if flt else ""
     if user_phone:
         where += f" AND o.take_user_phone LIKE '%%{user_phone.strip()}%%'"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_exchange_order o WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_exchange_order o WHERE {where}")[0]["c"]
     rows = db.query(
-        f"SELECT o.id, o.oem_id, o.take_user_name, o.take_user_phone, o.sys_city_name, o.site_name, "
+        f"SELECT o.id, o.oem_id, o.take_user_name, o.take_user_phone, o.t_city_name, o.site_name, "
         f"o.take_exchange_sn, o.take_battery_sn, o.back_battery_sn, o.bike_sn, o.pay_price, "
         f"o.real_pay_price, o.profit_fee, o.order_status, o.is_first_take, o.use_power, o.mileage, "
         f"o.create_time "
-        f"FROM cb_exchange_order o WHERE {where} ORDER BY o.create_time DESC "
+        f"FROM t_exchange_order o WHERE {where} ORDER BY o.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
@@ -315,7 +315,7 @@ def users_lifecycle(oem_ids=None, args=None):
         f"SUM(a.status='unsubscribing') unsubscribing_cnt, "
         f"SUM(a.status='wait_activate') wait_cnt, "
         f"SUM(a.status IN ('stop','cancelled')) stop_cnt "
-        f"FROM cb_exchange_agreement a WHERE {w}")[0]
+        f"FROM t_exchange_agreement a WHERE {w}")[0]
     total = int(r["total_cnt"] or 0)
     items = [
         {"key": "using", "name": "生效中", "count": int(r["working_cnt"] or 0)},
@@ -350,7 +350,7 @@ def users_tier(oem_ids=None, days=30, args=None):
         f"SUM(t.fee>=5000) value_high, SUM(t.fee>=1000 AND t.fee<5000) value_medium, "
         f"SUM(t.fee>0 AND t.fee<1000) value_low "
         f"FROM (SELECT o.take_user_id, COUNT(*) cnt, COALESCE(SUM(o.expend_power_fee),0) fee "
-        f"FROM cb_exchange_order o WHERE {w} AND o.create_time>{start} "
+        f"FROM t_exchange_order o WHERE {w} AND o.create_time>{start} "
         f"GROUP BY o.take_user_id) t")[0]
     return {
         "days": days,
@@ -382,11 +382,11 @@ def users_growth(oem_ids=None, months=6, args=None):
     start = _month_start_ms(months)
     rows = db.query(
         f"SELECT DATE_FORMAT(FROM_UNIXTIME(u.create_time/1000), '%%Y-%%m') month, COUNT(*) cnt "
-        f"FROM cb_user u WHERE {w} AND u.create_time>={start} "
+        f"FROM t_user u WHERE {w} AND u.create_time>={start} "
         f"GROUP BY month ORDER BY month")
     src = db.query(
         f"SELECT COALESCE(NULLIF(u.register_source,''),'未知') register_source, COUNT(*) cnt "
-        f"FROM cb_user u WHERE {w} GROUP BY register_source ORDER BY cnt DESC")
+        f"FROM t_user u WHERE {w} GROUP BY register_source ORDER BY cnt DESC")
     return {
         "months": months,
         "trend": _fill_months(months, rows),
@@ -436,7 +436,7 @@ def users_detail(oem_ids=None, phone=""):
     users = db.query(
         f"SELECT u.id, u.oem_id, u.username, u.phone, u.gender, u.city, u.area, "
         f"u.user_status, u.register_source, u.owner_bike_id, u.create_time, u.update_time "
-        f"FROM cb_user u WHERE {w} AND u.phone LIKE '%%{phone}%%' "
+        f"FROM t_user u WHERE {w} AND u.phone LIKE '%%{phone}%%' "
         f"ORDER BY u.create_time DESC LIMIT 1")
     if not users:
         return {"user": None, "agreements": [], "rents": [], "orders": None}
@@ -450,10 +450,10 @@ def users_detail(oem_ids=None, phone=""):
     if oem_ids:
         wa += _oem_where(oem_ids, "a")
     agreements = db.query(
-        f"SELECT a.id, a.type, a.user_name, a.user_phone, a.sys_city_name, a.battery_product_id, "
+        f"SELECT a.id, a.type, a.user_name, a.user_phone, a.t_city_name, a.battery_product_id, "
         f"a.rent_package_id, a.deposit_status, a.deposit_fee, a.deposit_real_fee, "
         f"a.rent_expire_time, a.activation_time, a.stop_time, a.is_contract, a.status "
-        f"FROM cb_exchange_agreement a WHERE {wa} AND a.user_id={uid} "
+        f"FROM t_exchange_agreement a WHERE {wa} AND a.user_id={uid} "
         f"ORDER BY a.create_time DESC LIMIT 100")
     status_map = {"working": "使用中", "owe_rent": "欠费", "paused": "已暂停", "unsubscribing": "退订中", "wait_activate": "待生效", "stop": "已停用", "cancelled": "已取消"}
     for a in agreements:
@@ -469,7 +469,7 @@ def users_detail(oem_ids=None, phone=""):
         f"SELECT r.id, r.battery_product_id, r.package_id, r.package_name, r.valid_days, "
         f"r.is_permanent_valid, r.work_time, r.card_status, r.expire_time, r.power_fee, "
         f"r.is_refund, r.create_time "
-        f"FROM cb_user_exchange_rent r WHERE {wr} AND r.user_id={uid} "
+        f"FROM t_user_exchange_rent r WHERE {wr} AND r.user_id={uid} "
         f"ORDER BY r.create_time DESC LIMIT 100")
     card_map = {"using": "使用中", "used": "已使用完", "refunded": "已退", "unused": "未使用", "stop": "已停用", "working": "生效中"}
     for rr in rents:
@@ -485,7 +485,7 @@ def users_detail(oem_ids=None, phone=""):
         f"SELECT COUNT(*) total_cnt, COALESCE(SUM(o.real_pay_price),0) total_fee, "
         f"SUM(o.create_time>{start30}) cnt_30d, "
         f"COALESCE(SUM(CASE WHEN o.create_time>{start30} THEN o.real_pay_price ELSE 0 END),0) fee_30d "
-        f"FROM cb_exchange_order o WHERE {wo} AND o.take_user_id={uid}")[0]
+        f"FROM t_exchange_order o WHERE {wo} AND o.take_user_id={uid}")[0]
     return {
         "user": u,
         "agreements": agreements,
@@ -502,7 +502,7 @@ def users_detail(oem_ids=None, phone=""):
 def users_city_detail(oem_ids=None, args=None):
     """城市分布明细：用户数 / 活跃用户(30d) / 协议数 / 近30天换电次数
 
-    统一以 cb_user.city（用户注册城市）为维度聚合，缺失城市归为"未知"。
+    统一以 t_user.city（用户注册城市）为维度聚合，缺失城市归为"未知"。
     支持用户维度筛选（时间/城市/区域/手机号），各子查询统计口径一致。
     """
     wu = "u.is_del=0"
@@ -513,23 +513,23 @@ def users_city_detail(oem_ids=None, args=None):
     wu += fw
     users = db.query(
         f"SELECT COALESCE(NULLIF(u.city,''),'未知') city, COUNT(*) users "
-        f"FROM cb_user u WHERE {wu} GROUP BY city ORDER BY users DESC")
+        f"FROM t_user u WHERE {wu} GROUP BY city ORDER BY users DESC")
 
     start30 = _now_ms() - 30 * DAY_MS
     wo = "o.is_del=0 AND u.is_del=0" + _oem_where(oem_ids, "o") + fw
     active = db.query(
         f"SELECT COALESCE(NULLIF(u.city,''),'未知') city, COUNT(DISTINCT o.take_user_id) active_users "
-        f"FROM cb_exchange_order o JOIN cb_user u ON o.take_user_id=u.id "
+        f"FROM t_exchange_order o JOIN t_user u ON o.take_user_id=u.id "
         f"WHERE {wo} AND o.create_time>{start30} GROUP BY city")
     ex30 = db.query(
         f"SELECT COALESCE(NULLIF(u.city,''),'未知') city, COUNT(*) exchange_30d "
-        f"FROM cb_exchange_order o JOIN cb_user u ON o.take_user_id=u.id "
+        f"FROM t_exchange_order o JOIN t_user u ON o.take_user_id=u.id "
         f"WHERE {wo} AND o.create_time>{start30} GROUP BY city")
 
     wa = "a.is_del=0 AND u.is_del=0" + _oem_where(oem_ids, "a") + fw
     aggr = db.query(
         f"SELECT COALESCE(NULLIF(u.city,''),'未知') city, COUNT(*) agreements "
-        f"FROM cb_exchange_agreement a JOIN cb_user u ON a.user_id=u.id "
+        f"FROM t_exchange_agreement a JOIN t_user u ON a.user_id=u.id "
         f"WHERE {wa} GROUP BY city")
 
     city_map = {}
@@ -574,12 +574,12 @@ def sales_summary(oem_ids=None, days=30, args=None):
     start = _now_ms() - days * DAY_MS
     so = db.query(
         f"SELECT COUNT(*) c, COALESCE(SUM(s.pay_fee),0) fee "
-        f"FROM cb_exchange_service_order s WHERE {w} AND s.is_pay=1 AND s.create_time>{start}")[0]
+        f"FROM t_exchange_service_order s WHERE {w} AND s.is_pay=1 AND s.create_time>{start}")[0]
     ag = db.query(
-        f"SELECT COUNT(*) c FROM cb_exchange_agreement a WHERE {wa} AND a.create_time>{start}")[0]
+        f"SELECT COUNT(*) c FROM t_exchange_agreement a WHERE {wa} AND a.create_time>{start}")[0]
     ex = db.query(
         f"SELECT COUNT(*) c, COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee "
-        f"FROM cb_exchange_order o WHERE {wo} AND o.create_time>{start}")[0]
+        f"FROM t_exchange_order o WHERE {wo} AND o.create_time>{start}")[0]
     return {
         "days": days,
         "service_order_count": int(so["c"] or 0),
@@ -602,7 +602,7 @@ def sales_site_rank(oem_ids=None, days=30, limit=20, args=None):
         f"SELECT COALESCE(NULLIF(o.site_name,''),'未知网点') site_name, "
         f"COUNT(*) cnt, COUNT(DISTINCT o.take_user_id) users, "
         f"COALESCE(SUM(o.real_pay_price),0) fee, COALESCE(SUM(o.profit_fee),0) profit "
-        f"FROM cb_exchange_order o WHERE {w} AND o.create_time>{start} "
+        f"FROM t_exchange_order o WHERE {w} AND o.create_time>{start} "
         f"GROUP BY site_name ORDER BY fee DESC LIMIT {limit}")
     return [{"site_name": r["site_name"], "exchange_count": int(r["cnt"] or 0),
              "active_users": int(r["users"] or 0), "fee": round(float(r["fee"] or 0), 2),
@@ -620,7 +620,7 @@ def sales_staff_rank(oem_ids=None, days=30, limit=20, args=None):
     rows = db.query(
         f"SELECT a.sign_site_business_name business_name, "
         f"COUNT(*) cnt, COUNT(DISTINCT a.user_id) users "
-        f"FROM cb_exchange_agreement a WHERE {w} AND a.create_time>{start} "
+        f"FROM t_exchange_agreement a WHERE {w} AND a.create_time>{start} "
         f"GROUP BY business_name ORDER BY cnt DESC LIMIT {limit}")
     return [{"business_name": r["business_name"] or "未知商户",
              "agreement_count": int(r["cnt"] or 0), "users": int(r["users"] or 0)} for r in rows]
@@ -635,12 +635,12 @@ def sales_service_orders(oem_ids=None, order_status="", page=1, page_size=50, ar
     where += flt.and_clause() if flt else ""
     if order_status:
         where += f" AND s.order_status='{order_status}'"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_exchange_service_order s WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_exchange_service_order s WHERE {where}")[0]["c"]
     rows = db.query(
-        f"SELECT s.id, s.oem_id, s.goods_type, s.goods_quantity, s.battery_product_id, s.sys_city_name, "
+        f"SELECT s.id, s.oem_id, s.goods_type, s.goods_quantity, s.battery_product_id, s.t_city_name, "
         f"s.sign_site_name, s.buyer_user_name, s.buyer_user_phone, s.fee, s.pay_fee, s.pay_way, "
         f"s.is_pay, s.pay_time, s.is_refund, s.order_status, s.create_time "
-        f"FROM cb_exchange_service_order s WHERE {where} ORDER BY s.create_time DESC "
+        f"FROM t_exchange_service_order s WHERE {where} ORDER BY s.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["pay_time"] = _fmt_ms(r["pay_time"])
@@ -652,7 +652,7 @@ def sales_service_orders(oem_ids=None, order_status="", page=1, page_size=50, ar
 def sites_summary(oem_ids=None, args=None):
     """网点看板 KPI：总网点 / 营业中 / 异常 / 24h营业 / 独立电表
 
-    主指标以 cb_site 为基（SITE_COLUMNS），异常工单以 cb_work_order 为基（WORK_ORDER_COLUMNS）。
+    主指标以 t_site 为基（SITE_COLUMNS），异常工单以 t_work_order 为基（WORK_ORDER_COLUMNS）。
     """
     w = "s.is_del=0"
     if oem_ids:
@@ -665,14 +665,14 @@ def sites_summary(oem_ids=None, args=None):
         f"SUM(s.site_status='off') closed_cnt, "
         f"SUM(s.is_all_day_open=1) allday_cnt, "
         f"SUM(s.alone_meter_status IN ('only_install','gdj_install','install_and_use')) meter_cnt "
-        f"FROM cb_site s WHERE {w}")[0]
+        f"FROM t_site s WHERE {w}")[0]
     # 异常：最近30天有工单的网点数（工单维度继承筛选）
     wo = "w.is_del=0"
     if oem_ids:
         wo += _oem_where(oem_ids, "w")
     wflt = _flt(args, WORK_ORDER_COLUMNS)
     wo += wflt.and_clause() if wflt else ""
-    wc = db.query(f"SELECT COUNT(DISTINCT w.event_id) c FROM cb_work_order w WHERE {wo} AND w.status='doing'")[0]
+    wc = db.query(f"SELECT COUNT(DISTINCT w.event_id) c FROM t_work_order w WHERE {wo} AND w.status='doing'")[0]
     return {
         "site_total": int(r["c"] or 0),
         "site_open": int(r["open_cnt"] or 0),
@@ -698,13 +698,13 @@ def sites_list(oem_ids=None, keyword="", type_="", status="", page=1, page_size=
     if status:
         status = {"open": "on", "closed": "off"}.get(status, status)
         where += f" AND s.site_status='{status}'"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_site s WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_site s WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT s.id, s.oem_id, s.type, s.name, s.contact_person_name, s.contact_person_tel, "
         f"s.province, s.city, s.area, s.address, s.site_status, s.audit_progress, "
         f"s.is_all_day_open, s.alone_meter_status, s.electric_settle_way, s.longitude, s.latitude, "
         f"s.store_manager_name, s.create_time "
-        f"FROM cb_site s WHERE {where} ORDER BY s.create_time DESC "
+        f"FROM t_site s WHERE {where} ORDER BY s.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     cmap = _customers()
     type_map = {"exchange": "换电网点", "sale": "销售网点", "mixed": "综合网点", "repair": "维修网点"}
@@ -724,12 +724,12 @@ def site_orders(oem_ids=None, site_id=None, page=1, page_size=50, args=None):
     where += flt.and_clause() if flt else ""
     if site_id:
         where += f" AND o.site_id={int(site_id)}"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_exchange_order o WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_exchange_order o WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT o.id, o.oem_id, o.site_name, o.take_user_name, o.take_user_phone, "
         f"o.take_exchange_sn, o.take_battery_sn, o.bike_sn, o.real_pay_price, o.profit_fee, "
         f"o.is_first_take, o.create_time "
-        f"FROM cb_exchange_order o WHERE {where} ORDER BY o.create_time DESC "
+        f"FROM t_exchange_order o WHERE {where} ORDER BY o.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
@@ -748,15 +748,15 @@ def service_query(oem_ids=None, keyword="", city="", status="", page=1, page_siz
         kw = keyword.strip()
         where += f" AND (a.user_name LIKE '%%{kw}%%' OR a.user_phone LIKE '%%{kw}%%')"
     if city:
-        where += f" AND a.sys_city_name LIKE '%%{city}%%'"
+        where += f" AND a.t_city_name LIKE '%%{city}%%'"
     if status:
         where += f" AND a.status='{status}'"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_exchange_agreement a WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_exchange_agreement a WHERE {where}")[0]["c"]
     rows = db.query(
-        f"SELECT a.id, a.oem_id, a.user_name, a.user_phone, a.sys_city_name, a.type, "
+        f"SELECT a.id, a.oem_id, a.user_name, a.user_phone, a.t_city_name, a.type, "
         f"a.battery_product_id, a.deposit_status, a.deposit_fee, a.rent_package_id, "
         f"a.activation_time, a.rent_expire_time, a.status, a.remark "
-        f"FROM cb_exchange_agreement a WHERE {where} ORDER BY a.create_time DESC "
+        f"FROM t_exchange_agreement a WHERE {where} ORDER BY a.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     status_map = {"working": "使用中", "owe_rent": "欠费", "paused": "已暂停", "unsubscribing": "退订中", "wait_activate": "待生效", "stop": "已停用", "cancelled": "已取消"}
     for r in rows:
@@ -773,11 +773,11 @@ def service_complaints(oem_ids=None, page=1, page_size=50, args=None):
         where += _oem_where(oem_ids, "c")
     flt = _flt(args, COMPLAINT_COLUMNS)
     where += flt.and_clause() if flt else ""
-    total = db.query(f"SELECT COUNT(*) c FROM cb_exchange_order_complaint c WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_exchange_order_complaint c WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT c.id, c.oem_id, c.source, c.type, c.user_name, c.user_phone, c.exchange_sn, "
         f"c.battery_sn, c.operation_status, c.order_fail_reason, c.remark, c.create_time "
-        f"FROM cb_exchange_order_complaint c WHERE {where} ORDER BY c.create_time DESC "
+        f"FROM t_exchange_order_complaint c WHERE {where} ORDER BY c.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])

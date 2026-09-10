@@ -34,3 +34,6 @@ logs/
 # 系统
 Thumbs.db
 .DS_Store
+
+# 本地真实库表映射（含真实库表结构，禁止提交）
+config/schema.local.yaml

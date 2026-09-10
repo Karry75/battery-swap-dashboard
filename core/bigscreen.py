@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """数据大屏模块：按城市维度聚合的真实数据接口
 
-数据源全部来自实时主表（cb_exchange_order / cb_user / cb_site / cb_exchange /
-cb_battery / cb_device_type），城市归一化规则与 core/overview 保持一致
+数据源全部来自实时主表（t_exchange_order / t_user / t_site / t_exchange /
+t_battery / t_device_type），城市归一化规则与 core/overview 保持一致
 （_city_core 去掉省市自治区后缀后做包含匹配）。
 """
 import time
@@ -51,7 +51,7 @@ def _oem_where(oem_ids, alias):
 
 
 def cities(oem_ids=None, args=None):
-    """城市列表：按订单量排序取 Top 15（订单 sys_city_name 为主，补充用户城市）"""
+    """城市列表：按订单量排序取 Top 15（订单 t_city_name 为主，补充用户城市）"""
     ow = "o.is_del=0"
     if oem_ids:
         ow += f" AND o.oem_id IN ({','.join(map(str, oem_ids))})"
@@ -59,16 +59,16 @@ def cities(oem_ids=None, args=None):
     if of:
         ow += of.and_clause()
     rows = db.query(
-        f"SELECT COALESCE(NULLIF(o.sys_city_name,''),'') city, COUNT(*) cnt, "
+        f"SELECT COALESCE(NULLIF(o.t_city_name,''),'') city, COUNT(*) cnt, "
         f"COUNT(DISTINCT o.take_user_id) users "
-        f"FROM cb_exchange_order o WHERE {ow} GROUP BY city ORDER BY cnt DESC LIMIT 50")
+        f"FROM t_exchange_order o WHERE {ow} GROUP BY city ORDER BY cnt DESC LIMIT 50")
     uw = "u.is_del=0"
     if oem_ids:
         uw += f" AND u.oem_id IN ({','.join(map(str, oem_ids))})"
     uf = _flt(args, USER_COLUMNS)
     if uf:
         uw += uf.and_clause()
-    urows = db.query(f"SELECT COALESCE(NULLIF(u.city,''),'') city, COUNT(*) c FROM cb_user u WHERE {uw} GROUP BY city")
+    urows = db.query(f"SELECT COALESCE(NULLIF(u.city,''),'') city, COUNT(*) c FROM t_user u WHERE {uw} GROUP BY city")
     umap = {_city_core(r["city"]): int(r["c"]) for r in urows if r["city"]}
 
     out = []
@@ -101,7 +101,7 @@ def summary(oem_ids=None, city=None, args=None):
     ow = "o.is_del=0" + _oem_where(oem_ids, "o")
     if ulike:
         uw += " AND u.city LIKE %s"
-        ow += " AND o.sys_city_name LIKE %s"
+        ow += " AND o.t_city_name LIKE %s"
     uf = _flt(args, USER_COLUMNS)
     if uf:
         uw += uf.and_clause()
@@ -115,25 +115,25 @@ def summary(oem_ids=None, city=None, args=None):
     po = (ulike,) if ulike else ()
 
     # 用户：累计 / 今日新增
-    u = db.query(f"SELECT COUNT(*) c FROM cb_user u WHERE {uw}", pu)[0]
-    nu = db.query(f"SELECT COUNT(*) c FROM cb_user u WHERE {uw} AND u.create_time>{today} AND u.create_time<={now}", pu)[0]
+    u = db.query(f"SELECT COUNT(*) c FROM t_user u WHERE {uw}", pu)[0]
+    nu = db.query(f"SELECT COUNT(*) c FROM t_user u WHERE {uw} AND u.create_time>{today} AND u.create_time<={now}", pu)[0]
 
     # 今日换电：单量 / 收入 / 活跃用户
     t = db.query(
         f"SELECT COUNT(*) cnt, COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee, "
         f"COUNT(DISTINCT o.take_user_id) users "
-        f"FROM cb_exchange_order o WHERE {ow} AND o.create_time>{today} AND o.create_time<={now}", po)[0]
+        f"FROM t_exchange_order o WHERE {ow} AND o.create_time>{today} AND o.create_time<={now}", po)[0]
 
     # 本月收入 / 近12个月月均收入（不含本月）作为月度目标基准
     lt = time.localtime()
     month_start = int(time.mktime((lt.tm_year, lt.tm_mon, 1, 0, 0, 0, 0, 0, -1)) * 1000)
     mi = db.query(
         f"SELECT COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee "
-        f"FROM cb_exchange_order o WHERE {ow} AND o.create_time>{month_start} AND o.create_time<={now}", po)[0]
+        f"FROM t_exchange_order o WHERE {ow} AND o.create_time>{month_start} AND o.create_time<={now}", po)[0]
     hist_start = month_start - 11 * 30 * DAY_MS
     hi = db.query(
         f"SELECT COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee "
-        f"FROM cb_exchange_order o WHERE {ow} AND o.create_time>{hist_start} AND o.create_time<{month_start}", po)[0]
+        f"FROM t_exchange_order o WHERE {ow} AND o.create_time>{hist_start} AND o.create_time<{month_start}", po)[0]
     month_target = round(float(hi["fee"] or 0) / 11.0, 2)
     month_income = round(float(mi["fee"] or 0), 2)
     target_rate = round(month_income / month_target * 100, 1) if month_target > 0 else 0
@@ -151,7 +151,7 @@ def summary(oem_ids=None, city=None, args=None):
         f"SELECT COUNT(*) total, "
         f"SUM(CASE WHEN e.online_status='online' THEN 1 ELSE 0 END) onn, "
         f"SUM(CASE WHEN e.online_status='offline' THEN 1 ELSE 0 END) offn "
-        f"FROM cb_exchange e LEFT JOIN cb_site s ON s.id=e.site_id AND s.is_del=0 WHERE {exw}", exp)[0]
+        f"FROM t_exchange e LEFT JOIN t_site s ON s.id=e.site_id AND s.is_del=0 WHERE {exw}", exp)[0]
 
     # 电池总数（最后位置地址匹配）
     btw = "b.is_del=0" + _oem_where(oem_ids, "b")
@@ -162,7 +162,7 @@ def summary(oem_ids=None, city=None, args=None):
     if ulike:
         btw += " AND b.last_location_address LIKE %s"
         btp = (ulike,)
-    bt = db.query(f"SELECT COUNT(*) c FROM cb_battery b WHERE {btw}", btp)[0]
+    bt = db.query(f"SELECT COUNT(*) c FROM t_battery b WHERE {btw}", btp)[0]
 
     return {
         "city": city or "全部城市",
@@ -199,7 +199,7 @@ def regions(oem_ids=None, city=None, args=None):
         uw += uf.and_clause()
     urows = db.query(
         f"SELECT COALESCE(NULLIF(u.area,''),'未知') area, COUNT(*) c "
-        f"FROM cb_user u WHERE {uw} AND u.area<>'' GROUP BY area ORDER BY c DESC LIMIT 30", up)
+        f"FROM t_user u WHERE {uw} AND u.area<>'' GROUP BY area ORDER BY c DESC LIMIT 30", up)
     umap = {r["area"]: int(r["c"] or 0) for r in urows}
 
     exw = "e.is_del=0" + _oem_where(oem_ids, "e")
@@ -213,7 +213,7 @@ def regions(oem_ids=None, city=None, args=None):
         exw += exf.and_clause()
     exrows = db.query(
         f"SELECT COALESCE(NULLIF(s.area,''),'未知') area, COUNT(*) c "
-        f"FROM cb_exchange e LEFT JOIN cb_site s ON s.id=e.site_id AND s.is_del=0 "
+        f"FROM t_exchange e LEFT JOIN t_site s ON s.id=e.site_id AND s.is_del=0 "
         f"WHERE {exw} AND s.area<>'' GROUP BY area ORDER BY c DESC LIMIT 30", exp)
     exmap = {r["area"]: int(r["c"] or 0) for r in exrows}
 
@@ -231,7 +231,7 @@ def regions(oem_ids=None, city=None, args=None):
     orows = db.query(
         f"SELECT COALESCE(NULLIF(u.area,''),'未知') area, COUNT(*) cnt, "
         f"COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee "
-        f"FROM cb_exchange_order o JOIN cb_user u ON o.take_user_id=u.id "
+        f"FROM t_exchange_order o JOIN t_user u ON o.take_user_id=u.id "
         f"WHERE {ow} AND o.create_time>{today} AND o.create_time<={now} "
         f"GROUP BY area ORDER BY cnt DESC LIMIT 30", op)
 
@@ -266,8 +266,8 @@ def dist(oem_ids=None, city=None, args=None):
     types = db.query(
         f"SELECT e.device_type_id tid, COUNT(*) c, "
         f"COALESCE(NULLIF(d.device_product_model_name,''), d.device_product_name, '未知类型') name "
-        f"FROM cb_exchange e LEFT JOIN cb_site s ON s.id=e.site_id AND s.is_del=0 "
-        f"LEFT JOIN cb_device_type d ON d.id=e.device_type_id "
+        f"FROM t_exchange e LEFT JOIN t_site s ON s.id=e.site_id AND s.is_del=0 "
+        f"LEFT JOIN t_device_type d ON d.id=e.device_type_id "
         f"WHERE {exw} GROUP BY e.device_type_id, name ORDER BY c DESC LIMIT 10", exp)
 
     btw = "b.is_del=0" + _oem_where(oem_ids, "b")
@@ -280,7 +280,7 @@ def dist(oem_ids=None, city=None, args=None):
         btw += btf.and_clause()
     bstatus = db.query(
         f"SELECT COALESCE(NULLIF(b.battery_status,''),'unknown') st, COUNT(*) c "
-        f"FROM cb_battery b WHERE {btw} GROUP BY st ORDER BY c DESC", btp)
+        f"FROM t_battery b WHERE {btw} GROUP BY st ORDER BY c DESC", btp)
 
     return {
         "exchange_types": [{"name": r["name"], "count": int(r["c"] or 0)} for r in types],
@@ -293,7 +293,7 @@ def trend(oem_ids=None, city=None, months=12, args=None):
     ow = "o.is_del=0" + _oem_where(oem_ids, "o")
     params = ()
     if _city_like(city):
-        ow += " AND o.sys_city_name LIKE %s"
+        ow += " AND o.t_city_name LIKE %s"
         params = (_city_like(city),)
     of = _flt(args, ORDER_COLUMNS)
     if of:
@@ -303,7 +303,7 @@ def trend(oem_ids=None, city=None, months=12, args=None):
         f"SELECT DATE_FORMAT(FROM_UNIXTIME(o.create_time/1000), '%%Y-%%m') ym, "
         f"COUNT(*) cnt, COUNT(DISTINCT o.take_user_id) users, "
         f"COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee "
-        f"FROM cb_exchange_order o WHERE {ow} AND o.create_time>{start} "
+        f"FROM t_exchange_order o WHERE {ow} AND o.create_time>{start} "
         f"GROUP BY ym ORDER BY ym", params)
     return [{
         "month": r["ym"],
@@ -321,10 +321,10 @@ def top_cities(oem_ids=None, days=30, args=None):
         ow += of.and_clause()
     start = _now_ms() - days * DAY_MS
     rows = db.query(
-        f"SELECT COALESCE(NULLIF(o.sys_city_name,''),'未知城市') city, COUNT(*) cnt, "
+        f"SELECT COALESCE(NULLIF(o.t_city_name,''),'未知城市') city, COUNT(*) cnt, "
         f"COUNT(DISTINCT o.take_user_id) users, "
         f"COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee "
-        f"FROM cb_exchange_order o WHERE {ow} AND o.create_time>{start} "
+        f"FROM t_exchange_order o WHERE {ow} AND o.create_time>{start} "
         f"GROUP BY city ORDER BY cnt DESC LIMIT 5")
     return [{
         "city": r["city"],

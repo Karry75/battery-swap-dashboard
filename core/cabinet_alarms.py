@@ -12,12 +12,12 @@ from core.utils import ts_to_str
 import config.settings as settings
 
 T = settings.get("database.tables", {})
-MONITOR_EVENT = T.get("monitor_event", "cb_monitor_ex_event")
-MONITOR_EVENT_EXCHANGE = T.get("monitor_event_exchange", "cb_monitor_ex_event_exchange")
-EXCHANGE = T.get("exchange", "cb_exchange")
-EXCHANGE_LAST_UPLOAD = T.get("exchange_last_upload", "cb_exchange_last_upload")
-EXCHANGE_STATUS = T.get("exchange_status", "cb_exchange_status")
-EXCHANGE_LAST_STORE = T.get("exchange_last_store", "cb_exchange_last_store")
+MONITOR_EVENT = T.get("monitor_event", "t_monitor_ex_event")
+MONITOR_EVENT_EXCHANGE = T.get("monitor_event_exchange", "t_monitor_ex_event_exchange")
+EXCHANGE = T.get("exchange", "t_exchange")
+EXCHANGE_LAST_UPLOAD = T.get("exchange_last_upload", "t_exchange_last_upload")
+EXCHANGE_STATUS = T.get("exchange_status", "t_exchange_status")
+EXCHANGE_LAST_STORE = T.get("exchange_last_store", "t_exchange_last_store")
 
 PRIORITY = settings.get("priority.exchange", {})
 
@@ -79,7 +79,7 @@ def _event_exchange_alarms(names, alarm_type, alarm_name, priority, oem_ids=None
 
 
 def _realtime_exchange_alarms(smoke_only=False, flooded_only=False, oem_ids=None):
-    """实时状态兜底：cb_exchange_last_upload 烟感/水浸"""
+    """实时状态兜底：t_exchange_last_upload 烟感/水浸"""
     conds = []
     if smoke_only:
         conds.append("u.smoke='1'")

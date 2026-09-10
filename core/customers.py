@@ -4,7 +4,7 @@ from core import db
 import config.settings as settings
 
 _t = settings.get("database.tables", {})
-OEM_TABLE = _t.get("oem", "sys_oem")
+OEM_TABLE = _t.get("oem", "t_oem")
 
 
 def get_customers():

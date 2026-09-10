@@ -763,7 +763,7 @@ const COMPONENTS = {
             u.user_status === 'on' ? '正常' : '停用', esc(u.register_source || '-'),
             esc(u.create_time || '-'), esc(u.update_time || '-')]]))
         + card('协议列表', tableHtml(['ID', '类型', '城市', '押金状态', '押金(元)', '租期到期', '生效时间', '状态'],
-          (d.agreements || []).map(a => [a.id, esc(a.type || '-'), esc(a.sys_city_name || '-'),
+          (d.agreements || []).map(a => [a.id, esc(a.type || '-'), esc(a.t_city_name || '-'),
             esc(a.deposit_status || '-'), money(a.deposit_real_fee),
             esc(a.rent_expire_time || '-'), esc(a.activation_time || '-'), esc(a.status_text || a.status)])))
         + card('租期卡', tableHtml(['套餐', '有效天数', '永久有效', '卡状态', '到期时间', '创建时间'],
@@ -844,7 +844,7 @@ const COMPONENTS = {
       const d = await api(`/api/users/agreements?page=${page}&user_phone=${encodeURIComponent(kw)}`);
       document.getElementById('uq_box').innerHTML =
         tableHtml(['ID', '用户', '手机号', '城市', '押金状态', '租期到期', '生效时间', '状态'],
-          d.items.map(a => [a.id, esc(a.user_name || '-'), esc(a.user_phone || '-'), esc(a.sys_city_name || '-'),
+          d.items.map(a => [a.id, esc(a.user_name || '-'), esc(a.user_phone || '-'), esc(a.t_city_name || '-'),
             esc(a.deposit_status || '-'), esc(a.rent_expire_time || '-'), esc(a.activation_time || '-'), esc(a.status_text || a.status)]))
         + pager(d.total, d.page, d.page_size, 'loadUserQueryAgreements');
     };
@@ -864,7 +864,7 @@ const COMPONENTS = {
       document.getElementById('uq_box').innerHTML =
         tableHtml(['订单号', '用户', '手机号', '城市', '网点', '实付(元)', '状态', '首次', '里程', '时间'],
           d.items.map(o => [o.id, esc(o.take_user_name || '-'), esc(o.take_user_phone || '-'),
-            esc(o.sys_city_name || '-'), esc(o.site_name || '-'), money(o.real_pay_price),
+            esc(o.t_city_name || '-'), esc(o.site_name || '-'), money(o.real_pay_price),
             esc(o.order_status || '-'), o.is_first_take == 1 ? '是' : '否',
             o.mileage != null ? o.mileage : '-', fmtTs(o.create_time)]))
         + pager(d.total, d.page, d.page_size, 'loadUserQueryOrders');
@@ -1063,7 +1063,7 @@ const COMPONENTS = {
       const d = await api(`/api/service/query?page=${page}&keyword=${encodeURIComponent(kw)}`);
       document.getElementById('service_box').innerHTML =
         tableHtml(['ID', '手机号', '姓名', '城市', '状态', '生效时间'],
-          d.items.map(u => [u.id, esc(u.user_phone), esc(u.user_name || '-'), esc(u.sys_city_name || '-'), esc(u.status_text || u.status), fmtTs(u.activation_time)]))
+          d.items.map(u => [u.id, esc(u.user_phone), esc(u.user_name || '-'), esc(u.t_city_name || '-'), esc(u.status_text || u.status), fmtTs(u.activation_time)]))
         + pager(d.total, d.page, d.page_size, 'loadService');
     };
     window.loadComplaint = async (page = 1) => {
@@ -1717,7 +1717,7 @@ const COMPONENTS = {
         document.getElementById('so_box').innerHTML =
           tableHtml(['订单号', '用户', '手机号', '商品类型', '数量', '实付(元)', '支付方式', '签约网点', '城市', '状态', '下单时间'],
             (d.items || []).map(x => [x.id, esc(x.buyer_user_name), esc(x.buyer_user_phone || '-'), esc(x.goods_type || '-'), x.goods_quantity,
-              money(x.pay_fee), esc(x.pay_way || '-'), esc(x.sign_site_name || '-'), esc(x.sys_city_name || '-'),
+              money(x.pay_fee), esc(x.pay_way || '-'), esc(x.sign_site_name || '-'), esc(x.t_city_name || '-'),
               x.order_status === 'success' ? tag('成功', 'tag-ok') : esc(x.order_status), fmtTs(x.create_time)]))
           + pager(d.total, d.page, d.page_size, 'loadServiceOrder');
       } catch (e) { console.error(e); document.getElementById('so_box').innerHTML = dbErrorHtml(e); }
@@ -1741,7 +1741,7 @@ const COMPONENTS = {
           tableHtml(['协议号', '用户', '手机号', '类型', '押金状态', '实缴押金(元)', '生效时间', '到期时间', '状态', '城市'],
             (d.items || []).map(x => [x.id, esc(x.user_name), esc(x.user_phone || '-'), esc(x.type || '-'),
               x.deposit_status === 'on' ? tag('在押', 'tag-ok') : tag('未押', 'tag-off'), money(x.deposit_real_fee),
-              fmtTs(x.activation_time), fmtTs(x.rent_expire_time), tag(x.status_text || x.status, x.status === 'working' ? 'tag-ok' : x.status === 'owe_rent' ? 'tag-p1' : 'tag-p2'), esc(x.sys_city_name || '-')]))
+              fmtTs(x.activation_time), fmtTs(x.rent_expire_time), tag(x.status_text || x.status, x.status === 'working' ? 'tag-ok' : x.status === 'owe_rent' ? 'tag-p1' : 'tag-p2'), esc(x.t_city_name || '-')]))
           + pager(d.total, d.page, d.page_size, 'loadAgreement');
       } catch (e) { console.error(e); document.getElementById('ag_box').innerHTML = dbErrorHtml(e); }
     };

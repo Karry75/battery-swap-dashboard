@@ -11,10 +11,10 @@ from core.utils import ts_to_str, safe_float
 import config.settings as settings
 
 T = settings.get("database.tables", {})
-BATTERY_LAST_UPLOAD = T.get("battery_last_upload", "cb_battery_last_upload")
-BATTERY = T.get("battery", "cb_battery")
-MONITOR_EVENT = T.get("monitor_event", "cb_monitor_ex_event")
-MONITOR_EVENT_BATTERY = T.get("monitor_event_battery", "cb_monitor_ex_event_battery")
+BATTERY_LAST_UPLOAD = T.get("battery_last_upload", "t_battery_last_upload")
+BATTERY = T.get("battery", "t_battery")
+MONITOR_EVENT = T.get("monitor_event", "t_monitor_ex_event")
+MONITOR_EVENT_BATTERY = T.get("monitor_event_battery", "t_monitor_ex_event_battery")
 
 PRIORITY = settings.get("priority.battery", {})
 HUNGRY_CFG = settings.get("alarm.battery.hungry", {})

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """财务 / 设备资产 / 优惠券 / 人员 / 深度分析 模块
 
-数据源：cb_expense_bill（费用单，1216万行）、cb_battery_transfer_log（电池流转）、
-cb_coupon（优惠券）、cb_user_exchange_deposit（押金）、cb_battery（电池）、
-cb_exchange（换电柜）、cb_bike（车辆）、cb_work_order（工单）。
+数据源：t_expense_bill（费用单，1216万行）、t_battery_transfer_log（电池流转）、
+t_coupon（优惠券）、t_user_exchange_deposit（押金）、t_battery（电池）、
+t_exchange（换电柜）、t_bike（车辆）、t_work_order（工单）。
 """
 import time
 from core import db
@@ -82,10 +82,10 @@ def finance_summary(oem_ids=None, days=30, args=None):
     start = _now_ms() - days * DAY_MS
     inc = db.query(
         f"SELECT COUNT(*) c, COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee, COALESCE(SUM(o.profit_fee),0) profit "
-        f"FROM cb_exchange_order o WHERE {w} AND o.create_time>{start}")[0]
+        f"FROM t_exchange_order o WHERE {w} AND o.create_time>{start}")[0]
     exp = db.query(
         f"SELECT COUNT(*) c, COALESCE(SUM(b.fee),0) fee "
-        f"FROM cb_expense_bill b WHERE {wb} AND b.create_time>{start}")[0]
+        f"FROM t_expense_bill b WHERE {wb} AND b.create_time>{start}")[0]
     return {
         "days": days,
         "income_count": int(inc["c"] or 0),
@@ -114,11 +114,11 @@ def finance_income_trend(oem_ids=None, months=12, args=None):
     rows = db.query(
         f"SELECT DATE_FORMAT(FROM_UNIXTIME(o.create_time/1000), '%%Y-%%m') ym, "
         f"COUNT(*) cnt, COALESCE(SUM(o.real_pay_price),0)+COALESCE(SUM(o.expend_power_fee),0) fee, COALESCE(SUM(o.profit_fee),0) profit "
-        f"FROM cb_exchange_order o WHERE {w} AND o.create_time>{start} GROUP BY ym ORDER BY ym")
+        f"FROM t_exchange_order o WHERE {w} AND o.create_time>{start} GROUP BY ym ORDER BY ym")
     svc = db.query(
         f"SELECT DATE_FORMAT(FROM_UNIXTIME(s.create_time/1000), '%%Y-%%m') ym, "
         f"COALESCE(SUM(s.pay_fee),0) fee "
-        f"FROM cb_exchange_service_order s WHERE {ws} AND s.is_pay=1 AND s.create_time>{start} GROUP BY ym ORDER BY ym")
+        f"FROM t_exchange_service_order s WHERE {ws} AND s.is_pay=1 AND s.create_time>{start} GROUP BY ym ORDER BY ym")
     smap = {r["ym"]: r for r in svc}
     out = []
     for r in rows:
@@ -146,11 +146,11 @@ def finance_expense_list(oem_ids=None, fee_type="", keyword="", page=1, page_siz
     if keyword:
         kw = keyword.strip()
         where += f" AND (b.out_unit_name LIKE '%%{kw}%%' OR b.expense_name LIKE '%%{kw}%%')"
-    total = db.query(f"SELECT COUNT(*) c FROM cb_expense_bill b WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_expense_bill b WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT b.id, b.oem_id, b.expense_type, b.expense_name, b.out_unit_name, "
         f"b.expense_description, b.fee, b.bill_status, b.is_cancel, b.create_time, b.update_time, b.remark, b.bu_id "
-        f"FROM cb_expense_bill b WHERE {where} ORDER BY b.create_time DESC "
+        f"FROM t_expense_bill b WHERE {where} ORDER BY b.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
@@ -168,7 +168,7 @@ def finance_expense_types(oem_ids=None, days=30, args=None):
     start = _now_ms() - days * DAY_MS
     rows = db.query(
         f"SELECT b.expense_type, COUNT(*) cnt, COALESCE(SUM(b.fee),0) fee "
-        f"FROM cb_expense_bill b WHERE {w} AND b.create_time>{start} GROUP BY b.expense_type ORDER BY fee DESC LIMIT 20")
+        f"FROM t_expense_bill b WHERE {w} AND b.create_time>{start} GROUP BY b.expense_type ORDER BY fee DESC LIMIT 20")
     return [{"fee_type": r["expense_type"] or "未知", "count": int(r["cnt"] or 0),
              "fee": round(float(r["fee"] or 0), 2)} for r in rows]
 
@@ -184,12 +184,12 @@ def finance_deposit_list(oem_ids=None, deposit_status="", page=1, page_size=50, 
         fs = FilterSet(args, {"time": "d.create_time", "user_phone": "u.phone"})
         where += fs.and_clause()
     total = db.query(
-        f"SELECT COUNT(*) c FROM cb_user_exchange_deposit d LEFT JOIN cb_user u ON u.id=d.user_id "
+        f"SELECT COUNT(*) c FROM t_user_exchange_deposit d LEFT JOIN t_user u ON u.id=d.user_id "
         f"WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT d.id, d.oem_id, d.user_id, u.username, u.phone, d.take_battery_status, "
         f"d.fee, d.is_withdraw, d.is_freeze, d.create_time, d.update_time "
-        f"FROM cb_user_exchange_deposit d LEFT JOIN cb_user u ON u.id=d.user_id "
+        f"FROM t_user_exchange_deposit d LEFT JOIN t_user u ON u.id=d.user_id "
         f"WHERE {where} ORDER BY d.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
@@ -201,7 +201,7 @@ def finance_deposit_list(oem_ids=None, deposit_status="", page=1, page_size=50, 
 def assets_summary(oem_ids=None, args=None):
     """设备资产总览（换电柜支持城市/网点/代理商/品牌筛选；电池支持代理商/品牌；
     车辆数/故障数为全量，不随设备筛选变动）"""
-    ex_sub = (f"FROM cb_exchange e LEFT JOIN cb_site s ON s.id=e.site_id AND s.is_del=0 "
+    ex_sub = (f"FROM t_exchange e LEFT JOIN t_site s ON s.id=e.site_id AND s.is_del=0 "
               f"WHERE e.is_del=0{_oem_where(oem_ids, 'e')}")
     ex_flt = _flt(args, EXCHANGE_COLUMNS)
     if ex_flt:
@@ -221,12 +221,12 @@ def assets_summary(oem_ids=None, args=None):
     ex_on = db.query(f"SELECT COUNT(*) c {ex_sub} AND e.online_status='online'")[0]["c"]
     r = db.query(
         f"SELECT "
-        f"(SELECT COUNT(*) FROM cb_battery b WHERE {bt_w}) bt_total, "
-        f"(SELECT COUNT(*) FROM cb_battery b WHERE {bt_w} AND b.online_status='online') bt_on, "
-        f"(SELECT COUNT(DISTINCT e.id) FROM cb_monitor_ex_event e INNER JOIN cb_monitor_ex_event_battery eb ON eb.ex_event_id=e.id WHERE e.is_del=0 AND e.status='init') bt_fault, "
-        f"(SELECT COUNT(*) FROM cb_bike WHERE is_del=0) bk_total, "
-        f"(SELECT COUNT(*) FROM cb_bike WHERE is_del=0 AND online_status='online') bk_on, "
-        f"(SELECT COUNT(*) FROM cb_site s WHERE {st_w}) st_total")[0]
+        f"(SELECT COUNT(*) FROM t_battery b WHERE {bt_w}) bt_total, "
+        f"(SELECT COUNT(*) FROM t_battery b WHERE {bt_w} AND b.online_status='online') bt_on, "
+        f"(SELECT COUNT(DISTINCT e.id) FROM t_monitor_ex_event e INNER JOIN t_monitor_ex_event_battery eb ON eb.ex_event_id=e.id WHERE e.is_del=0 AND e.status='init') bt_fault, "
+        f"(SELECT COUNT(*) FROM t_bike WHERE is_del=0) bk_total, "
+        f"(SELECT COUNT(*) FROM t_bike WHERE is_del=0 AND online_status='online') bk_on, "
+        f"(SELECT COUNT(*) FROM t_site s WHERE {st_w}) st_total")[0]
     return {
         "exchange": {"total": int(ex_total or 0), "online": int(ex_on or 0)},
         "battery": {"total": int(r["bt_total"] or 0), "online": int(r["bt_on"] or 0), "fault": int(r["bt_fault"] or 0)},
@@ -245,7 +245,7 @@ def assets_battery_status(oem_ids=None, args=None):
         w += flt.and_clause()
     rows = db.query(
         f"SELECT COALESCE(NULLIF(b.battery_status,''),'unknown') status, COUNT(*) c "
-        f"FROM cb_battery b WHERE {w} GROUP BY status ORDER BY c DESC")
+        f"FROM t_battery b WHERE {w} GROUP BY status ORDER BY c DESC")
     return [{"status": r["status"], "count": int(r["c"])} for r in rows]
 
 
@@ -262,11 +262,11 @@ def assets_transfer_logs(oem_ids=None, transfer_type="", keyword="", page=1, pag
     if args and (args.get("start") or args.get("end") or args.get("device_sn")):
         fs = FilterSet(args, {"time": "t.create_time", "device_sn": "t.battery_device_sn"})
         where += fs.and_clause()
-    total = db.query(f"SELECT COUNT(*) c FROM cb_battery_transfer_log t WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_battery_transfer_log t WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT t.id, t.oem_id, t.battery_id, t.battery_device_sn, t.transfer_type, t.transfer_status, "
         f"t.inflow_name, t.outflow_name, t.inflow_type, t.outflow_type, t.create_time "
-        f"FROM cb_battery_transfer_log t WHERE {where} ORDER BY t.create_time DESC "
+        f"FROM t_battery_transfer_log t WHERE {where} ORDER BY t.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
@@ -283,12 +283,12 @@ def assets_work_orders(oem_ids=None, status="", page=1, page_size=50, args=None)
     flt = _flt(args, WORK_ORDER_COLUMNS)
     if flt:
         where += flt.and_clause()
-    total = db.query(f"SELECT COUNT(*) c FROM cb_work_order w WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_work_order w WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT w.id, w.oem_id, w.event_type, w.event_id, w.event_name, w.agency_name, "
         f"w.address, w.status, w.priority, w.description, w.creator_name, w.handler_name, "
         f"w.create_time, w.handle_start_time, w.handle_stop_time "
-        f"FROM cb_work_order w WHERE {where} ORDER BY w.create_time DESC "
+        f"FROM t_work_order w WHERE {where} ORDER BY w.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
@@ -309,7 +309,7 @@ def coupons_summary(oem_ids=None, args=None):
     r = db.query(
         f"SELECT COUNT(*) c, "
         f"SUM(c.coupon_status='on') on_cnt, SUM(c.coupon_status='off') off_cnt "
-        f"FROM cb_coupon c WHERE {w}")[0]
+        f"FROM t_coupon c WHERE {w}")[0]
     return {
         "coupon_total": int(r["c"] or 0),
         "on": int(r["on_cnt"] or 0),
@@ -330,11 +330,11 @@ def coupons_list(oem_ids=None, status="", keyword="", page=1, page_size=50, args
     flt = _flt(args, COUPON_COLUMNS)
     if flt:
         where += flt.and_clause()
-    total = db.query(f"SELECT COUNT(*) c FROM cb_coupon c WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_coupon c WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT c.id, c.oem_id, c.title, c.channel, c.deduct_type, c.deduct_rule, "
         f"c.coupon_status, c.creator_name, c.valid_days, c.create_time "
-        f"FROM cb_coupon c WHERE {where} ORDER BY c.create_time DESC "
+        f"FROM t_coupon c WHERE {where} ORDER BY c.create_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
@@ -353,10 +353,10 @@ def staff_summary(oem_ids=None, args=None):
     # 有协议签署的商户数量（业务员维度）
     rows = db.query(
         f"SELECT COALESCE(NULLIF(a.sign_site_business_name,''),'未知') bname, COUNT(*) c "
-        f"FROM cb_exchange_agreement a WHERE {where} GROUP BY bname ORDER BY c DESC LIMIT 20")
+        f"FROM t_exchange_agreement a WHERE {where} GROUP BY bname ORDER BY c DESC LIMIT 20")
     total_staff = db.query(
         f"SELECT COUNT(DISTINCT COALESCE(NULLIF(a.sign_site_business_name,''),'未知')) c "
-        f"FROM cb_exchange_agreement a WHERE {where}")[0]["c"]
+        f"FROM t_exchange_agreement a WHERE {where}")[0]["c"]
     return {
         "total_staff": int(total_staff or 0),
         "staff_rank": [{"name": r["bname"], "agreement_count": int(r["c"])} for r in rows],
@@ -373,11 +373,11 @@ def staff_work_orders(oem_ids=None, solve_user="", page=1, page_size=50, args=No
     flt = _flt(args, WORK_ORDER_COLUMNS)
     if flt:
         where += flt.and_clause()
-    total = db.query(f"SELECT COUNT(*) c FROM cb_work_order w WHERE {where}")[0]["c"]
+    total = db.query(f"SELECT COUNT(*) c FROM t_work_order w WHERE {where}")[0]["c"]
     rows = db.query(
         f"SELECT w.id, w.oem_id, w.event_type, w.event_name, w.address, w.status, w.creator_name, "
         f"w.handler_name, w.create_time, w.handle_start_time, w.handle_stop_time "
-        f"FROM cb_work_order w WHERE {where} ORDER BY w.handle_stop_time DESC "
+        f"FROM t_work_order w WHERE {where} ORDER BY w.handle_stop_time DESC "
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
@@ -398,7 +398,7 @@ def insights_exchange_peak(oem_ids=None, days=7, args=None):
     start = _now_ms() - days * DAY_MS
     rows = db.query(
         f"SELECT HOUR(FROM_UNIXTIME(o.create_time/1000)) hour, COUNT(*) cnt "
-        f"FROM cb_exchange_order o WHERE {w} AND o.create_time>{start} GROUP BY hour ORDER BY hour")
+        f"FROM t_exchange_order o WHERE {w} AND o.create_time>{start} GROUP BY hour ORDER BY hour")
     return [{"hour": int(r["hour"]), "count": int(r["cnt"])} for r in rows]
 
 
@@ -413,7 +413,7 @@ def insights_first_take(oem_ids=None, days=30, args=None):
     start = _now_ms() - days * DAY_MS
     r = db.query(
         f"SELECT SUM(o.is_first_take=1) first_cnt, SUM(o.is_first_take=0) again_cnt "
-        f"FROM cb_exchange_order o WHERE {w} AND o.create_time>{start}")[0]
+        f"FROM t_exchange_order o WHERE {w} AND o.create_time>{start}")[0]
     return {"first_take": int(r["first_cnt"] or 0), "again": int(r["again_cnt"] or 0)}
 
 
@@ -432,7 +432,7 @@ def insights_battery_age(oem_ids=None, args=None):
         f"WHEN b.create_time>{now - 365 * DAY_MS} THEN '6-12个月' "
         f"WHEN b.create_time>{now - 730 * DAY_MS} THEN '1-2年' "
         f"ELSE '2年以上' END age_range, COUNT(*) c "
-        f"FROM cb_battery b WHERE {w} GROUP BY age_range")
+        f"FROM t_battery b WHERE {w} GROUP BY age_range")
     return [{"age_range": r["age_range"], "count": int(r["c"])} for r in rows]
 
 
