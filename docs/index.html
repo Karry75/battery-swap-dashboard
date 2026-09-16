@@ -205,7 +205,7 @@ var tasks = FILES.map(function (f) {
 Promise.all(tasks).then(function () {
 
   var ov = D.api_overview_summary || {};
-  var dev = D.api_overview_device-dimension || {};
+  var dev = D["api_overview_device-dimension"] || {};
   var online = (dev.battery ? dev.battery.online : 0) + (dev.exchange ? dev.exchange.online : 0);
   var KPIS = [
     { label: "累计注册用户", value: fmt(ov.total_users), unit: "人", trend: "今日新增 " + (ov.today_new_users || 0), up: true, cls: "" },
@@ -235,13 +235,13 @@ Promise.all(tasks).then(function () {
 
   chartDevice(dev);
 
-  var cities = D.api_bigscreen_top_cities || [];
+  var cities = D["api_bigscreen_top-cities"] || [];
   chartRegion(cities);
 
   var fin = D.api_finance_income_trend || [];
   chartFinance(fin.map(function (t) { return t.month; }), fin.map(function (t) { return Math.round(t.income / 10000 * 100) / 100; }), fin.map(function (t) { return Math.round(t.profit / 10000 * 100) / 100; }));
 
-  var alarm = D.api_dashboard_alarm_stats || {};
+  var alarm = D["api_dashboard_alarm-stats"] || {};
   renderRisks(alarm);
 }).catch(function (e) {
   document.getElementById("kpiGrid").innerHTML = '<div style="color:#f87171;padding:20px;">数据加载失败：' + e.message + '</div>';
