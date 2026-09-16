@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>换电运营平台 · 演示看板</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+  :root {
+    --bg-0: #070f1d;
+    --bg-1: #0b1830;
+    --panel: rgba(16, 35, 68, .72);
+    --panel-border: rgba(64, 128, 255, .22);
+    --accent: #38bdf8;
+    --accent-2: #2563eb;
+    --green: #34d399;
+    --orange: #fbbf24;
+    --red: #f87171;
+    --text: #e2e8f0;
+    --text-dim: #8aa3c4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(37, 99, 235, .28), transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, rgba(56, 189, 248, .16), transparent 55%),
+      linear-gradient(160deg, var(--bg-0), var(--bg-1) 55%, #0a1428);
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* 顶部标题栏 */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    padding: 16px 22px 10px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+  .brand h1 {
+    font-size: 24px; font-weight: 700; letter-spacing: 2px;
+    background: linear-gradient(90deg, #7dd3fc, #60a5fa, #38bdf8);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .brand .sub { font-size: 12px; letter-spacing: 4px; color: var(--text-dim); }
+  .top-meta { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--text-dim); }
+  .top-meta .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  .top-meta .badge { border: 1px solid var(--panel-border); background: rgba(56,189,248,.12); color: #7dd3fc; padding: 3px 10px; border-radius: 20px; }
+
+  .container { padding: 8px 22px 26px; max-width: 1760px; margin: 0 auto; }
+
+  /* KPI 卡片 */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px; }
+  .kpi {
+    position: relative; overflow: hidden;
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px;
+    padding: 16px 18px; backdrop-filter: blur(6px);
+  }
+  .kpi::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+  .kpi.k2::before { background: var(--accent-2); }
+  .kpi.k3::before { background: var(--green); }
+  .kpi.k4::before { background: var(--orange); }
+  .kpi.k5::before { background: #a78bfa; }
+  .kpi.k6::before { background: #f472b6; }
+  .kpi .label { font-size: 13px; color: var(--text-dim); }
+  .kpi .value { font-size: 30px; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+  .kpi .value .unit { font-size: 14px; font-weight: 400; color: var(--text-dim); margin-left: 4px; }
+  .kpi .trend { font-size: 12px; margin-top: 8px; color: var(--text-dim); }
+  .kpi .trend .up { color: var(--green); }
+  .kpi .trend .down { color: var(--red); }
+
+  /* 面板 */
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; margin-bottom: 14px; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px;
+    padding: 14px 16px; backdrop-filter: blur(6px); min-width: 0;
+  }
+  .panel .p-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #dbeafe; }
+  .panel .p-title::before { content: ""; width: 4px; height: 14px; background: var(--accent); border-radius: 2px; }
+  .panel .p-sub { font-size: 12px; color: var(--text-dim); font-weight: 400; margin-left: auto; }
+  .chart { width: 100%; height: 300px; }
+  .col-3 { grid-column: span 3; }
+  .col-4 { grid-column: span 4; }
+  .col-5 { grid-column: span 5; }
+  .col-6 { grid-column: span 6; }
+  .col-7 { grid-column: span 7; }
+  .col-8 { grid-column: span 8; }
+  .col-9 { grid-column: span 9; }
+  .col-12 { grid-column: span 12; }
+
+  /* 风险预警列表 */
+  .risk-list { list-style: none; }
+  .risk-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 8px; border-bottom: 1px dashed rgba(148,163,184,.18); font-size: 13px;
+  }
+  .risk-item:last-child { border-bottom: none; }
+  .risk-lv { flex: none; padding: 2px 9px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .lv-p0 { background: rgba(248,113,113,.16); color: #f87171; }
+  .lv-p1 { background: rgba(251,191,36,.16); color: #fbbf24; }
+  .lv-p2 { background: rgba(96,165,250,.16); color: #93c5fd; }
+  .risk-name { flex: 1; color: #dbeafe; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .risk-time { flex: none; color: var(--text-dim); font-size: 12px; }
+
+  /* 底部 */
+  .foot { text-align: center; color: #50688a; font-size: 12px; padding: 6px 0 18px; letter-spacing: 1px; }
+
+  /* 响应式 */
+  @media (max-width: 1400px) {
+    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9 { grid-column: span 6; }
+  }
+  @media (max-width: 900px) {
+    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9 { grid-column: span 12; }
+    .chart { height: 260px; }
+    .brand h1 { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <h1>换电运营平台</h1>
+    <span class="sub">BATTERY-SWAP OPERATIONS DEMO</span>
+  </div>
+  <div class="top-meta">
+    <span class="badge">GitHub Pages · 演示数据</span>
+    <span class="dot"></span>
+    <span id="now"></span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部指标卡 -->
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <!-- 运营总览趋势 + 用户增长/活跃 -->
+  <div class="grid">
+    <div class="panel col-7">
+      <div class="p-title">运营总览趋势<span class="p-sub">近 30 天换电次数与营收</span></div>
+      <div id="chartTrend" class="chart"></div>
+    </div>
+    <div class="panel col-5">
+      <div class="p-title">用户增长与活跃<span class="p-sub">近 12 个月</span></div>
+      <div id="chartUser" class="chart"></div>
+    </div>
+  </div>
+
+  <!-- 设备资产 + 区域客户 + 财务 -->
+  <div class="grid">
+    <div class="panel col-4">
+      <div class="p-title">设备资产分布<span class="p-sub">换电柜与电池状态</span></div>
+      <div id="chartDevice" class="chart"></div>
+    </div>
+    <div class="panel col-4">
+      <div class="p-title">区域 / 客户分布<span class="p-sub">在网设备数 TOP6</span></div>
+      <div id="chartRegion" class="chart"></div>
+    </div>
+    <div class="panel col-4">
+      <div class="p-title">财务收入构成<span class="p-sub">本月按业务线</span></div>
+      <div id="chartFinance" class="chart"></div>
+    </div>
+  </div>
+
+  <!-- 风险预警 -->
+  <div class="grid">
+    <div class="panel col-12">
+      <div class="p-title">风险预警列表<span class="p-sub">最近 7 条告警</span></div>
+      <ul class="risk-list" id="riskList"></ul>
+    </div>
+  </div>
+
+  <div class="foot">BATTERY-SWAP DASHBOARD · DEMO DATA ONLY · 深蓝科技风静态演示看板</div>
+</div>
+
+<script>
+/* ===== 模拟数据（全部脱敏） ===== */
+var KPIS = [
+  { label: "累计注册用户", value: "128,560", unit: "人", trend: "+2,180", up: true, cls: "" },
+  { label: "今日换电次数", value: "36,842", unit: "次", trend: "+12.4%", up: true, cls: "k2" },
+  { label: "在线设备", value: "9,786", unit: "台", trend: "在线率 96.8%", up: true, cls: "k3" },
+  { label: "今日营收", value: "218.6", unit: "万元", trend: "+8.7%", up: true, cls: "k4" },
+  { label: "电池可用率", value: "94.2", unit: "%", trend: "+0.6%", up: true, cls: "k5" },
+  { label: "活跃网点", value: "1,324", unit: "个", trend: "本月新增 46", up: true, cls: "k6" }
+];
+
+var TREND_DAYS = [];
+var TREND_CNT = [];
+var TREND_AMT = [];
+(function () {
+  for (var i = 29; i >= 0; i--) {
+    var d = new Date(2026, 8, 16); d.setDate(d.getDate() - i);
+    TREND_DAYS.push((d.getMonth() + 1) + "/" + d.getDate());
+    var base = 30000 + Math.round(Math.sin(i / 3.2) * 5200 + (29 - i) * 210);
+    TREND_CNT.push(base);
+    TREND_AMT.push(Math.round(base * 5.9 + Math.random() * 800) / 100);
+  }
+})();
+
+var MONTHS = ["去年10月","去年11月","去年12月","今年1月","2月","3月","4月","5月","6月","7月","8月","9月"];
+var USER_NEW  = [4200, 4800, 5100, 6400, 7200, 8300, 9100, 9800, 10400, 11200, 12100, 12800];
+var USER_ACT  = [35, 38, 40, 44, 47, 49, 52, 54, 56, 58, 61, 63];
+
+var DEVICE_CABINET = [
+  { name: "在线运行", value: 4216 },
+  { name: "轻度故障", value: 86 },
+  { name: "离线/维护", value: 52 }
+];
+var DEVICE_BATTERY = [
+  { name: "健康", value: 35240 },
+  { name: "待保养", value: 1680 },
+  { name: "待退役", value: 412 }
+];
+
+var REGIONS = [
+  { name: "华东区", value: 3120 },
+  { name: "华南区", value: 2480 },
+  { name: "华北区", value: 1820 },
+  { name: "西南区", value: 1240 },
+  { name: "华中区", value: 860 },
+  { name: "西北区", value: 460 }
+];
+
+var FINANCE = [
+  { name: "换电服务费", value: 62.4 },
+  { name: "电池租赁", value: 28.9 },
+  { name: "设备销售", value: 15.2 },
+  { name: "增值服务", value: 6.8 },
+  { name: "其他", value: 3.1 }
+];
+
+var RISKS = [
+  { lv: "P0", cls: "lv-p0", name: "华东-临港换电站 柜机 #E-0217 通信中断超 30 分钟", time: "09:42" },
+  { lv: "P0", cls: "lv-p0", name: "华南-天河站 电池 #B-88412 温度异常（62°C）", time: "09:15" },
+  { lv: "P1", cls: "lv-p1", name: "华北-朝阳站 仓门故障，累计卡单 23 次", time: "08:57" },
+  { lv: "P1", cls: "lv-p1", name: "西南-高新站 电池库存低于阈值（剩余 6 块）", time: "08:40" },
+  { lv: "P2", cls: "lv-p2", name: "华东-虹桥站 今日换电峰值超容量 85%", time: "08:12" },
+  { lv: "P2", cls: "lv-p2", name: "华中-光谷站 月度营收环比下降 9%", time: "07:58" },
+  { lv: "P2", cls: "lv-p2", name: "华南-福田站 用户投诉响应超时 3 起", time: "07:31" }
+];
+
+/* ===== 工具函数 ===== */
+var AXIS_COLOR = "#8aa3c4";
+var SPLIT_COLOR = "rgba(148,163,184,.14)";
+function baseTooltip() { return { trigger: "axis", backgroundColor: "rgba(9,20,42,.9)", borderColor: "rgba(64,128,255,.4)", textStyle: { color: "#e2e8f0", fontSize: 12 } }; }
+function baseLegend() { return { textStyle: { color: AXIS_COLOR, fontSize: 12 }, top: 0, right: 0 }; }
+
+function renderKPIs() {
+  var html = "";
+  KPIS.forEach(function (k, i) {
+    var cls = k.cls ? (" kpi " + k.cls) : " kpi";
+    var arrow = k.up ? '<span class="up">▲ ' + k.trend + '</span>' : '<span class="down">▼ ' + k.trend + '</span>';
+    html += '<div class="' + cls + '"><div class="label">' + k.label + '</div><div class="value">' + k.value + '<span class="unit">' + k.unit + '</span></div><div class="trend">较上期 ' + arrow + '</div></div>';
+  });
+  document.getElementById("kpiGrid").innerHTML = html;
+}
+
+function renderRisks() {
+  var html = "";
+  RISKS.forEach(function (r) {
+    html += '<li class="risk-item"><span class="risk-lv ' + r.cls + '">' + r.lv + '</span><span class="risk-name">' + r.name + '</span><span class="risk-time">' + r.time + '</span></li>';
+  });
+  document.getElementById("riskList").innerHTML = html;
+}
+
+/* ===== 图表 ===== */
+function chartTrend() {
+  var el = document.getElementById("chartTrend");
+  var chart = echarts.init(el);
+  chart.setOption({
+    tooltip: baseTooltip(),
+    legend: baseLegend(),
+    grid: { left: 48, right: 56, top: 34, bottom: 26 },
+    xAxis: { type: "category", data: TREND_DAYS, axisLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 10, interval: 4 } },
+    yAxis: [
+      { type: "value", name: "换电次数", nameTextStyle: { color: AXIS_COLOR }, splitLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
+      { type: "value", name: "营收(万)", nameTextStyle: { color: AXIS_COLOR }, splitLine: { show: false }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } }
+    ],
+    series: [
+      { name: "换电次数", type: "line", data: TREND_CNT, smooth: true, symbol: "none", lineStyle: { width: 2, color: "#38bdf8" }, areaStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "rgba(56,189,248,.32)" }, { offset: 1, color: "rgba(56,189,248,0)" }] } } },
+      { name: "营收(万)", type: "line", yAxisIndex: 1, data: TREND_AMT, smooth: true, symbol: "none", lineStyle: { width: 2, color: "#fbbf24" } }
+    ]
+  });
+  window.addEventListener("resize", function () { chart.resize(); });
+}
+
+function chartUser() {
+  var el = document.getElementById("chartUser");
+  var chart = echarts.init(el);
+  chart.setOption({
+    tooltip: baseTooltip(),
+    legend: baseLegend(),
+    grid: { left: 44, right: 44, top: 34, bottom: 26 },
+    xAxis: { type: "category", data: MONTHS, axisLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 10, interval: 1 } },
+    yAxis: [
+      { type: "value", name: "新增", nameTextStyle: { color: AXIS_COLOR }, splitLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
+      { type: "value", name: "活跃率%", min: 0, max: 80, nameTextStyle: { color: AXIS_COLOR }, splitLine: { show: false }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } }
+    ],
+    series: [
+      { name: "新增用户", type: "bar", data: USER_NEW, barWidth: "46%", itemStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "#60a5fa" }, { offset: 1, color: "#1d4ed8" }] }, borderRadius: [3, 3, 0, 0] } },
+      { name: "月活跃率", type: "line", yAxisIndex: 1, data: USER_ACT, smooth: true, symbol: "circle", symbolSize: 5, lineStyle: { width: 2, color: "#34d399" }, itemStyle: { color: "#34d399" } }
+    ]
+  });
+  window.addEventListener("resize", function () { chart.resize(); });
+}
+
+function chartDevice() {
+  var el = document.getElementById("chartDevice");
+  var chart = echarts.init(el);
+  chart.setOption({
+    tooltip: { trigger: "item", backgroundColor: "rgba(9,20,42,.9)", borderColor: "rgba(64,128,255,.4)", textStyle: { color: "#e2e8f0", fontSize: 12 } },
+    legend: { bottom: 0, textStyle: { color: AXIS_COLOR, fontSize: 11 } },
+    series: [
+      {
+        name: "换电柜状态", type: "pie", radius: ["18%", "38%"], center: ["28%", "44%"],
+        label: { color: AXIS_COLOR, fontSize: 10, formatter: "{b} {d}%" },
+        data: DEVICE_CABINET.map(function (d) { return { name: d.name, value: d.value }; }),
+        color: ["#38bdf8", "#fbbf24", "#f87171"],
+        itemStyle: { borderColor: "#0b1830", borderWidth: 2 }
+      },
+      {
+        name: "电池状态", type: "pie", radius: ["18%", "38%"], center: ["74%", "44%"],
+        label: { color: AXIS_COLOR, fontSize: 10, formatter: "{b} {d}%" },
+        data: DEVICE_BATTERY.map(function (d) { return { name: d.name, value: d.value }; }),
+        color: ["#34d399", "#fbbf24", "#f87171"],
+        itemStyle: { borderColor: "#0b1830", borderWidth: 2 }
+      }
+    ]
+  });
+  window.addEventListener("resize", function () { chart.resize(); });
+}
+
+function chartRegion() {
+  var el = document.getElementById("chartRegion");
+  var chart = echarts.init(el);
+  chart.setOption({
+    tooltip: baseTooltip(),
+    grid: { left: 44, right: 30, top: 20, bottom: 24 },
+    xAxis: { type: "value", splitLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
+    yAxis: { type: "category", data: REGIONS.map(function (r) { return r.name; }).reverse(), axisLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
+    series: [{
+      type: "bar", data: REGIONS.map(function (r) { return r.value; }).reverse(), barWidth: 14,
+      itemStyle: { color: { type: "linear", x: 0, y: 0, x2: 1, y2: 0, colorStops: [{ offset: 0, color: "#1d4ed8" }, { offset: 1, color: "#38bdf8" }] }, borderRadius: [0, 6, 6, 0] },
+      label: { show: true, position: "right", color: "#dbeafe", fontSize: 11 }
+    }]
+  });
+  window.addEventListener("resize", function () { chart.resize(); });
+}
+
+function chartFinance() {
+  var el = document.getElementById("chartFinance");
+  var chart = echarts.init(el);
+  chart.setOption({
+    tooltip: { trigger: "item", backgroundColor: "rgba(9,20,42,.9)", borderColor: "rgba(64,128,255,.4)", textStyle: { color: "#e2e8f0", fontSize: 12 }, formatter: "{b}: {c} 万元 ({d}%)" },
+    legend: { bottom: 0, textStyle: { color: AXIS_COLOR, fontSize: 11 } },
+    series: [{
+      type: "pie", radius: ["42%", "66%"], center: ["50%", "46%"],
+      itemStyle: { borderColor: "#0b1830", borderWidth: 2, borderRadius: 4 },
+      label: { color: AXIS_COLOR, fontSize: 10, formatter: "{b} {d}%" },
+      data: FINANCE.map(function (d) { return { name: d.name, value: d.value }; }),
+      color: ["#38bdf8", "#60a5fa", "#34d399", "#fbbf24", "#a78bfa"]
+    }]
+  });
+  window.addEventListener("resize", function () { chart.resize(); });
+}
+
+/* ===== 时钟 ===== */
+function tick() {
+  var d = new Date();
+  var p = function (n) { return (n < 10 ? "0" : "") + n; };
+  document.getElementById("now").textContent = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+}
+setInterval(tick, 1000); tick();
+
+/* ===== 初始化 ===== */
+renderKPIs();
+renderRisks();
+chartTrend();
+chartUser();
+chartDevice();
+chartRegion();
+chartFinance();
+</script>
+</body>
+</html>
