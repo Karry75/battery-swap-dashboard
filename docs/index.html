@@ -238,7 +238,7 @@ Promise.all(tasks).then(function () {
   var cities = D["api_bigscreen_top-cities"] || [];
   chartRegion(cities);
 
-  var fin = D.api_finance_income_trend || [];
+  var fin = D["api_finance_income-trend"] || [];
   chartFinance(fin.map(function (t) { return t.month; }), fin.map(function (t) { return Math.round(t.income / 10000 * 100) / 100; }), fin.map(function (t) { return Math.round(t.profit / 10000 * 100) / 100; }));
 
   var alarm = D["api_dashboard_alarm-stats"] || {};
