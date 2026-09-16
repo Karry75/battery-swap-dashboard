@@ -1,0 +1,168 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "battery": {
+    "offline": 28770,
+    "online": 27485,
+    "total": 56255
+   },
+   "battery_alarm": 4038,
+   "customer_id": 20210518110,
+   "customer_name": "城市出行公司",
+   "exchange": {
+    "offline": 4744,
+    "online": 3419,
+    "total": 8168
+   },
+   "exchange_alarm": 402
+  },
+  {
+   "battery": {
+    "offline": 6,
+    "online": 1,
+    "total": 7
+   },
+   "battery_alarm": 5,
+   "customer_id": 20240603310,
+   "customer_name": "广交集团二运公司",
+   "exchange": {
+    "offline": 3,
+    "online": 0,
+    "total": 3
+   },
+   "exchange_alarm": 2
+  },
+  {
+   "battery": {
+    "offline": 12,
+    "online": 1,
+    "total": 13
+   },
+   "battery_alarm": 5,
+   "customer_id": 20231110210,
+   "customer_name": "数威公司",
+   "exchange": {
+    "offline": 3,
+    "online": 1,
+    "total": 4
+   },
+   "exchange_alarm": 0
+  },
+  {
+   "battery": {
+    "offline": 5,
+    "online": 296,
+    "total": 301
+   },
+   "battery_alarm": 4,
+   "customer_id": 202508061001,
+   "customer_name": "智换换电",
+   "exchange": {
+    "offline": 13,
+    "online": 37,
+    "total": 50
+   },
+   "exchange_alarm": 0
+  },
+  {
+   "battery": {
+    "offline": 312,
+    "online": 0,
+    "total": 312
+   },
+   "battery_alarm": 0,
+   "customer_id": 20250730002,
+   "customer_name": "智联配送",
+   "exchange": {
+    "offline": 49,
+    "online": 0,
+    "total": 49
+   },
+   "exchange_alarm": 8
+  },
+  {
+   "battery": {
+    "offline": 16526,
+    "online": 0,
+    "total": 16526
+   },
+   "battery_alarm": 6,
+   "customer_id": 0,
+   "customer_name": "未分配客户",
+   "exchange": {
+    "offline": 119,
+    "online": 4,
+    "total": 124
+   },
+   "exchange_alarm": 0
+  },
+  {
+   "battery": {
+    "offline": 0,
+    "online": 3,
+    "total": 3
+   },
+   "battery_alarm": 0,
+   "customer_id": 20250617340,
+   "customer_name": "泉州市掌尚智能停车管理有限公司",
+   "exchange": {
+    "offline": 0,
+    "online": 1,
+    "total": 1
+   },
+   "exchange_alarm": 0
+  },
+  {
+   "battery": {
+    "offline": 7,
+    "online": 31,
+    "total": 38
+   },
+   "battery_alarm": 4,
+   "customer_id": 20241217320,
+   "customer_name": "济南和弘区域能源有限公司",
+   "exchange": {
+    "offline": 13,
+    "online": 2,
+    "total": 15
+   },
+   "exchange_alarm": 12
+  },
+  {
+   "battery": {
+    "offline": 13,
+    "online": 7,
+    "total": 20
+   },
+   "battery_alarm": 10,
+   "customer_id": 20241223330,
+   "customer_name": "浙江安驹科技有限公司",
+   "exchange": {
+    "offline": 44,
+    "online": 0,
+    "total": 44
+   },
+   "exchange_alarm": 1
+  },
+  {
+   "battery": {
+    "offline": 132,
+    "online": 1473,
+    "total": 1605
+   },
+   "battery_alarm": 1,
+   "customer_id": 20250807001,
+   "customer_name": "葫芦换电",
+   "exchange": {
+    "offline": 25,
+    "online": 145,
+    "total": 170
+   },
+   "exchange_alarm": 0
+  }
+ ]
+}

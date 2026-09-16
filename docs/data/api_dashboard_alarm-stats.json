@@ -1,0 +1,20 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "battery": {
+   "break_charge": 431,
+   "hungry": 3018,
+   "total": 4073,
+   "unrecognized": 624
+  },
+  "exchange": {
+   "flooded": 67,
+   "slot": 317,
+   "smoke": 41,
+   "total": 425
+  }
+ }
+}

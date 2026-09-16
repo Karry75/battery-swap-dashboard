@@ -1,0 +1,24 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "battery": {
+   "fault": 4654,
+   "online": 29307,
+   "total": 75080
+  },
+  "bike": {
+   "online": 2,
+   "total": 169617
+  },
+  "exchange": {
+   "online": 3609,
+   "total": 8628
+  },
+  "site": {
+   "total": 11138
+  }
+ }
+}

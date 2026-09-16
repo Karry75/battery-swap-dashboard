@@ -1,0 +1,104 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "active_users_30d": 7994,
+   "city": "浙江省杭州市",
+   "exchange_30d": 125193,
+   "exchange_count": 1223,
+   "mileage_30d": 2756642220.0,
+   "users": 54418
+  },
+  {
+   "active_users_30d": 14442,
+   "city": "广东省深圳市",
+   "exchange_30d": 125139,
+   "exchange_count": 2196,
+   "mileage_30d": 2676752734.0,
+   "users": 59564
+  },
+  {
+   "active_users_30d": 620,
+   "city": "天津市天津城区",
+   "exchange_30d": 7949,
+   "exchange_count": 127,
+   "mileage_30d": 181307631.0,
+   "users": 2289
+  },
+  {
+   "active_users_30d": 351,
+   "city": "广西壮族自治区桂林市",
+   "exchange_30d": 3759,
+   "exchange_count": 406,
+   "mileage_30d": 4800125.0,
+   "users": 5482
+  },
+  {
+   "active_users_30d": 79,
+   "city": "江苏省苏州市",
+   "exchange_30d": 1488,
+   "exchange_count": 43,
+   "mileage_30d": 30008972.0,
+   "users": 439
+  },
+  {
+   "active_users_30d": 20,
+   "city": "浙江省宁波市",
+   "exchange_30d": 139,
+   "exchange_count": 5,
+   "mileage_30d": 3427708.0,
+   "users": 1286
+  },
+  {
+   "active_users_30d": 13,
+   "city": "河南省安阳市",
+   "exchange_30d": 114,
+   "exchange_count": 2,
+   "mileage_30d": 2417254.0,
+   "users": 41
+  },
+  {
+   "active_users_30d": 6,
+   "city": "山东省济南市",
+   "exchange_30d": 75,
+   "exchange_count": 7,
+   "mileage_30d": 1926125.0,
+   "users": 87
+  },
+  {
+   "active_users_30d": 4,
+   "city": "江西省南昌市",
+   "exchange_30d": 21,
+   "exchange_count": 5,
+   "mileage_30d": 761865.0,
+   "users": 81
+  },
+  {
+   "active_users_30d": 1,
+   "city": "北京市北京城区",
+   "exchange_30d": 4,
+   "exchange_count": 20,
+   "mileage_30d": 0.0,
+   "users": 139
+  },
+  {
+   "active_users_30d": 1,
+   "city": "江苏省南通市",
+   "exchange_30d": 2,
+   "exchange_count": 38,
+   "mileage_30d": 51315.0,
+   "users": 104
+  },
+  {
+   "active_users_30d": 1,
+   "city": "浙江省金华市",
+   "exchange_30d": 2,
+   "exchange_count": 28,
+   "mileage_30d": 0.0,
+   "users": 233
+  }
+ ]
+}

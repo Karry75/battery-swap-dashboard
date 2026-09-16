@@ -1,0 +1,2089 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "items": [
+   {
+    "active_users": 5660,
+    "agreements": 40550,
+    "city": "未知",
+    "exchange_30d": 46750,
+    "users": 215257
+   },
+   {
+    "active_users": 11110,
+    "agreements": 31929,
+    "city": "深圳市",
+    "exchange_30d": 103453,
+    "users": 59564
+   },
+   {
+    "active_users": 6077,
+    "agreements": 42193,
+    "city": "杭州市",
+    "exchange_30d": 100217,
+    "users": 54418
+   },
+   {
+    "active_users": 139,
+    "agreements": 4656,
+    "city": "桂林市",
+    "exchange_30d": 2370,
+    "users": 5482
+   },
+   {
+    "active_users": 5,
+    "agreements": 193,
+    "city": "天津市",
+    "exchange_30d": 2606,
+    "users": 2289
+   },
+   {
+    "active_users": 11,
+    "agreements": 799,
+    "city": "宁波市",
+    "exchange_30d": 97,
+    "users": 1286
+   },
+   {
+    "active_users": 394,
+    "agreements": 1456,
+    "city": "天津城区",
+    "exchange_30d": 4449,
+    "users": 1113
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "贵阳市",
+    "exchange_30d": 0,
+    "users": 798
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "成都市",
+    "exchange_30d": 0,
+    "users": 793
+   },
+   {
+    "active_users": 1,
+    "agreements": 2,
+    "city": "南宁市",
+    "exchange_30d": 3,
+    "users": 607
+   },
+   {
+    "active_users": 0,
+    "agreements": 46,
+    "city": "广州市",
+    "exchange_30d": 0,
+    "users": 491
+   },
+   {
+    "active_users": 78,
+    "agreements": 335,
+    "city": "苏州市",
+    "exchange_30d": 1434,
+    "users": 439
+   },
+   {
+    "active_users": 1,
+    "agreements": 5,
+    "city": "东莞市",
+    "exchange_30d": 2,
+    "users": 427
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "长沙市",
+    "exchange_30d": 0,
+    "users": 400
+   },
+   {
+    "active_users": 1,
+    "agreements": 75,
+    "city": "金华市",
+    "exchange_30d": 4,
+    "users": 233
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "重庆市",
+    "exchange_30d": 4,
+    "users": 225
+   },
+   {
+    "active_users": 0,
+    "agreements": 6,
+    "city": "上海市",
+    "exchange_30d": 0,
+    "users": 194
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "遵义市",
+    "exchange_30d": 0,
+    "users": 194
+   },
+   {
+    "active_users": 0,
+    "agreements": 7,
+    "city": "嘉兴市",
+    "exchange_30d": 0,
+    "users": 176
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "衡阳市",
+    "exchange_30d": 0,
+    "users": 167
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "合肥市",
+    "exchange_30d": 0,
+    "users": 143
+   },
+   {
+    "active_users": 0,
+    "agreements": 2,
+    "city": "北京市",
+    "exchange_30d": 0,
+    "users": 139
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "惠州市",
+    "exchange_30d": 0,
+    "users": 133
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "佛山市",
+    "exchange_30d": 1,
+    "users": 118
+   },
+   {
+    "active_users": 1,
+    "agreements": 96,
+    "city": "南通市",
+    "exchange_30d": 2,
+    "users": 104
+   },
+   {
+    "active_users": 4,
+    "agreements": 0,
+    "city": "香港特别行政区",
+    "exchange_30d": 15,
+    "users": 94
+   },
+   {
+    "active_users": 5,
+    "agreements": 26,
+    "city": "济南市",
+    "exchange_30d": 73,
+    "users": 87
+   },
+   {
+    "active_users": 4,
+    "agreements": 14,
+    "city": "南昌市",
+    "exchange_30d": 21,
+    "users": 81
+   },
+   {
+    "active_users": 0,
+    "agreements": 14,
+    "city": "福州市",
+    "exchange_30d": 0,
+    "users": 78
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "郑州市",
+    "exchange_30d": 0,
+    "users": 69
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "武汉市",
+    "exchange_30d": 0,
+    "users": 68
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "遂宁市",
+    "exchange_30d": 0,
+    "users": 65
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "温州市",
+    "exchange_30d": 0,
+    "users": 57
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "绍兴市",
+    "exchange_30d": 0,
+    "users": 54
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "西安市",
+    "exchange_30d": 0,
+    "users": 52
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "南京市",
+    "exchange_30d": 0,
+    "users": 49
+   },
+   {
+    "active_users": 0,
+    "agreements": 9,
+    "city": "泉州市",
+    "exchange_30d": 0,
+    "users": 45
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "沈阳市",
+    "exchange_30d": 0,
+    "users": 45
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "徐州市",
+    "exchange_30d": 0,
+    "users": 44
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "中山市",
+    "exchange_30d": 0,
+    "users": 43
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "无锡市",
+    "exchange_30d": 0,
+    "users": 42
+   },
+   {
+    "active_users": 12,
+    "agreements": 50,
+    "city": "安阳市",
+    "exchange_30d": 113,
+    "users": 41
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "日照市",
+    "exchange_30d": 0,
+    "users": 40
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "阳江市",
+    "exchange_30d": 0,
+    "users": 39
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "昆明市",
+    "exchange_30d": 0,
+    "users": 39
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "厦门市",
+    "exchange_30d": 0,
+    "users": 39
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "毕节市",
+    "exchange_30d": 0,
+    "users": 34
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "赣州市",
+    "exchange_30d": 0,
+    "users": 31
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "汕头市",
+    "exchange_30d": 4,
+    "users": 30
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "青岛市",
+    "exchange_30d": 0,
+    "users": 29
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "台州市",
+    "exchange_30d": 0,
+    "users": 28
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "黔南布依族苗族自治州",
+    "exchange_30d": 0,
+    "users": 27
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "江门市",
+    "exchange_30d": 0,
+    "users": 26
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "茂名市",
+    "exchange_30d": 0,
+    "users": 26
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "太原市",
+    "exchange_30d": 0,
+    "users": 25
+   },
+   {
+    "active_users": 0,
+    "agreements": 2,
+    "city": "洛阳市",
+    "exchange_30d": 0,
+    "users": 24
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "湖州市",
+    "exchange_30d": 0,
+    "users": 24
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宜宾市",
+    "exchange_30d": 0,
+    "users": 22
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "邯郸市",
+    "exchange_30d": 0,
+    "users": 21
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "石家庄市",
+    "exchange_30d": 0,
+    "users": 21
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "滁州市",
+    "exchange_30d": 0,
+    "users": 21
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "哈尔滨市",
+    "exchange_30d": 0,
+    "users": 20
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "喀什地区",
+    "exchange_30d": 0,
+    "users": 19
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "长春市",
+    "exchange_30d": 0,
+    "users": 18
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "汕尾市",
+    "exchange_30d": 0,
+    "users": 18
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "烟台市",
+    "exchange_30d": 0,
+    "users": 18
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "常州市",
+    "exchange_30d": 0,
+    "users": 18
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "玉林市",
+    "exchange_30d": 8,
+    "users": 17
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "揭阳市",
+    "exchange_30d": 0,
+    "users": 17
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "郴州市",
+    "exchange_30d": 0,
+    "users": 17
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "保定市",
+    "exchange_30d": 0,
+    "users": 17
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "吉安市",
+    "exchange_30d": 0,
+    "users": 16
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "廊坊市",
+    "exchange_30d": 0,
+    "users": 16
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "珠海市",
+    "exchange_30d": 0,
+    "users": 16
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "沧州市",
+    "exchange_30d": 0,
+    "users": 16
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "清远市",
+    "exchange_30d": 3,
+    "users": 15
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "湛江市",
+    "exchange_30d": 0,
+    "users": 15
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "兰州市",
+    "exchange_30d": 0,
+    "users": 14
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "舟山市",
+    "exchange_30d": 0,
+    "users": 14
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "乌鲁木齐市",
+    "exchange_30d": 0,
+    "users": 13
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "达州市",
+    "exchange_30d": 0,
+    "users": 13
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "海口市",
+    "exchange_30d": 0,
+    "users": 12
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "肇庆市",
+    "exchange_30d": 0,
+    "users": 12
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "大连市",
+    "exchange_30d": 0,
+    "users": 11
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宁德市",
+    "exchange_30d": 0,
+    "users": 11
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "潍坊市",
+    "exchange_30d": 0,
+    "users": 11
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "盐城市",
+    "exchange_30d": 0,
+    "users": 11
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "安庆市",
+    "exchange_30d": 0,
+    "users": 11
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "河池市",
+    "exchange_30d": 0,
+    "users": 11
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "安顺市",
+    "exchange_30d": 0,
+    "users": 11
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "衢州市",
+    "exchange_30d": 1,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "菏泽市",
+    "exchange_30d": 0,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "白山市",
+    "exchange_30d": 0,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "周口市",
+    "exchange_30d": 0,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "呼和浩特市",
+    "exchange_30d": 0,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "平顶山市",
+    "exchange_30d": 0,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "柳州市",
+    "exchange_30d": 0,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "上饶市",
+    "exchange_30d": 0,
+    "users": 10
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "阜阳市",
+    "exchange_30d": 0,
+    "users": 9
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "眉山市",
+    "exchange_30d": 0,
+    "users": 9
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "黔西南布依族苗族自治州",
+    "exchange_30d": 0,
+    "users": 9
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "德阳市",
+    "exchange_30d": 0,
+    "users": 9
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "梅州市",
+    "exchange_30d": 0,
+    "users": 9
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "南阳市",
+    "exchange_30d": 0,
+    "users": 9
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "绵阳市",
+    "exchange_30d": 0,
+    "users": 9
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "钦州市",
+    "exchange_30d": 0,
+    "users": 8
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "九江市",
+    "exchange_30d": 0,
+    "users": 8
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "河源市",
+    "exchange_30d": 0,
+    "users": 8
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "岳阳市",
+    "exchange_30d": 0,
+    "users": 8
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "聊城市",
+    "exchange_30d": 0,
+    "users": 8
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "贵港市",
+    "exchange_30d": 0,
+    "users": 8
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "德州市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "扬州市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "湘潭市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "潮州市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "资阳市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "晋中市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "济宁市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "黔东南苗族侗族自治州",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "信阳市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "锦州市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "临沂市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "海南省",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "芜湖市",
+    "exchange_30d": 0,
+    "users": 7
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "邵阳市",
+    "exchange_30d": 6,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "六盘水市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "抚州市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "咸阳市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "驻马店市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "恩施土家族苗族自治州",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "莆田市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "三亚市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宿迁市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "北海市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "湘西土家族苗族自治州",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "榆林市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "枣庄市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "商丘市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "韶关市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "延边朝鲜族自治州",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "张家口市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "许昌市",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "湖北省",
+    "exchange_30d": 0,
+    "users": 6
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "内江市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宣城市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "丽水市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "阳泉市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "淮南市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "渭南市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "晋城市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "荆州市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "包头市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "曲靖市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "连云港市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "怀化市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "六安市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "威海市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "赤峰市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "贺州市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "衡水市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "黄冈市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "铜陵市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 10,
+    "city": "重庆城区",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宜春市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "龙岩市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "通化市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "来宾市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "秦皇岛市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "襄阳市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "运城市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "铜仁市",
+    "exchange_30d": 0,
+    "users": 5
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "淮安市",
+    "exchange_30d": 3,
+    "users": 4
+   },
+   {
+    "active_users": 1,
+    "agreements": 0,
+    "city": "鄂尔多斯市",
+    "exchange_30d": 1,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "黄石市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "朝阳市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "泰安市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "广安市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "漳州市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "黄山市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "凉山彝族自治州",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "乐山市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "唐山市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "大理白族自治州",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "东营市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "镇江市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "孝感市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "银川市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "濮阳市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "葫芦岛市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "自贡市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "长治市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "泸州市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "永州市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "新乡市",
+    "exchange_30d": 0,
+    "users": 4
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "昭通市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "淄博市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "百色市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "忻州市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "普洱市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "庆阳市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宝鸡市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "亳州市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "萍乡市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "楚雄彝族自治州",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "景德镇市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宜昌市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "丽江市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "益阳市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "梧州市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "崇左市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "平凉市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "云浮市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "株洲市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "吉林市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "泰州市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "防城港市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "鞍山市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "焦作市",
+    "exchange_30d": 0,
+    "users": 3
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "西宁市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "三明市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "随州市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "中卫市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "南平市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "吴忠市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "牡丹江市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "绥化市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "临汾市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "德宏傣族景颇族自治州",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "吕梁市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "承德市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "十堰市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "盘锦市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "鹰潭市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "澳门特别行政区",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "西双版纳傣族自治州",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "伊犁哈萨克自治州",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "新疆维吾尔自治区",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "阿勒泰地区",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "雅安市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "马鞍山市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "本溪市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "漯河市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "和田地区",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "乌海市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "广元市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "开封市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "阿克苏地区",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "红河哈尼族彝族自治州",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "宿州市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "新余市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "酒泉市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "淮北市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "四平市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "邢台市",
+    "exchange_30d": 0,
+    "users": 2
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "巴音郭楞蒙古自治州",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "玉溪市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "克拉玛依市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "池州市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "铁岭市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "昌吉回族自治州",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "双鸭山市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "大庆市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "白城市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "三门峡市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "张掖市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "常德市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "陇南市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "鹤岗市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "鄂州市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "阜新市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "鹤壁市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "哈密市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "荆门市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "七台河市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "石嘴山市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 1,
+    "city": "北京城区",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "塔城地区",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "台湾省",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "佳木斯市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "呼伦贝尔市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "滨州市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "山南市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "大同市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "南充市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "营口市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "齐齐哈尔市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "娄底市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "博尔塔拉蒙古自治州",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "乌兰察布市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "通辽市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "拉萨市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "汉中市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "攀枝花市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "巴彦淖尔市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "阿拉善盟",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "鸡西市",
+    "exchange_30d": 0,
+    "users": 1
+   },
+   {
+    "active_users": 0,
+    "agreements": 0,
+    "city": "海东市",
+    "exchange_30d": 0,
+    "users": 1
+   }
+  ]
+ }
+}

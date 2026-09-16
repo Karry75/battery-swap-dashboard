@@ -1,0 +1,92 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "active_users": 7994,
+   "city": "浙江省杭州市",
+   "exchange_count": 125193,
+   "fee": 23127509.59,
+   "profit_fee": 23033311.0
+  },
+  {
+   "active_users": 14442,
+   "city": "广东省深圳市",
+   "exchange_count": 125139,
+   "fee": 27425551.82,
+   "profit_fee": 27740013.0
+  },
+  {
+   "active_users": 620,
+   "city": "天津市天津城区",
+   "exchange_count": 7949,
+   "fee": 1592896.9,
+   "profit_fee": 1407445.0
+  },
+  {
+   "active_users": 351,
+   "city": "广西壮族自治区桂林市",
+   "exchange_count": 3759,
+   "fee": 747241.4,
+   "profit_fee": 671723.0
+  },
+  {
+   "active_users": 79,
+   "city": "江苏省苏州市",
+   "exchange_count": 1488,
+   "fee": 181551.2,
+   "profit_fee": 154444.0
+  },
+  {
+   "active_users": 20,
+   "city": "浙江省宁波市",
+   "exchange_count": 139,
+   "fee": 30829.5,
+   "profit_fee": 29422.0
+  },
+  {
+   "active_users": 13,
+   "city": "河南省安阳市",
+   "exchange_count": 114,
+   "fee": 6163.0,
+   "profit_fee": 5889.0
+  },
+  {
+   "active_users": 6,
+   "city": "山东省济南市",
+   "exchange_count": 75,
+   "fee": 24514.5,
+   "profit_fee": 19826.0
+  },
+  {
+   "active_users": 4,
+   "city": "江西省南昌市",
+   "exchange_count": 21,
+   "fee": 3619.2,
+   "profit_fee": 3404.0
+  },
+  {
+   "active_users": 1,
+   "city": "北京市北京城区",
+   "exchange_count": 4,
+   "fee": 0.0,
+   "profit_fee": 0.0
+  },
+  {
+   "active_users": 1,
+   "city": "江苏省南通市",
+   "exchange_count": 2,
+   "fee": 315.9,
+   "profit_fee": 315.0
+  },
+  {
+   "active_users": 1,
+   "city": "浙江省金华市",
+   "exchange_count": 2,
+   "fee": 236.0,
+   "profit_fee": 236.0
+  }
+ ]
+}

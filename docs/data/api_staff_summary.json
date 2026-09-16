@@ -1,0 +1,91 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "staff_rank": [
+   {
+    "agreement_count": 22288,
+    "name": "帅冠"
+   },
+   {
+    "agreement_count": 19749,
+    "name": "李媚"
+   },
+   {
+    "agreement_count": 11547,
+    "name": "朱永建"
+   },
+   {
+    "agreement_count": 6717,
+    "name": "张俊隆"
+   },
+   {
+    "agreement_count": 4953,
+    "name": "冯选钊"
+   },
+   {
+    "agreement_count": 4815,
+    "name": "罗卫"
+   },
+   {
+    "agreement_count": 4346,
+    "name": "杜永星"
+   },
+   {
+    "agreement_count": 3917,
+    "name": "易生斌-阳朔"
+   },
+   {
+    "agreement_count": 3774,
+    "name": "郭超龙"
+   },
+   {
+    "agreement_count": 3513,
+    "name": "黄燕锋"
+   },
+   {
+    "agreement_count": 3022,
+    "name": "冯亮"
+   },
+   {
+    "agreement_count": 2737,
+    "name": "罗文广"
+   },
+   {
+    "agreement_count": 2614,
+    "name": "叶建伟"
+   },
+   {
+    "agreement_count": 1994,
+    "name": "李艳玲"
+   },
+   {
+    "agreement_count": 1959,
+    "name": "王宝贺"
+   },
+   {
+    "agreement_count": 1834,
+    "name": "陈翔"
+   },
+   {
+    "agreement_count": 1699,
+    "name": "王延召"
+   },
+   {
+    "agreement_count": 1491,
+    "name": "谭托福"
+   },
+   {
+    "agreement_count": 1455,
+    "name": "叶嘉锨"
+   },
+   {
+    "agreement_count": 1322,
+    "name": "李钗"
+   }
+  ],
+  "total_staff": 184
+ }
+}

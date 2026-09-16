@@ -1,0 +1,22 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "devices": {
+   "battery_online": 29292,
+   "battery_total": 75080,
+   "bike_total": 169616,
+   "exchange_online": 3609,
+   "exchange_total": 8628,
+   "site_total": 11138
+  },
+  "today_exchange": 5703,
+  "today_fee": 161522.13,
+  "today_new_users": 128,
+  "today_users": 4357,
+  "total_users": 347993,
+  "yesterday_exchange": 9000
+ }
+}

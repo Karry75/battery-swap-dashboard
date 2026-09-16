@@ -1,0 +1,47 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "items": [
+   {
+    "count": 21651,
+    "key": "using",
+    "name": "生效中",
+    "percent": 17.48
+   },
+   {
+    "count": 1369,
+    "key": "arrears",
+    "name": "欠费",
+    "percent": 1.11
+   },
+   {
+    "count": 2180,
+    "key": "paused",
+    "name": "已暂停",
+    "percent": 1.76
+   },
+   {
+    "count": 773,
+    "key": "unsubscribing",
+    "name": "退订中",
+    "percent": 0.62
+   },
+   {
+    "count": 27,
+    "key": "pending",
+    "name": "待生效",
+    "percent": 0.02
+   },
+   {
+    "count": 97883,
+    "key": "stop",
+    "name": "已终止",
+    "percent": 79.01
+   }
+  ],
+  "total": 123883
+ }
+}

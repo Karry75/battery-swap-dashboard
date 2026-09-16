@@ -1,0 +1,14 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "site_allday": 5281,
+  "site_closed": 2022,
+  "site_meter": 1986,
+  "site_open": 9116,
+  "site_total": 11138,
+  "work_order_doing": 22
+ }
+}

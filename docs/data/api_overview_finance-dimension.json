@@ -1,0 +1,99 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "expense": 10605280.0,
+   "expense_count": 71677,
+   "income": 26196341.74,
+   "month": "2025-09",
+   "profit": 26142801.0
+  },
+  {
+   "expense": 79909712.0,
+   "expense_count": 250916,
+   "income": 83141073.3,
+   "month": "2025-10",
+   "profit": 82939552.0
+  },
+  {
+   "expense": 76063279.0,
+   "expense_count": 271798,
+   "income": 85126731.87,
+   "month": "2025-11",
+   "profit": 84942592.0
+  },
+  {
+   "expense": 74482575.0,
+   "expense_count": 282920,
+   "income": 86553847.1,
+   "month": "2025-12",
+   "profit": 86375556.0
+  },
+  {
+   "expense": 71336470.0,
+   "expense_count": 267711,
+   "income": 78793091.62,
+   "month": "2026-01",
+   "profit": 78609238.0
+  },
+  {
+   "expense": 59514431.0,
+   "expense_count": 152292,
+   "income": 45936102.12,
+   "month": "2026-02",
+   "profit": 45723096.0
+  },
+  {
+   "expense": 70497300.0,
+   "expense_count": 264290,
+   "income": 78051963.05,
+   "month": "2026-03",
+   "profit": 77848938.0
+  },
+  {
+   "expense": 73349334.0,
+   "expense_count": 236806,
+   "income": 72825807.31,
+   "month": "2026-04",
+   "profit": 72619818.0
+  },
+  {
+   "expense": 65611413.0,
+   "expense_count": 233156,
+   "income": 72033439.05,
+   "month": "2026-05",
+   "profit": 71875845.0
+  },
+  {
+   "expense": 62708954.0,
+   "expense_count": 216569,
+   "income": 66478370.92,
+   "month": "2026-06",
+   "profit": 66337343.0
+  },
+  {
+   "expense": 58211771.0,
+   "expense_count": 217788,
+   "income": 66098171.34,
+   "month": "2026-07",
+   "profit": 65627182.0
+  },
+  {
+   "expense": 60543682.0,
+   "expense_count": 210561,
+   "income": 63444911.55,
+   "month": "2026-08",
+   "profit": 63307763.0
+  },
+  {
+   "expense": 43794924.0,
+   "expense_count": 105926,
+   "income": 24981181.4,
+   "month": "2026-09",
+   "profit": 24963902.0
+  }
+ ]
+}

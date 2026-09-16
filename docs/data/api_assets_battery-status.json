@@ -1,0 +1,20 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "count": 51458,
+   "status": "none"
+  },
+  {
+   "count": 23621,
+   "status": "using"
+  },
+  {
+   "count": 1,
+   "status": "scrap"
+  }
+ ]
+}

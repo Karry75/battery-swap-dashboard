@@ -1,0 +1,23 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "battery_total": 75080,
+  "city": "全部城市",
+  "exchanges": {
+   "offline": 5013,
+   "online": 3609,
+   "total": 8628
+  },
+  "month_income": 24981337.1,
+  "month_target": 71533411.34,
+  "month_target_rate": 34.9,
+  "today_exchange": 5708,
+  "today_fee": 161522.6,
+  "today_new_users": 128,
+  "today_users": 4359,
+  "total_users": 347993
+ }
+}

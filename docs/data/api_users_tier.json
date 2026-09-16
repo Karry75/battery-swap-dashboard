@@ -1,0 +1,30 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "days": 30,
+  "frequency": {
+   "high": 1864,
+   "low": 16646,
+   "medium": 5014
+  },
+  "threshold": {
+   "frequency": {
+    "high": 30,
+    "medium": 10
+   },
+   "value": {
+    "high_fen": 5000,
+    "medium_fen": 1000
+   }
+  },
+  "total_users": 23524,
+  "value": {
+   "high": 2617,
+   "low": 7750,
+   "medium": 10830
+  }
+ }
+}

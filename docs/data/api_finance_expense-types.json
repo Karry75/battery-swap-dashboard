@@ -1,0 +1,28 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "count": 403,
+   "fee": 29147138.0,
+   "fee_type": "withdraw"
+  },
+  {
+   "count": 1581,
+   "fee": 20584346.0,
+   "fee_type": "costOut"
+  },
+  {
+   "count": 160520,
+   "fee": 7991929.0,
+   "fee_type": "profitOut"
+  },
+  {
+   "count": 36967,
+   "fee": 1164492.0,
+   "fee_type": "manageOut"
+  }
+ ]
+}

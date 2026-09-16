@@ -1,0 +1,28 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "battery": {
+   "offline": 45788,
+   "online": 29292,
+   "total": 75080
+  },
+  "bike": {
+   "offline": 169614,
+   "online": 2,
+   "total": 169616
+  },
+  "exchange": {
+   "offline": 5013,
+   "online": 3609,
+   "total": 8628
+  },
+  "site": {
+   "closed": 2022,
+   "open": 9116,
+   "total": 11138
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "income": 28447988.06,
+   "month": "2026-03",
+   "order_count": 110805,
+   "profit": 28379127.0,
+   "service_fee": 41918563.0
+  },
+  {
+   "income": 72825807.31,
+   "month": "2026-04",
+   "order_count": 287760,
+   "profit": 72619818.0,
+   "service_fee": 108333016.0
+  },
+  {
+   "income": 72033439.05,
+   "month": "2026-05",
+   "order_count": 284738,
+   "profit": 71875845.0,
+   "service_fee": 108241133.0
+  },
+  {
+   "income": 66478370.92,
+   "month": "2026-06",
+   "order_count": 261962,
+   "profit": 66337343.0,
+   "service_fee": 98580019.0
+  },
+  {
+   "income": 66098171.34,
+   "month": "2026-07",
+   "order_count": 264488,
+   "profit": 65627182.0,
+   "service_fee": 103845612.0
+  },
+  {
+   "income": 63444911.55,
+   "month": "2026-08",
+   "order_count": 269422,
+   "profit": 63307763.0,
+   "service_fee": 101918288.0
+  },
+  {
+   "income": 24981325.4,
+   "month": "2026-09",
+   "order_count": 138569,
+   "profit": 24963902.0,
+   "service_fee": 59610276.0
+  }
+ ]
+}

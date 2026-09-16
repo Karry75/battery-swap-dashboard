@@ -1,0 +1,86 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": [
+  {
+   "active_users": 20131,
+   "exchange_count": 87613,
+   "fee": 26195202.94,
+   "month": "2025-09"
+  },
+  {
+   "active_users": 25665,
+   "exchange_count": 299830,
+   "fee": 83141073.3,
+   "month": "2025-10"
+  },
+  {
+   "active_users": 25895,
+   "exchange_count": 318472,
+   "fee": 85126731.87,
+   "month": "2025-11"
+  },
+  {
+   "active_users": 25414,
+   "exchange_count": 329537,
+   "fee": 86553847.1,
+   "month": "2025-12"
+  },
+  {
+   "active_users": 24540,
+   "exchange_count": 303339,
+   "fee": 78793091.62,
+   "month": "2026-01"
+  },
+  {
+   "active_users": 22110,
+   "exchange_count": 179839,
+   "fee": 45936102.12,
+   "month": "2026-02"
+  },
+  {
+   "active_users": 24650,
+   "exchange_count": 301264,
+   "fee": 78051963.05,
+   "month": "2026-03"
+  },
+  {
+   "active_users": 24646,
+   "exchange_count": 287760,
+   "fee": 72825807.31,
+   "month": "2026-04"
+  },
+  {
+   "active_users": 24392,
+   "exchange_count": 284738,
+   "fee": 72033439.05,
+   "month": "2026-05"
+  },
+  {
+   "active_users": 23527,
+   "exchange_count": 261962,
+   "fee": 66478370.92,
+   "month": "2026-06"
+  },
+  {
+   "active_users": 23404,
+   "exchange_count": 264488,
+   "fee": 66098171.34,
+   "month": "2026-07"
+  },
+  {
+   "active_users": 23237,
+   "exchange_count": 269422,
+   "fee": 63444911.55,
+   "month": "2026-08"
+  },
+  {
+   "active_users": 21167,
+   "exchange_count": 138570,
+   "fee": 24981337.1,
+   "month": "2026-09"
+  }
+ ]
+}

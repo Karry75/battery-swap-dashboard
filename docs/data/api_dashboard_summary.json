@@ -1,0 +1,38 @@
+{
+ "meta": {
+  "generated_at": "2026-09-16 17:51:49",
+  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
+ },
+ "data": {
+  "alarm": {
+   "battery": {
+    "break_charge": 431,
+    "hungry": 3018,
+    "total": 4074,
+    "unrecognized": 625
+   },
+   "exchange": {
+    "flooded": 67,
+    "slot": 317,
+    "smoke": 41,
+    "total": 425
+   }
+  },
+  "customers": {
+   "enabled": 11,
+   "total": 11
+  },
+  "device": {
+   "battery": {
+    "offline": 45784,
+    "online": 29296,
+    "total": 75080
+   },
+   "exchange": {
+    "offline": 5013,
+    "online": 3609,
+    "total": 8628
+   }
+  }
+ }
+}
