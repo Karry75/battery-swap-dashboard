@@ -3,359 +3,598 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>换电运营平台 · 真实数据看板</title>
+<title>换电运营平台 · 完整看板</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
   :root {
-    --bg-0: #070f1d;
-    --bg-1: #0b1830;
-    --panel: rgba(16, 35, 68, .72);
-    --panel-border: rgba(64, 128, 255, .22);
-    --accent: #38bdf8;
-    --accent-2: #2563eb;
-    --green: #34d399;
-    --orange: #fbbf24;
-    --red: #f87171;
-    --text: #e2e8f0;
-    --text-dim: #8aa3c4;
+    --bg-0: #070f1d; --bg-1: #0b1830; --panel: rgba(16,35,68,.72);
+    --panel-border: rgba(64,128,255,.22); --accent: #38bdf8; --accent-2: #2563eb;
+    --green: #34d399; --orange: #fbbf24; --red: #f87171; --text: #e2e8f0; --text-dim: #8aa3c4;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
     font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
-    color: var(--text);
-    background:
-      radial-gradient(1200px 600px at 15% -10%, rgba(37, 99, 235, .28), transparent 60%),
-      radial-gradient(1000px 500px at 100% 0%, rgba(56, 189, 248, .16), transparent 55%),
+    color: var(--text); background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(37,99,235,.28), transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, rgba(56,189,248,.16), transparent 55%),
       linear-gradient(160deg, var(--bg-0), var(--bg-1) 55%, #0a1428);
-    background-attachment: fixed;
-    min-height: 100vh;
-    overflow-x: hidden;
+    background-attachment: fixed; min-height: 100vh; overflow-x: hidden;
   }
-
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-    padding: 16px 22px 10px;
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 224px; flex: none; background: rgba(7,15,29,.82); border-right: 1px solid var(--panel-border);
+    padding: 14px 10px; position: sticky; top: 0; height: 100vh; overflow-y: auto;
   }
-  .brand { display: flex; align-items: baseline; gap: 12px; }
-  .brand h1 {
-    font-size: 24px; font-weight: 700; letter-spacing: 2px;
-    background: linear-gradient(90deg, #7dd3fc, #60a5fa, #38bdf8);
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  .side-brand { padding: 4px 10px 14px; }
+  .side-brand h1 { font-size: 17px; font-weight: 700; letter-spacing: 1px; background: linear-gradient(90deg,#7dd3fc,#60a5fa,#38bdf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .side-brand .sub { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); }
+  .menu-group { margin-top: 4px; }
+  .menu-group-title { font-size: 11px; color: #5b739a; padding: 10px 10px 4px; letter-spacing: 2px; }
+  .menu-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px; margin: 1px 0;
+    border-radius: 8px; cursor: pointer; font-size: 13px; color: #b7c7e2; transition: all .15s;
   }
-  .brand .sub { font-size: 12px; letter-spacing: 4px; color: var(--text-dim); }
+  .menu-item:hover { background: rgba(56,189,248,.1); color: #e2e8f0; }
+  .menu-item.active { background: linear-gradient(90deg, rgba(37,99,235,.35), rgba(56,189,248,.12)); color: #7dd3fc; border-left: 3px solid var(--accent); }
+  .menu-item .icon { font-size: 14px; width: 18px; text-align: center; }
+  .main { flex: 1; min-width: 0; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 16px 22px 10px; }
   .top-meta { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--text-dim); }
   .top-meta .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 1.6s infinite; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
   .top-meta .badge { border: 1px solid var(--panel-border); background: rgba(56,189,248,.12); color: #7dd3fc; padding: 3px 10px; border-radius: 20px; }
-
-  .container { padding: 8px 22px 26px; max-width: 1760px; margin: 0 auto; }
-
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px; }
-  .kpi {
-    position: relative; overflow: hidden;
-    background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px;
-    padding: 16px 18px; backdrop-filter: blur(6px);
-  }
+  .page-title { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #dbeafe; }
+  .page-title .sub { font-size: 12px; color: var(--text-dim); font-weight: 400; margin-left: 10px; }
+  .container { padding: 8px 22px 26px; max-width: 1760px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .kpi { position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px; padding: 14px 16px; }
   .kpi::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
-  .kpi.k2::before { background: var(--accent-2); }
-  .kpi.k3::before { background: var(--green); }
-  .kpi.k4::before { background: var(--orange); }
-  .kpi.k5::before { background: #a78bfa; }
-  .kpi.k6::before { background: #f472b6; }
-  .kpi .label { font-size: 13px; color: var(--text-dim); }
-  .kpi .value { font-size: 30px; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
-  .kpi .value .unit { font-size: 14px; font-weight: 400; color: var(--text-dim); margin-left: 4px; }
-  .kpi .trend { font-size: 12px; margin-top: 8px; color: var(--text-dim); }
-  .kpi .trend .up { color: var(--green); }
-  .kpi .trend .down { color: var(--red); }
-
-  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; margin-bottom: 14px; }
-  .panel {
-    background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px;
-    padding: 14px 16px; backdrop-filter: blur(6px); min-width: 0;
-  }
-  .panel .p-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #dbeafe; }
-  .panel .p-title::before { content: ""; width: 4px; height: 14px; background: var(--accent); border-radius: 2px; }
-  .panel .p-sub { font-size: 12px; color: var(--text-dim); font-weight: 400; margin-left: auto; }
-  .chart { width: 100%; height: 300px; }
-  .col-4 { grid-column: span 4; }
-  .col-5 { grid-column: span 5; }
-  .col-6 { grid-column: span 6; }
-  .col-7 { grid-column: span 7; }
-  .col-12 { grid-column: span 12; }
-
+  .kpi.k2::before { background: var(--accent-2); } .kpi.k3::before { background: var(--green); }
+  .kpi.k4::before { background: var(--orange); } .kpi.k5::before { background: #a78bfa; } .kpi.k6::before { background: #f472b6; }
+  .kpi .label { font-size: 12px; color: var(--text-dim); }
+  .kpi .value { font-size: 26px; font-weight: 700; margin-top: 5px; font-variant-numeric: tabular-nums; }
+  .kpi .value .unit { font-size: 13px; font-weight: 400; color: var(--text-dim); margin-left: 4px; }
+  .kpi .trend { font-size: 11px; margin-top: 6px; color: var(--text-dim); }
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; margin-bottom: 12px; }
+  .panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px; padding: 13px 15px; min-width: 0; }
+  .panel .p-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-bottom: 9px; color: #dbeafe; }
+  .panel .p-title::before { content: ""; width: 4px; height: 13px; background: var(--accent); border-radius: 2px; }
+  .panel .p-sub { font-size: 11px; color: var(--text-dim); font-weight: 400; margin-left: auto; }
+  .chart { width: 100%; height: 290px; }
+  .chart-sm { width: 100%; height: 240px; }
+  .col-4 { grid-column: span 4; } .col-5 { grid-column: span 5; } .col-6 { grid-column: span 6; }
+  .col-7 { grid-column: span 7; } .col-8 { grid-column: span 8; } .col-12 { grid-column: span 12; }
+  table.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.tbl th { text-align: left; color: #7dd3fc; font-weight: 600; padding: 7px 8px; border-bottom: 1px solid rgba(64,128,255,.28); white-space: nowrap; }
+  table.tbl td { padding: 6px 8px; border-bottom: 1px solid rgba(148,163,184,.12); color: #c7d5ea; font-variant-numeric: tabular-nums; }
+  table.tbl tr:hover td { background: rgba(56,189,248,.06); }
+  .scroll-tbl { max-height: 320px; overflow-y: auto; }
   .risk-list { list-style: none; }
-  .risk-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 8px; border-bottom: 1px dashed rgba(148,163,184,.18); font-size: 13px;
-  }
+  .risk-item { display: flex; align-items: center; gap: 10px; padding: 9px 8px; border-bottom: 1px dashed rgba(148,163,184,.18); font-size: 13px; }
   .risk-item:last-child { border-bottom: none; }
   .risk-lv { flex: none; padding: 2px 9px; border-radius: 10px; font-size: 12px; font-weight: 600; }
   .lv-p0 { background: rgba(248,113,113,.16); color: #f87171; }
   .lv-p1 { background: rgba(251,191,36,.16); color: #fbbf24; }
   .lv-p2 { background: rgba(96,165,250,.16); color: #93c5fd; }
-  .risk-name { flex: 1; color: #dbeafe; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .risk-name { flex: 1; color: #dbeafe; }
   .risk-time { flex: none; color: var(--text-dim); font-size: 12px; }
-
+  .placeholder { background: var(--panel); border: 1px dashed rgba(64,128,255,.3); border-radius: 12px; padding: 42px 20px; text-align: center; color: var(--text-dim); font-size: 13px; line-height: 2; }
+  .placeholder .big { font-size: 30px; margin-bottom: 8px; }
   .foot { text-align: center; color: #50688a; font-size: 12px; padding: 6px 0 18px; letter-spacing: 1px; }
-
-  @media (max-width: 1400px) {
-    .col-4, .col-5, .col-6, .col-7 { grid-column: span 6; }
-  }
-  @media (max-width: 900px) {
-    .col-4, .col-5, .col-6, .col-7 { grid-column: span 12; }
-    .chart { height: 260px; }
-    .brand h1 { font-size: 19px; }
-  }
+  @media (max-width: 1200px) { .col-4,.col-5,.col-6,.col-7,.col-8 { grid-column: span 6; } }
+  @media (max-width: 800px) { .sidebar { width: 60px; } .menu-item span.txt, .menu-group-title { display: none; } .col-4,.col-5,.col-6,.col-7,.col-8 { grid-column: span 12; } }
 </style>
 </head>
 <body>
-
-<div class="topbar">
-  <div class="brand">
-    <h1>换电运营平台</h1>
-    <span class="sub">BATTERY-SWAP OPERATIONS</span>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="side-brand"><h1>换电运营平台</h1><div class="sub">BATTERY-SWAP OPS</div></div>
+    <nav id="menu"></nav>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">数据大屏<span class="sub" id="pageSub"></span></div>
+      <div class="top-meta">
+        <span class="badge">真实业务数据快照 · 已脱敏</span>
+        <span class="dot"></span>
+        <span id="now"></span>
+      </div>
+    </div>
+    <div class="container" id="content"></div>
+    <div class="foot">BATTERY-SWAP DASHBOARD · 真实业务聚合数据（脱敏快照） · 数据截至 2026-09-10</div>
   </div>
-  <div class="top-meta">
-    <span class="badge">真实业务数据快照 · 已脱敏</span>
-    <span class="dot"></span>
-    <span id="now"></span>
-  </div>
-</div>
-
-<div class="container">
-
-  <div class="kpi-grid" id="kpiGrid"></div>
-
-  <div class="grid">
-    <div class="panel col-7">
-      <div class="p-title">运营趋势<span class="p-sub">近 12 个月换电次数与营收</span></div>
-      <div id="chartTrend" class="chart"></div>
-    </div>
-    <div class="panel col-5">
-      <div class="p-title">用户增长<span class="p-sub">近 6 个月新增用户</span></div>
-      <div id="chartUser" class="chart"></div>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="panel col-4">
-      <div class="p-title">设备资产状态<span class="p-sub">换电柜与电池在线/离线</span></div>
-      <div id="chartDevice" class="chart"></div>
-    </div>
-    <div class="panel col-4">
-      <div class="p-title">城市运营排行<span class="p-sub">近 30 天换电次数 TOP5</span></div>
-      <div id="chartRegion" class="chart"></div>
-    </div>
-    <div class="panel col-4">
-      <div class="p-title">财务收支趋势<span class="p-sub">近 12 个月营收与毛利</span></div>
-      <div id="chartFinance" class="chart"></div>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="panel col-12">
-      <div class="p-title">实时告警统计<span class="p-sub">当前检测到的设备异常</span></div>
-      <ul class="risk-list" id="riskList"></ul>
-    </div>
-  </div>
-
-  <div class="foot">BATTERY-SWAP DASHBOARD · 真实业务聚合数据（脱敏快照） · 数据截至 2026-09-10</div>
 </div>
 
 <script>
-var AXIS_COLOR = "#8aa3c4";
-var SPLIT_COLOR = "rgba(148,163,184,.14)";
+/* ================= 工具 ================= */
+var AXIS_COLOR = "#8aa3c4", SPLIT = "rgba(148,163,184,.14)";
+function $id(id) { return document.getElementById(id); }
+function fmt(n) {
+  if (n == null) return "-"; n = Number(n);
+  if (Math.abs(n) >= 100000000) return (n / 100000000).toFixed(2) + "亿";
+  if (Math.abs(n) >= 10000) return (n / 10000).toFixed(1) + "万";
+  return String(Math.round(n * 100) / 100);
+}
+function fmtMoney(n) { return fmt(n); }
+function pct(a, b) { return b ? (Number(a) / Number(b) * 100).toFixed(1) + "%" : "-"; }
 function baseTooltip() { return { trigger: "axis", backgroundColor: "rgba(9,20,42,.9)", borderColor: "rgba(64,128,255,.4)", textStyle: { color: "#e2e8f0", fontSize: 12 } }; }
 function baseLegend() { return { textStyle: { color: AXIS_COLOR, fontSize: 12 }, top: 0, right: 0 }; }
-function fmt(n) {
-  if (n == null) return "-";
-  n = Number(n);
-  if (Math.abs(n) >= 100000000) return (n / 100000000).toFixed(2) + "亿";
-  if (Math.abs(n) >= 10000) return (n / 10000).toFixed(1) + "万";
-  return String(Math.round(n * 100) / 100);
+var _charts = [];
+function mkChart(el, option) {
+  var chart = echarts.init(el);
+  chart.setOption(option);
+  _charts.push(chart);
+  return chart;
 }
-function fmtMoney(n) {
-  if (n == null) return "-";
-  n = Number(n);
-  if (Math.abs(n) >= 100000000) return (n / 100000000).toFixed(2) + "亿";
-  if (Math.abs(n) >= 10000) return (n / 10000).toFixed(1) + "万";
-  return String(Math.round(n * 100) / 100);
-}
-
-/* ===== 数据加载 ===== */
-var FILES = [
-  "data/api_overview_summary.json",
-  "data/api_overview_device-dimension.json",
-  "data/api_bigscreen_trend.json",
-  "data/api_users_growth.json",
-  "data/api_bigscreen_top-cities.json",
-  "data/api_finance_income-trend.json",
-  "data/api_dashboard_alarm-stats.json"
-];
-var D = {};
-var tasks = FILES.map(function (f) {
-  return fetch(f).then(function (r) { return r.json(); }).then(function (j) {
-    var k = f.split("/").pop().replace(/\.json$/, "");
-    D[k] = j.data || j;
-  }).catch(function () { D[f.split("/").pop()] = null; });
-});
-
-Promise.all(tasks).then(function () {
-
-  var ov = D.api_overview_summary || {};
-  var dev = D["api_overview_device-dimension"] || {};
-  var online = (dev.battery ? dev.battery.online : 0) + (dev.exchange ? dev.exchange.online : 0);
-  var KPIS = [
-    { label: "累计注册用户", value: fmt(ov.total_users), unit: "人", trend: "今日新增 " + (ov.today_new_users || 0), up: true, cls: "" },
-    { label: "今日换电次数", value: fmt(ov.today_exchange), unit: "次", trend: "昨日 " + fmt(ov.yesterday_exchange), up: true, cls: "k2" },
-    { label: "今日营收", value: fmtMoney(ov.today_fee), unit: "元", trend: "实时统计", up: true, cls: "k4" },
-    { label: "在线设备", value: fmt(online), unit: "台", trend: "电池 " + fmt(dev.battery ? dev.battery.online : 0) + " / 柜 " + fmt(dev.exchange ? dev.exchange.online : 0), up: true, cls: "k3" },
-    { label: "电池总数", value: fmt(dev.battery ? dev.battery.total : 0), unit: "块", trend: "在线率 " + (dev.battery && dev.battery.total ? (dev.battery.online / dev.battery.total * 100).toFixed(1) : "-") + "%", up: true, cls: "k5" },
-    { label: "营业网点", value: fmt(dev.site ? dev.site.total : 0), unit: "个", trend: "营业中 " + fmt(dev.site ? dev.site.open : 0), up: true, cls: "k6" }
-  ];
+function kpiHTML(items) {
   var html = "";
-  KPIS.forEach(function (k, i) {
+  items.forEach(function (k) {
     var cls = k.cls ? (" kpi " + k.cls) : " kpi";
-    var arrow = k.up ? '<span class="up">▲ ' + k.trend + '</span>' : '<span class="down">▼ ' + k.trend + '</span>';
-    html += '<div class="' + cls + '"><div class="label">' + k.label + '</div><div class="value">' + k.value + '<span class="unit">' + k.unit + '</span></div><div class="trend">' + arrow + '</div></div>';
+    var trend = k.trend != null ? '<div class="trend">' + k.trend + '</div>' : "";
+    html += '<div class="' + cls + '"><div class="label">' + k.label + '</div><div class="value">' + k.value + '<span class="unit">' + (k.unit || "") + '</span></div>' + trend + '</div>';
   });
-  document.getElementById("kpiGrid").innerHTML = html;
-
-  var trend = D.api_bigscreen_trend || [];
-  var months = trend.map(function (t) { return t.month; });
-  var cnts = trend.map(function (t) { return t.exchange_count; });
-  var fees = trend.map(function (t) { return Math.round(t.fee / 10000 * 100) / 100; });
-  chartTrend(months, cnts, fees);
-
-  var growth = D.api_users_growth || {};
-  var gTrend = growth.trend || [];
-  chartUser(gTrend.map(function (t) { return t.month; }), gTrend.map(function (t) { return t.cnt; }));
-
-  chartDevice(dev);
-
-  var cities = D["api_bigscreen_top-cities"] || [];
-  chartRegion(cities);
-
-  var fin = D["api_finance_income-trend"] || [];
-  chartFinance(fin.map(function (t) { return t.month; }), fin.map(function (t) { return Math.round(t.income / 10000 * 100) / 100; }), fin.map(function (t) { return Math.round(t.profit / 10000 * 100) / 100; }));
-
-  var alarm = D["api_dashboard_alarm-stats"] || {};
-  renderRisks(alarm);
-}).catch(function (e) {
-  document.getElementById("kpiGrid").innerHTML = '<div style="color:#f87171;padding:20px;">数据加载失败：' + e.message + '</div>';
-});
-
-function chartTrend(m, c, f) {
-  var el = document.getElementById("chartTrend");
-  var chart = echarts.init(el);
-  chart.setOption({
-    tooltip: baseTooltip(),
-    legend: baseLegend(),
-    grid: { left: 48, right: 56, top: 34, bottom: 26 },
-    xAxis: { type: "category", data: m, axisLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 10, interval: 1 } },
-    yAxis: [
-      { type: "value", name: "换电次数", nameTextStyle: { color: AXIS_COLOR }, splitLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
-      { type: "value", name: "营收(万)", nameTextStyle: { color: AXIS_COLOR }, splitLine: { show: false }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } }
-    ],
-    series: [
-      { name: "换电次数", type: "line", data: c, smooth: true, symbol: "none", lineStyle: { width: 2, color: "#38bdf8" }, areaStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "rgba(56,189,248,.32)" }, { offset: 1, color: "rgba(56,189,248,0)" }] } } },
-      { name: "营收(万)", type: "line", yAxisIndex: 1, data: f, smooth: true, symbol: "none", lineStyle: { width: 2, color: "#fbbf24" } }
-    ]
-  });
-  window.addEventListener("resize", function () { chart.resize(); });
+  return html;
 }
-
-function chartUser(m, c) {
-  var el = document.getElementById("chartUser");
-  var chart = echarts.init(el);
-  chart.setOption({
-    tooltip: baseTooltip(),
-    grid: { left: 44, right: 30, top: 24, bottom: 26 },
-    xAxis: { type: "category", data: m, axisLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 10, interval: 0 } },
-    yAxis: { type: "value", splitLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
-    series: [{
-      name: "新增用户", type: "bar", data: c, barWidth: "46%",
-      itemStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "#60a5fa" }, { offset: 1, color: "#1d4ed8" }] }, borderRadius: [3, 3, 0, 0] },
-      label: { show: true, position: "top", color: "#dbeafe", fontSize: 11 }
-    }]
-  });
-  window.addEventListener("resize", function () { chart.resize(); });
+function tableHTML(headers, rows, empty) {
+  if (!rows || !rows.length) return '<div class="placeholder"><div class="big">📭</div>' + (empty || "暂无数据") + '</div>';
+  var h = "<thead><tr>" + headers.map(function (x) { return "<th>" + x + "</th>"; }).join("") + "</tr></thead>";
+  var b = "<tbody>" + rows.map(function (r) { return "<tr>" + r.map(function (c) { return "<td>" + c + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody>";
+  return '<table class="tbl">' + h + b + "</table>";
 }
-
-function chartDevice(dev) {
-  var el = document.getElementById("chartDevice");
-  var chart = echarts.init(el);
-  var ex = dev.exchange || {}, ba = dev.battery || {};
-  chart.setOption({
+function panel(title, sub, body, col) {
+  return '<div class="panel ' + (col || "col-12") + '"><div class="p-title">' + title + '<span class="p-sub">' + (sub || "") + '</span></div>' + body + '</div>';
+}
+function chartPanel(title, sub, id, cls) {
+  return panel(title, sub, '<div id="' + id + '" class="' + (cls || "chart") + '"></div>', "col-6");
+}
+function placeholderHTML(text) {
+  return '<div class="placeholder"><div class="big">🔒</div>' + text + '</div>';
+}
+function lineOpt(x, series, yNames) {
+  var s = series.map(function (s, i) {
+    var colors = ["#38bdf8", "#fbbf24", "#34d399", "#a78bfa"];
+    var obj = { name: s.name, type: "line", data: s.data, smooth: true, symbol: "none", lineStyle: { width: 2, color: colors[i] } };
+    if (yNames && yNames[i]) obj.yAxisIndex = i;
+    return obj;
+  });
+  var yAxis = yNames ? yNames.map(function (n, i) {
+    return { type: "value", name: n, nameTextStyle: { color: AXIS_COLOR }, splitLine: { lineStyle: { color: SPLIT } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 }, show: true };
+  }) : [{ type: "value", splitLine: { lineStyle: { color: SPLIT } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } }];
+  return {
+    tooltip: baseTooltip(), legend: baseLegend(),
+    grid: { left: 52, right: 56, top: 34, bottom: 26 },
+    xAxis: { type: "category", data: x, axisLine: { lineStyle: { color: SPLIT } }, axisLabel: { color: AXIS_COLOR, fontSize: 10 } },
+    yAxis: yAxis, series: s
+  };
+}
+function barOpt(x, vals, opt) {
+  opt = opt || {};
+  var isH = opt.horizontal;
+  return {
+    tooltip: baseTooltip(),
+    grid: { left: isH ? 76 : 44, right: 40, top: 24, bottom: 26 },
+    xAxis: isH ? { type: "value", splitLine: { lineStyle: { color: SPLIT } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } } : { type: "category", data: x, axisLine: { lineStyle: { color: SPLIT } }, axisLabel: { color: AXIS_COLOR, fontSize: 10, interval: opt.interval != null ? opt.interval : 0 } },
+    yAxis: isH ? { type: "category", data: x, axisLine: { lineStyle: { color: SPLIT } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } } : { type: "value", splitLine: { lineStyle: { color: SPLIT } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
+    series: [{ type: "bar", data: vals, barWidth: opt.barWidth || "48%", itemStyle: { color: { type: "linear", x: isH ? 1 : 0, y: isH ? 0 : 1, x2: isH ? 0 : 0, y2: isH ? 0 : 0, colorStops: [{ offset: 0, color: "#1d4ed8" }, { offset: 1, color: "#38bdf8" }] }, borderRadius: isH ? [0, 6, 6, 0] : [3, 3, 0, 0] }, label: opt.label ? { show: true, position: isH ? "right" : "top", color: "#dbeafe", fontSize: 11, formatter: function (p) { return fmt(p.value); } } : { show: false } }]
+  };
+}
+function pieOpt(data, colors) {
+  return {
     tooltip: { trigger: "item", backgroundColor: "rgba(9,20,42,.9)", borderColor: "rgba(64,128,255,.4)", textStyle: { color: "#e2e8f0", fontSize: 12 }, formatter: "{b}: {c} ({d}%)" },
     legend: { bottom: 0, textStyle: { color: AXIS_COLOR, fontSize: 11 } },
-    series: [
-      {
-        name: "换电柜", type: "pie", radius: ["18%", "38%"], center: ["28%", "44%"],
-        label: { color: AXIS_COLOR, fontSize: 10, formatter: "{b} {d}%" },
-        data: [
-          { name: "在线", value: ex.online || 0 },
-          { name: "离线", value: ex.offline || 0 }
-        ],
-        color: ["#38bdf8", "#f87171"],
-        itemStyle: { borderColor: "#0b1830", borderWidth: 2 }
-      },
-      {
-        name: "电池", type: "pie", radius: ["18%", "38%"], center: ["74%", "44%"],
-        label: { color: AXIS_COLOR, fontSize: 10, formatter: "{b} {d}%" },
-        data: [
-          { name: "在线", value: ba.online || 0 },
-          { name: "离线", value: ba.offline || 0 }
-        ],
-        color: ["#34d399", "#f87171"],
-        itemStyle: { borderColor: "#0b1830", borderWidth: 2 }
-      }
-    ]
-  });
-  window.addEventListener("resize", function () { chart.resize(); });
+    series: [{ type: "pie", radius: ["28%", "58%"], center: ["50%", "44%"], label: { color: AXIS_COLOR, fontSize: 11, formatter: "{b} {d}%" }, data: data, color: colors || ["#38bdf8", "#f87171", "#34d399", "#fbbf24", "#a78bfa", "#f472b6"], itemStyle: { borderColor: "#0b1830", borderWidth: 2 } }]
+  };
 }
 
-function chartRegion(cities) {
-  var el = document.getElementById("chartRegion");
-  var chart = echarts.init(el);
-  var names = cities.map(function (c) { return c.city.replace(/省|市|壮族自治区|自治区/g, ""); }).reverse();
-  var vals = cities.map(function (c) { return c.orders; }).reverse();
-  chart.setOption({
-    tooltip: baseTooltip(),
-    grid: { left: 64, right: 40, top: 20, bottom: 24 },
-    xAxis: { type: "value", splitLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
-    yAxis: { type: "category", data: names, axisLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 11 } },
-    series: [{
-      type: "bar", data: vals, barWidth: 14,
-      itemStyle: { color: { type: "linear", x: 0, y: 0, x2: 1, y2: 0, colorStops: [{ offset: 0, color: "#1d4ed8" }, { offset: 1, color: "#38bdf8" }] }, borderRadius: [0, 6, 6, 0] },
-      label: { show: true, position: "right", color: "#dbeafe", fontSize: 11, formatter: function (p) { return fmt(p.value); } }
-    }]
+/* ================= 数据加载 ================= */
+var FILES = [
+  "data/api_overview_summary.json", "data/api_overview_device-dimension.json",
+  "data/api_overview_city-dimension.json", "data/api_overview_finance-dimension.json",
+  "data/api_overview_monthly-trend.json", "data/api_overview_regions.json",
+  "data/api_bigscreen_summary.json", "data/api_bigscreen_trend.json",
+  "data/api_bigscreen_top-cities.json", "data/api_bigscreen_regions.json",
+  "data/api_bigscreen_cities.json", "data/api_bigscreen_dist.json",
+  "data/api_users_summary.json", "data/api_users_growth.json", "data/api_users_lifecycle.json",
+  "data/api_users_tier.json", "data/api_users_city-detail.json",
+  "data/api_sales_summary.json", "data/api_sales_site-rank.json",
+  "data/api_sites_summary.json",
+  "data/api_assets_summary.json", "data/api_assets_battery-status.json",
+  "data/api_coupons_summary.json",
+  "data/api_dashboard_summary.json", "data/api_dashboard_customer-stats.json", "data/api_dashboard_alarm-stats.json",
+  "data/api_staff_summary.json",
+  "data/api_finance_summary.json", "data/api_finance_income-trend.json", "data/api_finance_expense-types.json",
+  "data/api_insights_battery-age.json", "data/api_insights_exchange-peak.json",
+  "data/api_insights_expense-compare.json", "data/api_insights_first-take.json"
+];
+var D = {};
+function loadAll() {
+  return Promise.all(FILES.map(function (f) {
+    return fetch(f).then(function (r) { return r.json(); }).then(function (j) {
+      D[f.split("/").pop().replace(/\.json$/, "")] = j.data || j;
+    }).catch(function () { D[f.split("/").pop().replace(/\.json$/, "")] = null; });
+  }));
+}
+function g(name) { return D[name] || {}; }
+
+/* ================= 菜单 ================= */
+var MENUS = [
+  { key: "bigscreen", name: "数据大屏", icon: "📊" },
+  { key: "overview", name: "数据总览", icon: "📈", children: [
+    { key: "ops-overview", name: "运营总览" }, { key: "city-dim", name: "城市维度" },
+    { key: "site-dim", name: "网点维度" }, { key: "device-dim", name: "设备维度" },
+    { key: "finance-dim", name: "财务维度" }, { key: "exchange-heat", name: "换电密集分布" },
+    { key: "user-bike-heat", name: "用户车辆密集分布" }
+  ]},
+  { key: "user", name: "用户看板", icon: "👥", children: [
+    { key: "user-overview", name: "用户数据总览" }, { key: "user-growth", name: "增长分析" },
+    { key: "user-map", name: "用户分布地图" }, { key: "user-tier", name: "用户分层" },
+    { key: "user-detail", name: "单用户视图" }, { key: "user-tables", name: "用户基本表" },
+    { key: "user-query", name: "实时全量查询" }
+  ]},
+  { key: "sales", name: "销售看板", icon: "💰", children: [
+    { key: "sales-overview", name: "销售总览" }, { key: "sales-site", name: "网点销售情况" },
+    { key: "sales-staff", name: "业务销售业绩" }, { key: "sales-package", name: "套餐购买明细" },
+    { key: "sales-agreement", name: "协议签约明细" }, { key: "sales-site-list", name: "名下网点列表" }
+  ]},
+  { key: "site", name: "网点看板", icon: "🏪", children: [
+    { key: "site-overview", name: "网点总览" }, { key: "site-statement", name: "网点收支对账单" },
+    { key: "site-eval", name: "网点评估与发展" }, { key: "site-tables", name: "网点基本表" },
+    { key: "site-sales", name: "网点销售业绩" }, { key: "site-detail", name: "单网点视图" }
+  ]},
+  { key: "asset", name: "设备资产看板", icon: "🔋", children: [
+    { key: "asset-exchange", name: "换电柜" }, { key: "asset-battery", name: "电池" },
+    { key: "asset-bike", name: "车辆" }, { key: "asset-warehouse", name: "仓库" },
+    { key: "asset-flow", name: "流通" }, { key: "asset-transfer", name: "调拨" },
+    { key: "asset-inout", name: "出入库" }, { key: "asset-fault", name: "故障" }
+  ]},
+  { key: "coupon", name: "优惠券看板", icon: "🎟️" },
+  { key: "ops", name: "运维看板", icon: "🛠️", children: [
+    { key: "dashboard", name: "设备总览看板" }, { key: "exchange", name: "换电柜管理" },
+    { key: "battery", name: "电池管理" }, { key: "alarm", name: "设备预警" }
+  ]},
+  { key: "staff", name: "人员看板", icon: "🧑‍💼" },
+  { key: "finance", name: "财务看板", icon: "💳" },
+  { key: "service-desk", name: "客服服务台", icon: "📞" },
+  { key: "deep-analysis", name: "深度分析", icon: "🔍" },
+  { key: "risk-monitor", name: "风险监控", icon: "⚠️" },
+  { key: "decision", name: "经营决策", icon: "🧭" },
+  { key: "command", name: "大屏指挥", icon: "🖥️" }
+];
+var PAGE_TITLE = {};
+MENUS.forEach(function (m) {
+  PAGE_TITLE[m.key] = m.name;
+  if (m.children) m.children.forEach(function (c) { PAGE_TITLE[c.key] = m.name + " / " + c.name; });
+});
+function renderMenu() {
+  var html = "";
+  MENUS.forEach(function (m) {
+    if (m.children) {
+      html += '<div class="menu-group"><div class="menu-group-title">' + m.name + '</div>';
+      m.children.forEach(function (c) {
+        html += '<div class="menu-item" data-key="' + c.key + '"><span class="icon">' + m.icon + '</span><span class="txt">' + c.name + '</span></div>';
+      });
+      html += "</div>";
+    } else {
+      html += '<div class="menu-item" data-key="' + m.key + '"><span class="icon">' + m.icon + '</span><span class="txt">' + m.name + '</span></div>';
+    }
   });
-  window.addEventListener("resize", function () { chart.resize(); });
+  $id("menu").innerHTML = html;
+  $id("menu").addEventListener("click", function (e) {
+    var el = e.target.closest(".menu-item");
+    if (el) switchPage(el.getAttribute("data-key"));
+  });
+}
+function switchPage(key) {
+  document.querySelectorAll(".menu-item").forEach(function (el) {
+    el.classList.toggle("active", el.getAttribute("data-key") === key);
+  });
+  $id("pageTitle").innerHTML = PAGE_TITLE[key] || "看板";
+  var fn = ROUTES[key] || ROUTES.placeholder;
+  fn();
+  window.scrollTo(0, 0);
 }
 
-function chartFinance(m, income, profit) {
-  var el = document.getElementById("chartFinance");
-  var chart = echarts.init(el);
-  chart.setOption({
-    tooltip: baseTooltip(),
-    legend: baseLegend(),
-    grid: { left: 48, right: 40, top: 34, bottom: 26 },
-    xAxis: { type: "category", data: m, axisLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 9, interval: 1 } },
-    yAxis: { type: "value", name: "万元", nameTextStyle: { color: AXIS_COLOR }, splitLine: { lineStyle: { color: SPLIT_COLOR } }, axisLabel: { color: AXIS_COLOR, fontSize: 10 } },
-    series: [
-      { name: "营收", type: "bar", data: income, barWidth: "38%", itemStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "#60a5fa" }, { offset: 1, color: "#1d4ed8" }] }, borderRadius: [3, 3, 0, 0] } },
-      { name: "毛利", type: "line", data: profit, smooth: true, symbol: "circle", symbolSize: 5, lineStyle: { width: 2, color: "#34d399" }, itemStyle: { color: "#34d399" } }
-    ]
-  });
-  window.addEventListener("resize", function () { chart.resize(); });
-}
+/* ================= 板块渲染 ================= */
+var ROUTES = {};
 
-function renderRisks(alarm) {
-  var items = [];
-  var ba = alarm.battery || {}, ex = alarm.exchange || {};
+ROUTES.bigscreen = function () {
+  var s = g("api_bigscreen_summary");
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "累计用户", value: fmt(s.total_users), unit: "人", trend: "今日新增 " + fmt(s.today_new_users), cls: "" },
+      { label: "电池总数", value: fmt(s.battery_total), unit: "块", trend: "换电柜 " + fmt((s.exchanges && s.exchanges.total) || "-") + " 台", cls: "k2" },
+      { label: "今日换电", value: fmt(s.today_exchange), unit: "次", trend: "今日营收 ¥" + fmtMoney(s.today_fee), cls: "k3" },
+      { label: "当月营收", value: "¥" + fmtMoney(s.month_income), unit: "", trend: "目标完成率 " + (s.month_target_rate != null ? s.month_target_rate + "%" : pct(s.month_income, s.month_target)), cls: "k4" }
+    ]) + '</div>' +
+    '<div class="grid">' + chartPanel("运营趋势", "近 12 个月换电次数与营收", "bsTrend") +
+    chartPanel("城市排行 TOP5", "近 30 天换电次数", "bsTop", "col-6 chart-sm") + '</div>' +
+    '<div class="grid">' + chartPanel("区域运营分布", "当日换电/营收/用户", "bsRegion", "col-6") +
+    chartPanel("设备状态分布", "电池状态与柜型", "bsDist", "col-6") + '</div>' +
+    '<div class="grid">' + panel("城市明细", "全量城市运营数据", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "换电次数", "营收"], (g("api_bigscreen_cities") || []).map(function (r) { return [r.core || r.city, fmt(r.users), fmt(r.orders), "¥" + fmtMoney(r.orders ? (r.orders * 206) : 0)]; })) + '</div>', "col-12") + '</div>';
+  var trend = g("api_bigscreen_trend") || [];
+  mkChart($id("bsTrend"), lineOpt(trend.map(function (t) { return t.month; }), [
+    { name: "换电次数", data: trend.map(function (t) { return t.exchange_count; }) },
+    { name: "营收(元)", data: trend.map(function (t) { return Math.round(t.fee); }) }
+  ], ["换电次数", "营收(元)"]));
+  var tops = g("api_bigscreen_top-cities") || [];
+  mkChart($id("bsTop"), barOpt(tops.map(function (t) { return t.city.replace(/省|市|壮族自治区|自治区/g, ""); }).reverse(), tops.map(function (t) { return t.orders; }).reverse(), { horizontal: true, label: true }));
+  var regs = g("api_bigscreen_regions") || [];
+  mkChart($id("bsRegion"), barOpt(regs.map(function (r) { return r.area; }).slice(0, 10), regs.slice(0, 10).map(function (r) { return r.orders_today; }), { horizontal: true, label: true, interval: 0 }));
+  var dist = g("api_bigscreen_dist") || {};
+  var bs = dist.battery_status || [], et = dist.exchange_types || [];
+  mkChart($id("bsDist"), pieOpt(
+    (bs.length ? [{ name: "电池-在用", value: (bs.find(function (x) { return x.name === "using"; }) || {}).count || 0 }, { name: "电池-未用", value: (bs.find(function (x) { return x.name === "none"; }) || {}).count || 0 }] : []).concat(et.slice(0, 4).map(function (x) { return { name: x.name, value: x.count }; })),
+    ["#34d399", "#8aa3c4", "#38bdf8", "#fbbf24", "#a78bfa", "#f87171"]
+  ));
+};
+
+ROUTES["ops-overview"] = function () {
+  var s = g("api_overview_summary");
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "累计用户", value: fmt(s.total_users), unit: "人", trend: "今日新增 " + fmt(s.today_new_users), cls: "" },
+      { label: "今日换电", value: fmt(s.today_exchange), unit: "次", trend: "昨日 " + fmt(s.yesterday_exchange), cls: "k2" },
+      { label: "今日营收", value: "¥" + fmtMoney(s.today_fee), unit: "", trend: "实时统计", cls: "k4" },
+      { label: "今日活跃用户", value: fmt(s.today_users), unit: "人", trend: "设备总览见下", cls: "k3" }
+    ]) + '</div>' +
+    '<div class="grid">' + chartPanel("月度运营趋势", "换电次数 / 营收 / 利润", "ovTrend") +
+    panel("区域概览", "近30天各城市运营", '<div class="scroll-tbl">' + tableHTML(["城市", "用户", "近30天换电", "月换电", "营收"], (g("api_overview_regions") || []).map(function (r) { return [r.city, fmt(r.users), fmt(r.exchange_30d), fmt(r.exchange_count), "¥" + fmtMoney(r.mileage_30d ? r.mileage_30d / 100000 : 0)]; })) + '</div>', "col-6") + '</div>';
+  var mt = g("api_overview_monthly-trend") || [];
+  mkChart($id("ovTrend"), lineOpt(mt.map(function (t) { return t.month; }), [
+    { name: "换电次数", data: mt.map(function (t) { return t.exchange_count; }) },
+    { name: "营收(元)", data: mt.map(function (t) { return Math.round(t.fee); }) }
+  ], ["换电次数", "营收(元)"]));
+};
+
+ROUTES["city-dim"] = function () {
+  var rows = g("api_overview_city-dimension") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("城市维度运营", "换电次数 / 营收 / 利润", "cdChart", "col-7") +
+    panel("城市明细", "12 城市聚合", '<div class="scroll-tbl">' + tableHTML(["城市", "活跃用户", "换电次数", "营收", "利润"], rows.map(function (r) { return [r.city, fmt(r.active_users), fmt(r.exchange_count), "¥" + fmtMoney(r.fee), "¥" + fmtMoney(r.profit_fee)]; })) + '</div>', "col-5") + '</div>';
+  mkChart($id("cdChart"), lineOpt(rows.map(function (r) { return r.city.replace(/省|市|壮族自治区|自治区/g, ""); }), [
+    { name: "换电次数", data: rows.map(function (r) { return r.exchange_count; }) },
+    { name: "营收(元)", data: rows.map(function (r) { return Math.round(r.fee); }) }
+  ], ["换电次数", "营收(元)"]));
+};
+
+ROUTES["site-dim"] = function () {
+  var rows = g("api_overview_regions") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("区域运营分布", "近30天换电次数", "sdChart", "col-6") +
+    panel("区域明细", "各城市用户与换电", '<div class="scroll-tbl">' + tableHTML(["城市", "用户", "活跃30天", "换电30天", "月换电"], rows.map(function (r) { return [r.city, fmt(r.users), fmt(r.active_users_30d), fmt(r.exchange_30d), fmt(r.exchange_count)]; })) + '</div>', "col-6") + '</div>';
+  mkChart($id("sdChart"), barOpt(rows.map(function (r) { return r.city.replace(/省|市|壮族自治区|自治区/g, ""); }), rows.map(function (r) { return r.exchange_30d; }), { label: true, interval: 0 }));
+};
+
+ROUTES["device-dim"] = function () {
+  var d = g("api_overview_device-dimension");
+  var c = $id("content");
+  var parts = ["battery", "exchange", "site", "bike"];
+  var names = { battery: "电池", exchange: "换电柜", site: "网点", bike: "车辆" };
+  var html = '<div class="kpi-grid">';
+  parts.forEach(function (p, i) {
+    var v = d[p] || {};
+    html += '<div class="kpi k' + ((i % 6) + 1) + '"><div class="label">' + names[p] + '总数</div><div class="value">' + fmt(v.total) + '<span class="unit">' + (p === "site" ? "个" : "台/块") + '</span></div><div class="trend">在线 ' + fmt(v.online || v.open) + ' / 离线 ' + fmt(v.offline || v.closed) + '</div></div>';
+  });
+  html += '</div><div class="grid">';
+  ["battery", "exchange"].forEach(function (p) {
+    var v = d[p] || {};
+    html += chartPanel(names[p] + "在线状态", "在线 / 离线", "dd_" + p);
+  });
+  html += '</div>';
+  c.innerHTML = html;
+  ["battery", "exchange"].forEach(function (p) {
+    var v = d[p] || {};
+    mkChart($id("dd_" + p), pieOpt([{ name: "在线", value: v.online || 0 }, { name: "离线", value: v.offline || 0 }], ["#34d399", "#f87171"]));
+  });
+};
+
+ROUTES["finance-dim"] = function () {
+  var rows = g("api_overview_finance-dimension") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("月度财务维度", "收入 / 支出 / 利润", "fdChart", "col-8") +
+    panel("财务月度明细", "13 个月", '<div class="scroll-tbl">' + tableHTML(["月份", "收入", "支出", "利润", "支出笔数"], rows.map(function (r) { return [r.month, "¥" + fmtMoney(r.income), "¥" + fmtMoney(r.expense), "¥" + fmtMoney(r.profit), fmt(r.expense_count)]; })) + '</div>', "col-4") + '</div>';
+  mkChart($id("fdChart"), lineOpt(rows.map(function (r) { return r.month; }), [
+    { name: "收入", data: rows.map(function (r) { return Math.round(r.income / 10000 * 100) / 100; }) },
+    { name: "支出", data: rows.map(function (r) { return Math.round(r.expense / 10000 * 100) / 100; }) },
+    { name: "利润", data: rows.map(function (r) { return Math.round(r.profit / 10000 * 100) / 100; }) }
+  ], ["万元", "万元", "万元"]));
+};
+
+ROUTES["exchange-heat"] = function () {
+  var rows = g("api_bigscreen_regions") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("换电密集分布 TOP10", "当日换电次数", "ehChart", "col-6") +
+    panel("区域运营明细", "当日数据", '<div class="scroll-tbl">' + tableHTML(["区域", "当日换电", "当日营收", "用户数", "换电柜"], rows.map(function (r) { return [r.area, fmt(r.orders_today), "¥" + fmtMoney(r.income_today), fmt(r.users), fmt(r.exchanges)]; })) + '</div>', "col-6") + '</div>';
+  mkChart($id("ehChart"), barOpt(rows.slice(0, 10).map(function (r) { return r.area; }).reverse(), rows.slice(0, 10).map(function (r) { return r.orders_today; }).reverse(), { horizontal: true, label: true }));
+};
+
+ROUTES["user-bike-heat"] = function () {
+  var rows = g("api_bigscreen_cities") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("用户车辆密集分布", "各城市用户与换电", "ubChart", "col-6") +
+    panel("城市明细", "全量城市", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "换电次数"], rows.map(function (r) { return [r.core || r.city, fmt(r.users), fmt(r.orders)]; })) + '</div>', "col-6") + '</div>';
+  mkChart($id("ubChart"), barOpt(rows.map(function (r) { return (r.core || r.city).replace(/省|市/g, ""); }), rows.map(function (r) { return r.users; }), { label: true, interval: 0 }));
+};
+
+ROUTES["user-overview"] = function () {
+  var s = g("api_users_summary");
+  var lc = g("api_users_lifecycle");
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "用户总数", value: fmt(s.user_total), unit: "人", trend: "30天活跃 " + fmt(s.active_30d), cls: "" },
+      { label: "30天新增", value: fmt(s.new_30d), unit: "人", trend: "协议在用 " + fmt(s.agreement_using), cls: "k2" },
+      { label: "协议总数", value: fmt(s.agreement_total), unit: "份", trend: "已终止 " + fmt(s.agreement_stop), cls: "k3" },
+      { label: "租期卡收入", value: "¥" + fmtMoney(s.rent_total), unit: "", trend: "押金 ¥" + fmtMoney(s.deposit_total), cls: "k4" }
+    ]) + '</div>' +
+    '<div class="grid">' + chartPanel("协议生命周期", "当前协议状态分布", "uoLife", "col-6") +
+    panel("城市排行", "用户城市分布", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数"], ((s.city_rank || [])).map(function (r) { return [r.city || r.name, fmt(r.cnt || r.count || r.users)]; })) + '</div>', "col-6") + '</div>';
+  var items = (lc && lc.items) || [];
+  mkChart($id("uoLife"), pieOpt(items.map(function (i) { return { name: i.name, value: i.count }; }), ["#34d399", "#fbbf24", "#93c5fd", "#a78bfa", "#f87171", "#64748b"]));
+};
+
+ROUTES["user-growth"] = function () {
+  var s = g("api_users_growth");
+  var trend = (s && s.trend) || [];
+  var src = (s && s.register_source) || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("新增用户趋势", "近 6 个月", "ugTrend", "col-7") +
+    chartPanel("注册来源分布", "各来源占比", "ugSrc", "col-5 chart-sm") + '</div>';
+  mkChart($id("ugTrend"), barOpt(trend.map(function (t) { return t.month; }), trend.map(function (t) { return t.cnt; }), { label: true }));
+  mkChart($id("ugSrc"), pieOpt(src.map(function (r) { return { name: r.source || r.name || r.key, value: r.count || r.cnt }; }), ["#38bdf8", "#34d399", "#fbbf24", "#a78bfa", "#f87171", "#f472b6"]));
+};
+
+ROUTES["user-map"] = function () {
+  var s = g("api_users_city-detail");
+  var items = (s && s.items) || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + panel("用户城市分布明细", "按城市聚合", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "占比"], items.map(function (r) { return [r.city || r.name, fmt(r.count || r.users), pct(r.count || r.users, items.reduce(function (a, x) { return a + (x.count || x.users || 0); }, 0))]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES["user-tier"] = function () {
+  var s = g("api_users_tier");
+  var c = $id("content");
+  var rows = [];
+  if (s && s.value && s.threshold) {
+    rows = Object.keys(s.value).map(function (k) {
+      return [k, fmt(s.value[k]), fmt(s.threshold[k]), fmt((s.total_users && s.total_users[k]) || 0), s.days != null ? s.days + "天" : "-", s.frequency || "-"];
+    });
+  }
+  c.innerHTML = '<div class="kpi-grid">' + (s && s.total_users ? kpiHTML([{ label: "分层用户总数", value: fmt(s.total_users), unit: "人", trend: "统计周期 " + (s.days || "-") + " 天 / " + (s.frequency || "-") }]) : "") + '</div>' +
+    '<div class="grid">' + panel("用户价值分层", "高频/中价值/低频", '<div class="scroll-tbl">' + tableHTML(["层级", "用户数", "阈值", "占比", "周期", "频率"], rows.map(function (r) { var tot = (s && s.total_users) || 0; var totv = typeof tot === "object" ? Object.values(tot).reduce(function (a, b) { return a + Number(b || 0); }, 0) : Number(tot || 0); return [r[0], r[1], r[2], pct(r[3], totv), r[4], r[5]]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES["sales-overview"] = function () {
+  var s = g("api_sales_summary");
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "换电次数", value: fmt(s.exchange_count), unit: "次", trend: "周期 " + (s.days || "-") + " 天", cls: "" },
+    { label: "换电收入", value: "¥" + fmtMoney(s.exchange_fee), unit: "", trend: "服务订单收入 ¥" + fmtMoney(s.service_order_fee), cls: "k4" },
+    { label: "服务订单", value: fmt(s.service_order_count), unit: "单", trend: "新增协议 " + fmt(s.new_agreement), cls: "k2" }
+  ]) + '</div>' + '<div class="grid">' + panel("说明", "", '<div class="placeholder"><div class="big">📈</div>销售总览聚合数据（脱敏快照），明细板块见网点销售情况。</div>', "col-12") + '</div>';
+};
+
+ROUTES["sales-site"] = function () {
+  var rows = g("api_sales_site-rank") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("网点销售排行 TOP20", "换电次数", "ssChart", "col-7") +
+    panel("网点销售明细", "按换电次数排序", '<div class="scroll-tbl">' + tableHTML(["网点", "换电次数", "活跃用户", "利润"], rows.map(function (r) { return [r.site_name, fmt(r.exchange_count), fmt(r.active_users), "¥" + fmtMoney(r.profit_fee)]; })) + '</div>', "col-5") + '</div>';
+  mkChart($id("ssChart"), barOpt(rows.slice(0, 12).map(function (r) { return r.site_name.length > 10 ? r.site_name.slice(0, 10) + "…" : r.site_name; }).reverse(), rows.slice(0, 12).map(function (r) { return r.exchange_count; }).reverse(), { horizontal: true, label: true }));
+};
+
+ROUTES["sales-staff"] = function () {
+  var s = g("api_staff_summary");
+  var rows = (s && s.staff_rank) || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([{ label: "业务人员总数", value: fmt(s.total_staff), unit: "人", trend: "姓名已匿名化" }]) + '</div>' +
+    '<div class="grid">' + chartPanel("业务人员业绩 TOP20", "协议签约量（姓名已脱敏）", "stChart", "col-7") +
+    panel("人员业绩明细", "匿名化展示", '<div class="scroll-tbl">' + tableHTML(["人员", "签约协议数"], rows.map(function (r) { return [r.name, fmt(r.agreement_count)]; })) + '</div>', "col-5") + '</div>';
+  mkChart($id("stChart"), barOpt(rows.slice(0, 12).map(function (r) { return r.name; }).reverse(), rows.slice(0, 12).map(function (r) { return r.agreement_count; }).reverse(), { horizontal: true, label: true }));
+};
+
+ROUTES["site-overview"] = function () {
+  var s = g("api_sites_summary");
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "网点总数", value: fmt(s.site_total), unit: "个", trend: "在营 " + fmt(s.site_open), cls: "" },
+    { label: "停业网点", value: fmt(s.site_closed), unit: "个", trend: "24小时网点 " + fmt(s.site_allday), cls: "k4" },
+    { label: "独立电表", value: fmt(s.site_meter), unit: "个", trend: "工单处理中 " + fmt(s.work_order_doing), cls: "k2" }
+  ]) + '</div>' + '<div class="grid">' + panel("说明", "", '<div class="placeholder"><div class="big">🏪</div>网点聚合概览（脱敏快照）。网点明细、对账单、评估等板块涉及网点级经营明细，公网快照已省略，本地完整版可查看。</div>', "col-12") + '</div>';
+};
+
+ROUTES["asset-exchange"] = function () {
+  var a = g("api_assets_summary");
+  var ex = (a && a.exchange) || {};
+  var dist = g("api_bigscreen_dist") || {};
+  var types = (dist.exchange_types || []).slice(0, 8);
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "换电柜总数", value: fmt(ex.total), unit: "台", trend: "在线 " + fmt(ex.online) + " / 离线 " + fmt(ex.offline), cls: "" },
+    { label: "在线率", value: pct(ex.online, ex.total), unit: "", trend: "见下方柜型分布", cls: "k3" }
+  ]) + '</div>' +
+  '<div class="grid">' + chartPanel("换电柜型号分布", "TOP8 柜型", "axChart", "col-8") +
+  panel("柜型明细", "", '<div class="scroll-tbl">' + tableHTML(["柜型", "数量"], types.map(function (r) { return [r.name, fmt(r.count)]; })) + '</div>', "col-4") + '</div>';
+  mkChart($id("axChart"), barOpt(types.map(function (r) { return r.name; }), types.map(function (r) { return r.count; }), { label: true, interval: 0 }));
+};
+
+ROUTES["asset-battery"] = function () {
+  var a = g("api_assets_summary");
+  var ba = (a && a.battery) || {};
+  var st = g("api_assets_battery-status") || [];
+  var dist = g("api_bigscreen_dist") || {};
+  var bs = dist.battery_status || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "电池总数", value: fmt(ba.total), unit: "块", trend: "在线 " + fmt(ba.online) + " / 离线 " + fmt(ba.offline), cls: "" },
+    { label: "在线率", value: pct(ba.online, ba.total), unit: "", trend: "在用 " + fmt((bs.find(function (x) { return x.name === "using"; }) || {}).count) + " / 报废 " + fmt((bs.find(function (x) { return x.name === "scrap"; }) || {}).count), cls: "k3" }
+  ]) + '</div>' +
+  '<div class="grid">' + chartPanel("电池状态分布", "状态聚合", "abChart", "col-6") +
+  panel("电池状态明细", "", '<div class="scroll-tbl">' + tableHTML(["状态", "数量"], st.concat(bs.filter(function (x) { return !st.some(function (y) { return y.status === x.name; }); }).map(function (x) { return { status: x.name, count: x.count }; })).map(function (r) { return [r.status || r.name, fmt(r.count)]; })) + '</div>', "col-6") + '</div>';
+  mkChart($id("abChart"), pieOpt(bs.map(function (x) { return { name: x.name, value: x.count }; }), ["#8aa3c4", "#34d399", "#f87171", "#fbbf24"]));
+};
+
+ROUTES["asset-bike"] = function () {
+  var a = g("api_assets_summary");
+  var bike = (a && a.bike) || {};
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "车辆总数", value: fmt(bike.total), unit: "辆", trend: "在线 " + fmt(bike.online) + " / 离线 " + fmt(bike.offline), cls: "" },
+    { label: "在线率", value: pct(bike.online, bike.total), unit: "", trend: "资产概览", cls: "k3" }
+  ]) + '</div>';
+};
+
+ROUTES.coupon = function () {
+  var s = g("api_coupons_summary");
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "优惠券总数", value: fmt(s.coupon_total), unit: "张", trend: "发放中 " + fmt(s.on), cls: "" },
+    { label: "已停用", value: fmt(s.off), unit: "张", trend: "占 " + pct(s.off, s.coupon_total), cls: "k4" }
+  ]) + '</div>' +
+  '<div class="grid">' + chartPanel("优惠券状态分布", "", "cpChart", "col-6") + '</div>';
+  mkChart($id("cpChart"), pieOpt([{ name: "发放中", value: s.on || 0 }, { name: "已停用", value: s.off || 0 }], ["#34d399", "#f87171"]));
+};
+
+ROUTES.dashboard = function () {
+  var s = g("api_dashboard_summary");
+  var dev = (s && s.device) || {};
+  var alm = (s && s.alarm) || {};
+  var cust = g("api_dashboard_customer-stats") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "电池总数", value: fmt(dev.battery_total || (dev.battery && dev.battery.total)), unit: "块", trend: "在线 " + fmt((dev.battery && dev.battery.online)), cls: "" },
+    { label: "换电柜总数", value: fmt(dev.exchange_total || (dev.exchange && dev.exchange.total)), unit: "台", trend: "在线 " + fmt((dev.exchange && dev.exchange.online)), cls: "k2" },
+    { label: "电池告警", value: fmt(alm.battery_alarm || alm.battery), unit: "起", trend: "机柜告警 " + fmt(alm.exchange_alarm || alm.exchange), cls: "k4" },
+    { label: "客户数", value: fmt(s.customers), unit: "家", trend: "见客户统计表", cls: "k3" }
+  ]) + '</div>' +
+  '<div class="grid">' + panel("客户设备统计", "各客户名下设备与告警", '<div class="scroll-tbl">' + tableHTML(["客户", "电池(在线/离线)", "换电柜(在线/离线)", "电池告警", "机柜告警"], cust.map(function (r) { return [r.customer_name, (r.battery.online + "/" + r.battery.offline), (r.exchange.online + "/" + r.exchange.offline), fmt(r.battery_alarm), fmt(r.exchange_alarm)]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES.exchange = function () {
+  var dist = g("api_bigscreen_dist") || {};
+  var types = dist.exchange_types || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("换电柜型号分布", "全量柜型", "exChart", "col-7") +
+    panel("柜型明细", "", '<div class="scroll-tbl">' + tableHTML(["柜型", "数量"], types.map(function (r) { return [r.name, fmt(r.count)]; })) + '</div>', "col-5") + '</div>';
+  mkChart($id("exChart"), barOpt(types.map(function (r) { return r.name; }), types.map(function (r) { return r.count; }), { label: true, interval: 0 }));
+};
+
+ROUTES.battery = function () {
+  var st = g("api_assets_battery-status") || [];
+  var dist = g("api_bigscreen_dist") || {};
+  var bs = dist.battery_status || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' + chartPanel("电池状态分布", "状态聚合", "btChart", "col-6") +
+    panel("电池状态明细", "", '<div class="scroll-tbl">' + tableHTML(["状态", "数量"], (st.length ? st.map(function (r) { return [r.status, fmt(r.count)]; }) : bs.map(function (r) { return [r.name, fmt(r.count)]; }))) + '</div>', "col-6") + '</div>';
+  mkChart($id("btChart"), pieOpt((st.length ? st.map(function (r) { return { name: r.status, value: r.count }; }) : bs.map(function (r) { return { name: r.name, value: r.count }; })), ["#8aa3c4", "#34d399", "#f87171"]));
+};
+
+ROUTES.alarm = function () {
+  var s = g("api_dashboard_alarm-stats");
+  var ba = (s && s.battery) || {}, ex = (s && s.exchange) || {};
+  var c = $id("content");
   var defs = [
     { lv: "P0", cls: "lv-p0", name: "电池低电量（hungry）告警", cnt: ba.hungry, time: "电池类" },
     { lv: "P0", cls: "lv-p0", name: "换电柜水浸告警", cnt: ex.flooded, time: "换电柜类" },
@@ -364,23 +603,136 @@ function renderRisks(alarm) {
     { lv: "P1", cls: "lv-p1", name: "换电柜烟感告警", cnt: ex.smoke, time: "换电柜类" },
     { lv: "P1", cls: "lv-p1", name: "换电柜仓门/卡槽异常告警", cnt: ex.slot, time: "换电柜类" }
   ];
-  defs.forEach(function (d) {
-    if (d.cnt != null && d.cnt > 0) items.push(d);
-  });
-  var html = "";
-  items.forEach(function (r) {
-    html += '<li class="risk-item"><span class="risk-lv ' + r.cls + '">' + r.lv + '</span><span class="risk-name">' + r.name + '</span><span class="risk-time">' + fmt(r.cnt) + ' 起 · ' + r.time + '</span></li>';
-  });
-  if (!html) html = '<li class="risk-item"><span class="risk-name">当前无告警</span></li>';
-  document.getElementById("riskList").innerHTML = html;
-}
+  var items = defs.filter(function (d) { return d.cnt != null && d.cnt > 0; });
+  var html = '<div class="kpi-grid">' + kpiHTML([
+    { label: "电池告警", value: fmt(ba.total), unit: "起", trend: "hungry " + fmt(ba.hungry), cls: "k4" },
+    { label: "换电柜告警", value: fmt(ex.total), unit: "起", trend: "烟感 " + fmt(ex.smoke), cls: "" }
+  ]) + '</div>' +
+  '<div class="grid">' + panel("设备预警列表", "当前检测到的设备异常", '<ul class="risk-list">' + (items.length ? items.map(function (r) { return '<li class="risk-item"><span class="risk-lv ' + r.cls + '">' + r.lv + '</span><span class="risk-name">' + r.name + '</span><span class="risk-time">' + fmt(r.cnt) + ' 起 · ' + r.time + '</span></li>'; }).join("") : '<li class="risk-item"><span class="risk-name">当前无告警</span></li>') + '</ul>', "col-12") + '</div>';
+  c.innerHTML = html;
+};
 
+ROUTES.staff = function () {
+  var s = g("api_staff_summary");
+  var rows = (s && s.staff_rank) || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([{ label: "业务人员总数", value: fmt(s.total_staff), unit: "人", trend: "姓名已匿名化（脱敏）" }]) + '</div>' +
+    '<div class="grid">' + chartPanel("人员业绩排行 TOP20", "签约协议数", "sfChart", "col-7") +
+    panel("人员业绩明细", "匿名化展示", '<div class="scroll-tbl">' + tableHTML(["人员", "签约协议数"], rows.map(function (r) { return [r.name, fmt(r.agreement_count)]; })) + '</div>', "col-5") + '</div>';
+  mkChart($id("sfChart"), barOpt(rows.slice(0, 12).map(function (r) { return r.name; }).reverse(), rows.slice(0, 12).map(function (r) { return r.agreement_count; }).reverse(), { horizontal: true, label: true }));
+};
+
+ROUTES.finance = function () {
+  var s = g("api_finance_summary");
+  var trend = g("api_finance_income-trend") || [];
+  var exp = g("api_finance_expense-types") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "收入", value: "¥" + fmtMoney(s.income_fee), unit: "", trend: s.income_count + " 笔 / " + (s.days || "-") + " 天", cls: "" },
+    { label: "支出", value: "¥" + fmtMoney(s.expense_fee), unit: "", trend: s.expense_count + " 笔", cls: "k4" },
+    { label: "利润", value: "¥" + fmtMoney(s.profit_fee), unit: "", trend: "收入 - 支出", cls: "k3" }
+  ]) + '</div>' +
+  '<div class="grid">' + chartPanel("收入趋势", "近 12 个月", "fnTrend", "col-7") +
+  chartPanel("支出类型分布", "", "fnExp", "col-5 chart-sm") + '</div>';
+  mkChart($id("fnTrend"), lineOpt(trend.map(function (t) { return t.month; }), [
+    { name: "收入", data: trend.map(function (t) { return Math.round(t.income / 10000 * 100) / 100; }) },
+    { name: "利润", data: trend.map(function (t) { return Math.round(t.profit / 10000 * 100) / 100; }) }
+  ], ["万元", "万元"]));
+  mkChart($id("fnExp"), pieOpt(exp.map(function (r) { return { name: r.fee_type, value: Math.round(r.fee) }; }), ["#38bdf8", "#fbbf24", "#f87171", "#a78bfa"]));
+};
+
+ROUTES["deep-analysis"] = function () {
+  var age = g("api_insights_battery-age") || [];
+  var peak = g("api_insights_exchange-peak") || [];
+  var cmp = g("api_insights_expense-compare") || [];
+  var ft = g("api_insights_first-take") || {};
+  var c = $id("content");
+  c.innerHTML = '<div class="grid">' +
+    chartPanel("电池年龄分布", "电池使用年限", "daAge", "col-6") +
+    chartPanel("换电高峰时段", "24 小时换电分布", "daPeak", "col-6") + '</div>' +
+    '<div class="grid">' +
+    panel("收支对比", "近 7 个月", '<div class="scroll-tbl">' + tableHTML(["月份", "收入", "利润", "服务费"], cmp.map(function (r) { return [r.month, "¥" + fmtMoney(r.income), "¥" + fmtMoney(r.profit), "¥" + fmtMoney(r.service_fee)]; })) + '</div>', "col-7") +
+    panel("首次取电分析", "再次取电 vs 首次", '<div class="placeholder" style="padding:30px 16px;">再次取电 ' + fmt(ft.again) + ' 次<br>首次取电 ' + fmt(ft.first_take) + ' 次<br>占比 ' + pct(ft.again, (Number(ft.again) + Number(ft.first_take))) + '</div>', "col-5") + '</div>';
+  mkChart($id("daAge"), barOpt(age.map(function (r) { return r.age_range; }), age.map(function (r) { return r.count; }), { label: true }));
+  mkChart($id("daPeak"), lineOpt(peak.map(function (r) { return r.hour + "时"; }), [{ name: "换电次数", data: peak.map(function (r) { return r.count; }) }], ["次数"]));
+};
+
+ROUTES["risk-monitor"] = function () {
+  var s = g("api_dashboard_alarm-stats");
+  var ba = (s && s.battery) || {}, ex = (s && s.exchange) || {};
+  var c = $id("content");
+  var items = [
+    { lv: "P0", cls: "lv-p0", name: "电池低电量（hungry）告警", cnt: ba.hungry, time: "电池类" },
+    { lv: "P0", cls: "lv-p0", name: "换电柜水浸告警", cnt: ex.flooded, time: "换电柜类" },
+    { lv: "P1", cls: "lv-p1", name: "电池异常充电告警", cnt: ba.break_charge, time: "电池类" },
+    { lv: "P1", cls: "lv-p1", name: "电池未识别告警", cnt: ba.unrecognized, time: "电池类" },
+    { lv: "P1", cls: "lv-p1", name: "换电柜烟感告警", cnt: ex.smoke, time: "换电柜类" },
+    { lv: "P1", cls: "lv-p1", name: "换电柜仓门/卡槽异常告警", cnt: ex.slot, time: "换电柜类" }
+  ].filter(function (d) { return d.cnt != null && d.cnt > 0; });
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "电池告警", value: fmt(ba.total), unit: "起", trend: "P0 低电量 " + fmt(ba.hungry), cls: "k4" },
+    { label: "换电柜告警", value: fmt(ex.total), unit: "起", trend: "P0 水浸 " + fmt(ex.flooded), cls: "" }
+  ]) + '</div>' +
+  '<div class="grid">' + panel("风险监控清单", "按优先级排序", '<ul class="risk-list">' + (items.length ? items.map(function (r) { return '<li class="risk-item"><span class="risk-lv ' + r.cls + '">' + r.lv + '</span><span class="risk-name">' + r.name + '</span><span class="risk-time">' + fmt(r.cnt) + ' 起 · ' + r.time + '</span></li>'; }).join("") : '<li class="risk-item"><span class="risk-name">当前无告警</span></li>') + '</ul>', "col-12") + '</div>';
+};
+
+ROUTES.decision = function () {
+  var ov = g("api_overview_summary");
+  var fin = g("api_finance_summary");
+  var us = g("api_users_summary");
+  var s = g("api_bigscreen_summary");
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "累计用户", value: fmt(us.user_total || ov.total_users || s.total_users), unit: "人", trend: "今日新增 " + fmt(ov.today_new_users || s.today_new_users), cls: "" },
+    { label: "今日换电", value: fmt(ov.today_exchange || s.today_exchange), unit: "次", trend: "昨日 " + fmt(ov.yesterday_exchange), cls: "k2" },
+    { label: "今日营收", value: "¥" + fmtMoney(ov.today_fee || s.today_fee), unit: "", trend: "周期收入 ¥" + fmtMoney(fin.income_fee), cls: "k4" },
+    { label: "周期利润", value: "¥" + fmtMoney(fin.profit_fee), unit: "", trend: "支出 ¥" + fmtMoney(fin.expense_fee), cls: "k3" },
+    { label: "协议在用", value: fmt(us.agreement_using), unit: "份", trend: "已终止 " + fmt(us.agreement_stop), cls: "k5" }
+  ]) + '</div>' +
+  '<div class="grid">' + panel("经营决策摘要", "基于真实业务聚合数据（脱敏快照）", '<div class="placeholder" style="padding:30px 16px;">核心结论以本地完整看板为准<br>本页为公网脱敏快照的决策概览</div>', "col-12") + '</div>';
+};
+
+ROUTES.command = function () {
+  var s = g("api_bigscreen_summary");
+  var trend = g("api_bigscreen_trend") || [];
+  var c = $id("content");
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "累计用户", value: fmt(s.total_users), unit: "人", trend: "今日新增 " + fmt(s.today_new_users), cls: "" },
+    { label: "电池", value: fmt(s.battery_total), unit: "块", trend: "换电柜 " + fmt((s.exchanges && s.exchanges.total) || "-"), cls: "k2" },
+    { label: "今日换电", value: fmt(s.today_exchange), unit: "次", trend: "今日营收 ¥" + fmtMoney(s.today_fee), cls: "k3" },
+    { label: "月目标完成率", value: s.month_target_rate != null ? s.month_target_rate + "%" : "-", unit: "", trend: "当月营收 ¥" + fmtMoney(s.month_income), cls: "k4" }
+  ]) + '</div>' +
+  '<div class="grid">' + chartPanel("大屏趋势", "近 12 个月", "cmdTrend", "col-12") + '</div>';
+  mkChart($id("cmdTrend"), lineOpt(trend.map(function (t) { return t.month; }), [
+    { name: "换电次数", data: trend.map(function (t) { return t.exchange_count; }) },
+    { name: "活跃用户", data: trend.map(function (t) { return t.active_users; }) }
+  ], ["次数", "用户"]));
+};
+
+/* ================= 占位 ================= */
+var DETAIL_PLACEHOLDER = "该板块包含用户 / 网点 / 设备明细数据，公网快照已按隐私要求脱敏省略；<br>本地完整版看板保留全部真实明细数据。";
+["user-detail", "user-tables", "user-query", "sales-package", "sales-agreement", "sales-site-list",
+ "site-statement", "site-eval", "site-tables", "site-sales", "site-detail",
+ "asset-warehouse", "asset-flow", "asset-transfer", "asset-inout", "asset-fault",
+ "service-desk"].forEach(function (k) {
+  ROUTES[k] = function () {
+    $id("content").innerHTML = '<div class="grid">' + panel("内容说明", "", placeholderHTML(DETAIL_PLACEHOLDER), "col-12") + '</div>';
+  };
+});
+ROUTES.placeholder = ROUTES["service-desk"];
+
+/* ================= 启动 ================= */
 function tick() {
   var d = new Date();
   var p = function (n) { return (n < 10 ? "0" : "") + n; };
-  document.getElementById("now").textContent = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+  $id("now").textContent = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
 }
+window.addEventListener("resize", function () { _charts.forEach(function (c) { c.resize(); }); });
 setInterval(tick, 1000); tick();
+renderMenu();
+loadAll().then(function () { switchPage("bigscreen"); }).catch(function (e) {
+  $id("content").innerHTML = '<div style="color:#f87171;padding:20px;">数据加载失败：' + e.message + '</div>';
+});
 </script>
 </body>
 </html>
