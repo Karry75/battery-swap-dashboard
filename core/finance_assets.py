@@ -7,6 +7,7 @@ t_exchange（换电柜）、t_bike（车辆）、t_work_order（工单）。
 """
 import time
 from core import db
+from core.cn_labels import BATTERY_STATUS_CN, DEPOSIT_STATUS_CN, UNKNOWN_CN
 from core.customers import get_customer_map
 from core.filters import FilterSet, AGREEMENT_COLUMNS, ORDER_COLUMNS, SERVICE_COLUMNS, \
     SITE_COLUMNS, EXCHANGE_COLUMNS, BATTERY_COLUMNS, EXPENSE_COLUMNS, \
@@ -194,6 +195,8 @@ def finance_deposit_list(oem_ids=None, deposit_status="", page=1, page_size=50, 
         f"LIMIT {page_size} OFFSET {(page - 1) * page_size}")
     for r in rows:
         r["create_time"] = _fmt_ms(r["create_time"])
+        r["take_battery_status_cn"] = DEPOSIT_STATUS_CN.get(
+            r.get("take_battery_status"), r.get("take_battery_status"))
     return _pager(page, page_size, total, rows)
 
 
@@ -246,7 +249,10 @@ def assets_battery_status(oem_ids=None, args=None):
     rows = db.query(
         f"SELECT COALESCE(NULLIF(b.battery_status,''),'unknown') status, COUNT(*) c "
         f"FROM t_battery b WHERE {w} GROUP BY status ORDER BY c DESC")
-    return [{"status": r["status"], "count": int(r["c"])} for r in rows]
+    return [{"status": r["status"],
+             "name_cn": BATTERY_STATUS_CN.get(r["status"],
+                                              UNKNOWN_CN if r["status"] == "unknown" else r["status"]),
+             "count": int(r["c"])} for r in rows]
 
 
 def assets_transfer_logs(oem_ids=None, transfer_type="", keyword="", page=1, page_size=50, args=None):

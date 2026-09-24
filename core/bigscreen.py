@@ -7,6 +7,7 @@ t_battery / t_device_type），城市归一化规则与 core/overview 保持一�
 """
 import time
 from core import db
+from core.cn_labels import BATTERY_STATUS_CN, UNKNOWN_CN
 from core.overview import DAY_MS, _now_ms, _today_start_ms, _city_core
 from core.filters import FilterSet, USER_COLUMNS, ORDER_COLUMNS, EXCHANGE_COLUMNS, BATTERY_COLUMNS
 
@@ -284,7 +285,9 @@ def dist(oem_ids=None, city=None, args=None):
 
     return {
         "exchange_types": [{"name": r["name"], "count": int(r["c"] or 0)} for r in types],
-        "battery_status": [{"name": r["st"], "count": int(r["c"] or 0)} for r in bstatus],
+        "battery_status": [{"key": r["st"],
+                            "name": BATTERY_STATUS_CN.get(r["st"], UNKNOWN_CN if r["st"] == "unknown" else r["st"]),
+                            "count": int(r["c"] or 0)} for r in bstatus],
     }
 
 

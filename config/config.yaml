@@ -4,6 +4,8 @@
 database:
   tables:
     battery: t_battery
+    battery_model: t_battery_model
+    battery_series: t_battery_series
     battery_status: t_battery_status
     battery_last_upload: t_battery_last_upload
     battery_not_in: t_battery_not_in

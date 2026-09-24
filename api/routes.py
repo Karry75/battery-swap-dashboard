@@ -104,7 +104,7 @@ def dashboard_summary():
 @permission_required("dashboard:view")
 def dashboard_customer_stats():
     try:
-        return ok(metrics.customer_stats(current_oem_ids()))
+        return ok(metrics.customer_stats(current_oem_ids(), args=request.args))
     except Exception as e:  # noqa: BLE001
         return err(f"统计失败: {type(e).__name__}: {e}", 500, 502)
 
@@ -114,13 +114,32 @@ def dashboard_customer_stats():
 @permission_required("dashboard:view")
 def dashboard_alarm_stats():
     device_type = request.args.get("device_type", "all")
-    if device_type == "battery":
-        data = metrics.alarm_summary(current_oem_ids())["battery"]
-    elif device_type == "exchange":
-        data = metrics.alarm_summary(current_oem_ids())["exchange"]
-    else:
-        data = metrics.alarm_summary(current_oem_ids())
+    try:
+        if device_type == "battery":
+            data = metrics.alarm_summary(current_oem_ids(), args=request.args)["battery"]
+        elif device_type == "exchange":
+            data = metrics.alarm_summary(current_oem_ids(), args=request.args)["exchange"]
+        elif device_type == "board":
+            data = metrics.alarm_summary(current_oem_ids(), args=request.args)["board"]
+        else:
+            data = metrics.alarm_summary(current_oem_ids(), args=request.args)
+    except Exception as e:  # noqa: BLE001
+        return err(f"统计失败: {type(e).__name__}: {e}", 500, 502)
     return ok(data)
+
+
+@bp.get("/dashboard/emergency-center")
+@login_required
+@permission_required("dashboard:view")
+def dashboard_emergency_center():
+    """紧急告警中心：电池规模/柜内外分布/紧急告警电池/紧急告警事项 + 检测板六类告警
+
+    继承统一多维筛选（客户 oem_id、电池产品 battery_product_id、城市/区域/代理商/网点）。
+    """
+    try:
+        return ok(metrics.emergency_center(current_oem_ids(), args=request.args))
+    except Exception as e:  # noqa: BLE001
+        return err(f"紧急告警中心统计失败: {type(e).__name__}: {e}", 500, 502)
 
 
 @bp.get("/alarms")
@@ -133,6 +152,8 @@ def alarms_list():
     page = max(1, int(request.args.get("page", 1)))
     page_size = min(200, max(1, int(request.args.get("page_size", 50))))
     oem_ids = current_oem_ids()
+    # 客户筛选（oem_id）与权限范围合并
+    oem_ids = metrics._eff_oem(oem_ids, request.args)
     try:
         if device_type == "battery":
             items = battery_alarms(oem_ids)
@@ -140,6 +161,9 @@ def alarms_list():
             items = exchange_alarms(oem_ids)
         else:
             items = battery_alarms(oem_ids) + exchange_alarms(oem_ids)
+        if oem_ids:
+            _ids = set(int(i) for i in oem_ids)
+            items = [a for a in items if int(a.get("customer_id") or 0) in _ids]
         if alarm_type:
             items = [a for a in items if a["alarm_type"] == alarm_type]
         # ---- 统一筛选：告警为实时检测计算结果，在后端结果集过滤（非前端假过滤）----

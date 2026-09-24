@@ -21,6 +21,27 @@ EXCHANGE_LAST_STORE = T.get("exchange_last_store", "t_exchange_last_store")
 
 PRIORITY = settings.get("priority.exchange", {})
 
+# 检测板六类告警：来源为换电柜实时上报表字段（1=触发/异常；acq_comm：0=通讯异常）
+# key, 中文名, 判定条件（u 为实时上报表别名）
+BOARD_ALARM_DEFS = [
+    ("fan", "检测板风扇状态", "u.fan='1'"),
+    ("backup_power", "检测板备电状态", "u.backup_power='1'"),
+    ("back_door", "检测板后仓门状态", "u.back_door='1'"),
+    ("smoke", "检测板烟雾告警", "u.smoke='1'"),
+    ("flooded", "检测板水浸告警", "u.flooded='1'"),
+    ("acq_comm", "检测板通讯告警", "u.acq_comm='0'"),
+]
+
+# 检测板字段 -> 事件表监控任务名（cb_monitor_task.event_name），用于标注数据出处
+BOARD_EVENT_NAMES = {
+    "fan": "检测板风扇状态",
+    "backup_power": "检测板备电状态",
+    "back_door": "检测板后仓门状态",
+    "smoke": "换电柜烟感告警",
+    "flooded": "换电柜水浸告警",
+    "acq_comm": "换电柜检测板通讯告警",
+}
+
 _customer_map = None
 
 
@@ -203,3 +224,47 @@ def exchange_alarm_count(oem_ids=None):
     for a in exchange_alarms(oem_ids):
         cnt[a["alarm_type"]] += 1
     return cnt
+
+
+# ================= 检测板六类告警统计 =================
+def board_alarm_counts(oem_ids=None, args=None):
+    """检测板六类告警分别统计（支持客户/城市/网点等统一筛选维度）
+
+    数据源：t_exchange_last_upload 实时字段
+      fan / backup_power / back_door / smoke / flooded  —— '1' 为异常
+      acq_comm —— '0' 为通讯异常
+    仅统计最新一条上报记录（is_del=0）。
+    """
+    from core.filters import FilterSet, EXCHANGE_UPLOAD_COLUMNS
+
+    where = "u.is_del=0"
+    if oem_ids:
+        where += _oem_filter(oem_ids, "u")
+    if args:
+        fs = FilterSet(args, EXCHANGE_UPLOAD_COLUMNS)
+        if fs.has:
+            where += fs.and_clause()
+
+    sums = ", ".join(f"SUM({cond}) AS c_{key}" for key, _name, cond in BOARD_ALARM_DEFS)
+    row = db.query(
+        f"SELECT COUNT(*) AS c_total, {sums} "
+        f"FROM {EXCHANGE_LAST_UPLOAD} u "
+        f"LEFT JOIN {EXCHANGE} x ON x.id = u.exchange_id "
+        f"LEFT JOIN t_site s ON s.id = x.site_id AND s.is_del=0 "
+        f"WHERE {where}"
+    )[0]
+
+    items = []
+    for key, name, _cond in BOARD_ALARM_DEFS:
+        items.append({
+            "key": key,
+            "name": name,
+            "event_name": BOARD_EVENT_NAMES.get(key, ""),
+            "count": int(row.get(f"c_{key}") or 0),
+        })
+    return {
+        "total": int(row.get("c_total") or 0),
+        "items": items,
+        "sum": sum(x["count"] for x in items),
+        "source": "t_exchange_last_upload 实时上报字段",
+    }

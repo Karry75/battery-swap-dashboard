@@ -37,3 +37,8 @@ Thumbs.db
 
 # 本地真实库表映射（含真实库表结构，禁止提交）
 config/schema.local.yaml
+
+# 真实业务快照（含用户手机号/身份信息，禁止提交）
+exchange_trend_dashboard/snapshots/
+# 中间产物
+temp/

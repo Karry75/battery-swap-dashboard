@@ -114,7 +114,11 @@ class FilterSet:
             if _e is not None:
                 self.parts.append(f"{col}<={_e}")
         # 枚举/ID 类（支持逗号分隔多选）
-        for dim in ("agency_id", "battery_product_id", "site_id",
+        # 说明：col 支持两种形态
+        #   1) 普通列名，如 "b.oem_id" -> 生成 col IN (...)
+        #   2) 含 {ids} 占位符的子查询模板（用于无直连列、需经中间表关联的维度），
+        #      如电池产品需经 电池型号->系列->产品 关联，模板内用 {ids} 占位
+        for dim in ("oem_id", "agency_id", "battery_product_id", "site_id",
                     "employee_id", "merchant_id", "brand_id", "bu_id", "agreement_id"):
             col = self.columns.get(dim)
             if not col:
@@ -127,7 +131,10 @@ class FilterSet:
                 continue
             _ids = [x for x in vals if x.isdigit()]
             if _ids:
-                self.parts.append(f"{col} IN ({','.join(_ids)})")
+                if "{ids}" in col:
+                    self.parts.append(col.replace("{ids}", ",".join(_ids)))
+                else:
+                    self.parts.append(f"{col} IN ({','.join(_ids)})")
         # 模糊类
         for dim in self._LIKE_DIMS:
             col = self.columns.get(dim)
@@ -264,13 +271,36 @@ EXCHANGE_COLUMNS = {
     "site_id": "e.site_id",
     "brand_id": "e.brand_id",
     "device_sn": "e.device_sn",
+    "oem_id": "e.oem_id",                      # 客户(sys_oem.oem_id)
 }
 
-# 电池 t_battery（别名 b；无网点直连列，城市/网点筛选请经设备链路或不下发此类筛选）
+# 换电柜实时上报 t_exchange_last_upload（别名 u；客户/城市/网点经 t_exchange x + t_site s 关联）
+EXCHANGE_UPLOAD_COLUMNS = {
+    "time": "u.last_upload_time",
+    "city": "s.city",
+    "area": "s.area",
+    "street": "s.street",
+    "community": "s.community",
+    "agency_id": "x.agency_id",
+    "site_id": "x.site_id",
+    "brand_id": "x.brand_id",
+    "device_sn": "u.exchange_sn",
+    "oem_id": "u.oem_id",
+}
+
+# 电池 t_battery（别名 b；城市/网点无直连列；电池产品经 型号->系列->产品 关联）
+# 说明：cb_battery 无 battery_product_id 列，需经 device_type_id 关联 t_battery_model 再经
+#      series_id 关联 t_battery_product 得到产品，故此处用子查询模板（{ids} 为产品ID占位符）
 BATTERY_COLUMNS = {
     "agency_id": "b.agency_id",
     "brand_id": "b.brand_id",
     "device_sn": "b.device_sn",
+    "oem_id": "b.oem_id",
+    "battery_product_id": (
+        "b.device_type_id IN (SELECT m.device_type_id FROM t_battery_model m "
+        "JOIN t_battery_product p ON p.series_id = m.series_id "
+        "WHERE p.id IN ({ids}))"
+    ),
 }
 
 # 财务支出单 t_expense_bill（别名 b）

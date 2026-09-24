@@ -132,6 +132,7 @@ const FILTER_META = {
   community:  { label: '社区',       type: 'select', k: 'community',    src: 'communities' },
   agency:     { label: '代理商',     type: 'select', k: 'agency_id',    src: 'agencies' },
   battery_product: { label: '电池产品', type: 'select', k: 'battery_product_id', src: 'battery_products' },
+  oem:        { label: '客户',       type: 'select', k: 'oem_id',         src: 'customers' },
   site:       { label: '网点',       type: 'select', k: 'site_id',      src: 'sites' },
   employee:   { label: '业务员',     type: 'select', k: 'employee_id',  src: 'employees' },
   merchant:   { label: '商户',       type: 'select', k: 'merchant_id',  src: 'merchants' },
@@ -171,8 +172,8 @@ const FILTER_DEFS = {
   'site-tables': ['city', 'area', 'street', 'community', 'agency', 'merchant', 'site', 'time', 'op_time'],
   'site-sales': ['city', 'area', 'agency', 'site', 'time'],
   'site-detail': ['site', 'time'],
-  'asset-exchange': ['city', 'area', 'street', 'community', 'agency', 'site', 'device_sn', 'brand', 'time'],
-  'asset-battery': ['city', 'area', 'agency', 'battery_product', 'brand', 'device_sn', 'time'],
+  'asset-exchange': ['city', 'area', 'street', 'community', 'agency', 'oem', 'site', 'device_sn', 'brand', 'time'],
+  'asset-battery': ['city', 'area', 'agency', 'battery_product', 'oem', 'brand', 'device_sn', 'time'],
   'asset-bike': ['city', 'area', 'agency', 'time'],
   'asset-warehouse': ['device_sn', 'time'],
   'asset-flow': ['time'],
@@ -180,10 +181,10 @@ const FILTER_DEFS = {
   'asset-inout': ['time'],
   'asset-fault': ['city', 'area', 'agency', 'site', 'time'],
   coupon: ['battery_product', 'brand', 'time'],
-  dashboard: ['city', 'area', 'agency', 'battery_product', 'site', 'time'],
-  exchange: ['city', 'area', 'agency', 'site', 'device_sn', 'time'],
-  battery: ['city', 'area', 'agency', 'battery_product', 'brand', 'device_sn', 'time'],
-  alarm: ['city', 'area', 'device_sn', 'time'],
+  dashboard: ['city', 'area', 'agency', 'battery_product', 'oem', 'site', 'time'],
+  exchange: ['city', 'area', 'agency', 'oem', 'site', 'device_sn', 'time'],
+  battery: ['city', 'area', 'agency', 'battery_product', 'oem', 'brand', 'device_sn', 'time'],
+  alarm: ['city', 'area', 'oem', 'device_sn', 'time'],
   staff: ['city', 'area', 'agency', 'site', 'time'],
   finance: ['bu', 'time'],
   'service-desk': ['city', 'agency', 'user_phone', 'agreement_id', 'time'],
@@ -358,6 +359,7 @@ async function api(path, options = {}) {
 }
 
 function esc(s) {
+  if (typeof s === 'number') return Number.isFinite(s) ? String(s) : '-';
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -379,6 +381,34 @@ function showBanner(text) {
 function tag(text, cls) { return `<span class="tag ${cls}">${esc(text)}</span>`; }
 function statusTag(v) { return v === 'online' ? tag('在线', 'tag-ok') : tag('离线', 'tag-off'); }
 function money(v) { return Number(v || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+/* ---------- 数据库英文字段值 → 中文（就地映射，页面不再出现英文枚举） ---------- */
+const SITE_STATUS_CN = { on: '已开业', off: '已停业' };
+const AUDIT_PROGRESS_CN = {
+  have_opened: '已开业', closed: '已关闭', wait_open: '待开业',
+  wait_install: '待安装', not_cooperation: '未合作',
+};
+const BATTERY_STATUS_CN = { none: '未使用', using: '使用中', maintain: '维修中', scrap: '报废' };
+const BATTERY_TYPE_CN = { normal: '正常' };
+const DEPOSIT_STATUS_CN = { init: '未取电', take: '已取电', back: '已归还' };
+const ONLINE_STATUS_CN = { online: '在线', offline: '离线' };
+
+function cn(map, v, dft) {
+  const k = String(v == null ? '' : v).trim();
+  if (!k) return dft === undefined ? '-' : dft;
+  return map[k] || k;
+}
+function siteStatusTag(v) { return tag(cn(SITE_STATUS_CN, v), v === 'on' ? 'tag-ok' : 'tag-off'); }
+function fmtNum(v) {
+  if (v === null || v === undefined || v === '') return '-';
+  const n = Number(v);
+  return Number.isFinite(n) ? n.toLocaleString('zh-CN') : String(v);
+}
+function pct(part, total) {
+  const p = Number(part), t = Number(total);
+  if (!Number.isFinite(p) || !Number.isFinite(t) || t === 0) return '0.0%';
+  return (p * 100 / t).toFixed(1) + '%';
+}
 
 /* ---------- 菜单渲染 ---------- */
 function menuVisible(node) {
@@ -482,7 +512,10 @@ function pager(total, page, pageSize, fn) {
 function tableHtml(headers, rows, empty = '暂无数据') {
   if (!rows.length) return `<div class="card"><div class="td-empty">${empty}</div></div>`;
   return `<div class="card table-wrap"><table class="table"><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-    <tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    <tbody>${rows.map(r => `<tr>${r.map(c => {
+      if (typeof c === 'number') return `<td>${Number.isFinite(c) ? c.toLocaleString('zh-CN') : '-'}</td>`;
+      return `<td>${c}</td>`;
+    }).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 
 function card(title, inner, extra = '') {
@@ -671,7 +704,7 @@ const COMPONENTS = {
     ]) + `<div class="grid-2">` + chartBox('协议生命周期分布', 300) + chartBox('城市用户TOP10', 300) + `</div>`
       + `<div class="grid-2">` + chartBox('用户频次分层(30d)', 280) + chartBox('用户价值分层(30d)', 280) + `</div>`
       + card('用户分层明细(30d)', tableHtml(['分层', '用户数', '占比'],
-          tierRows.map(r => [esc(r[0]), r[1], (r[2] ? (r[1] * 100 / r[2]).toFixed(1) : 0) + '%'])))
+          tierRows.map(r => [esc(r[0]), fmtNum(r[1]), pct(r[1], r[2])])))
       + card('城市分布明细', tableHtml(['城市', '用户数', '活跃用户(30d)', '协议数', '近30天换电次数'],
         (cd.items || []).slice(0, 20).map(c => [esc(c.city || '-'), c.users, c.active_users, c.agreements, c.exchange_30d])));
     setTimeout(() => {
@@ -914,8 +947,8 @@ const COMPONENTS = {
       const type = document.getElementById('site_type').value;
       const d = await api(`/api/sites/list?page=${page}&keyword=${encodeURIComponent(kw)}&type=${type}`);
       document.getElementById('site_list_box').innerHTML =
-        tableHtml(['ID', '网点名称', '城市', '类型', '状态', '负责人', '联系电话', '地址'],
-          d.items.map(x => [x.id, esc(x.name), esc(x.city || '-'), esc(x.type_text || x.type), esc(x.site_status), esc(x.contact_person_name || '-'), esc(x.contact_person_tel || '-'), esc(x.address || '-')]))
+        tableHtml(['ID', '网点名称', '城市', '类型', '状态', '审核进度', '客户', '负责人', '联系电话', '地址'],
+          d.items.map(x => [x.id, esc(x.name), esc(x.city || '-'), esc(x.type_text || x.type), siteStatusTag(x.site_status), esc(cn(AUDIT_PROGRESS_CN, x.audit_progress)), esc(x.customer_name || '-'), esc(x.contact_person_name || '-'), esc(x.contact_person_tel || '-'), esc(x.address || '-')]))
         + pager(d.total, d.page, d.page_size, 'loadSiteList');
     };
     loadSiteList(1);
@@ -941,7 +974,7 @@ const COMPONENTS = {
           <button class="btn btn-ghost-dark" onclick="loadWorkOrder(1)">查看工单</button></div>
         <div id="asset_box"></div>`;
     setTimeout(() => {
-      drawChart(firstChartId(el, 0), { tooltip: {}, xAxis: { type: 'category', data: bt.map(b => b.status) }, yAxis: { type: 'value' }, series: [{ type: 'pie', radius: '60%', data: bt.map(b => ({ name: b.status, value: b.count })) }] });
+      drawChart(firstChartId(el, 0), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: bt.map(b => ({ name: b.name_cn || cn(BATTERY_STATUS_CN, b.status), value: b.count })) }] });
       drawChart(firstChartId(el, 1), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: [{ name: '换电柜', value: s.exchange.total }, { name: '电池', value: s.battery.total }, { name: '车辆', value: s.bike.total }, { name: '网点', value: s.site.total }] }] });
     }, 0);
     window.loadTransfer = async (page = 1) => {
@@ -1045,7 +1078,7 @@ const COMPONENTS = {
       const d = await api(`/api/finance/deposit-list?page=${page}`);
       document.getElementById('finance_box').innerHTML =
         tableHtml(['ID', '用户', '手机号', '押金状态', '押金金额', '是否已退', '是否冻结', '创建时间'],
-          d.items.map(x => [x.id, esc(x.username || '-'), esc(x.phone || '-'), esc(x.take_battery_status || '-'), '¥' + money(x.fee), x.is_withdraw == 1 ? '是' : '否', x.is_freeze == 1 ? '是' : '否', fmtTs(x.create_time)]))
+          d.items.map(x => [x.id, esc(x.username || '-'), esc(x.phone || '-'), esc(x.take_battery_status_cn || cn(DEPOSIT_STATUS_CN, x.take_battery_status)), '¥' + money(x.fee), x.is_withdraw == 1 ? '是' : '否', x.is_freeze == 1 ? '是' : '否', fmtTs(x.create_time)]))
         + pager(d.total, d.page, d.page_size, 'loadDeposit');
     };
     loadExpense(1);
@@ -1085,7 +1118,7 @@ const COMPONENTS = {
       + card('新老用户占比', `<div class="kpi-grid">
           <div class="kpi"><div class="label">首次换电用户</div><div class="value ok">${ft.first_take}</div></div>
           <div class="kpi"><div class="label">复购用户</div><div class="value blue">${ft.again}</div></div>
-          <div class="kpi"><div class="label">复购占比</div><div class="value warn">${((ft.again || 0) / Math.max(1, ft.first_take + ft.again) * 100).toFixed(1)}%</div></div></div>`)
+          <div class="kpi"><div class="label">复购占比</div><div class="value warn">${pct(ft.again, (ft.first_take || 0) + (ft.again || 0))}</div></div></div>`)
       + `<div class="filters" style="margin-bottom:10px">
           <button class="btn btn-ghost-dark" onclick="loadInsightOrders(1)">查看近7天换电明细</button></div>
         <div id="insight_box"></div>`;
@@ -1102,10 +1135,11 @@ const COMPONENTS = {
     };
   },
 
-  /* ---- 运维看板四板块 ---- */
+  /* ---- 运维看板 · 设备总览看板（KPI + 告警分类 + 客户设备统计 + 紧急告警中心 + 检测板六类告警） ---- */
   async dashboard(el) {
-    const [s, cs, as] = await Promise.all([
-      api('/api/dashboard/summary'), api('/api/dashboard/customer-stats'), api('/api/dashboard/alarm-stats'),
+    const [s, cs, as, ec] = await Promise.all([
+      api('/api/dashboard/summary'), api('/api/dashboard/customer-stats'),
+      api('/api/dashboard/alarm-stats'), api('/api/dashboard/emergency-center'),
     ]);
     const d = s.device, b = d.battery, e = d.exchange, ab = s.alarm.battery, ae = s.alarm.exchange;
     el.innerHTML = kpiGrid([
@@ -1119,10 +1153,22 @@ const COMPONENTS = {
       { label: '机柜告警', value: ae.total, cls: 'danger' },
     ]) + `<div class="grid-2">` + chartBox('电池告警分类', 300) + chartBox('机柜告警分类', 300) + `</div>`
       + card('客户设备统计', tableHtml(['客户', '电池数', '换电柜数', '电池告警', '机柜告警'],
-        cs.map(c => [esc(c.customer_name), c.battery.total, c.exchange.total, c.battery_alarm, c.exchange_alarm])));
+        cs.map(c => [esc(c.customer_name), c.battery.total, c.exchange.total, c.battery_alarm, c.exchange_alarm])))
+      + emergencyCenterHtml(ec)
+      + boardAlarmSectionHtml(ec);
     setTimeout(() => {
-      drawChart(firstChartId(el, 0), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: dictToArr(as.battery).map(x => ({ name: ALARM_META[x.type] ? ALARM_META[x.type].name : x.type, value: x.count })) }] });
-      drawChart(firstChartId(el, 1), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: dictToArr(as.exchange).map(x => ({ name: ALARM_META[x.type] ? ALARM_META[x.type].name : x.type, value: x.count })) }] });
+      const pie = arr => arr.map(x => ({ name: ALARM_META[x.type] ? ALARM_META[x.type].name : x.type, value: x.count }));
+      drawChart(firstChartId(el, 0), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: pie(dictToArr(as.battery)) }] });
+      drawChart(firstChartId(el, 1), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: pie(dictToArr(as.exchange)) }] });
+      const bt = (ec || {}).battery || {};
+      drawChart(firstChartId(el, 2), { tooltip: {}, legend: { bottom: 0 }, series: [{ type: 'pie', radius: ['40%', '65%'], data: [
+        { name: '柜内电池', value: bt.inside || 0 }, { name: '柜外电池', value: bt.outside || 0 }] }] });
+      drawChart(firstChartId(el, 3), { tooltip: {}, legend: { bottom: 0 }, series: [{ type: 'pie', radius: ['40%', '65%'],
+        data: ((ec || {}).battery_status || []).map(x => ({ name: x.name, value: x.count })) }] });
+      const bi = (((ec || {}).board || {}).items) || [];
+      drawChart(firstChartId(el, 4), { tooltip: {}, grid: { left: 120, right: 60, top: 20, bottom: 30 },
+        xAxis: { type: 'value' }, yAxis: { type: 'category', data: bi.map(x => x.name) },
+        series: [{ type: 'bar', data: bi.map(x => x.count), itemStyle: { color: '#dc2626' }, label: { show: true, position: 'right' } }] });
     }, 0);
   },
 
@@ -1185,8 +1231,8 @@ const COMPONENTS = {
         ]);
         document.getElementById('battery_box').innerHTML =
           tableHtml(['电池SN', '客户', '电池状态', '在线', '类型', '电量%', '电压V', '充电', '所在柜', '供应商', '地址', '最后上报'],
-            d.items.map(x => [esc(x.device_sn), esc(x.customer_name), esc(x.battery_status || '-'), statusTag(x.online_status),
-              esc(x.type || '-'), x.power != null ? x.power : '-', x.voltage != null ? x.voltage : '-',
+            d.items.map(x => [esc(x.device_sn), esc(x.customer_name), esc(cn(BATTERY_STATUS_CN, x.battery_status)), statusTag(x.online_status),
+              esc(cn(BATTERY_TYPE_CN, x.type)), x.power != null ? x.power : '-', x.voltage != null ? x.voltage : '-',
               x.charging === '1' ? tag('充电中', 'tag-ok') : '-', esc(x.last_upload_exchange_sn || '-'),
               esc(x.supplier_name || '-'), esc(x.last_location_address || '-'), fmtTs(x.last_battery_upload_time)]))
           + pager(d.total, d.page, d.page_size, 'loadBattery');
@@ -1377,7 +1423,7 @@ const COMPONENTS = {
         }],
       });
 
-      const bst = (d.battery_status || []).filter(x => x.name !== 'unknown');
+      const bst = (d.battery_status || []).filter(x => (x.key || x.name) !== 'unknown');
       drawChart('bs_batteryChart', {
         tooltip: { trigger: 'item' },
         legend: { textStyle: { color: '#8fb6ff' }, bottom: 0, itemWidth: 12, itemHeight: 8 },
@@ -1385,7 +1431,7 @@ const COMPONENTS = {
           type: 'pie', radius: ['35%', '68%'], center: ['50%', '46%'],
           label: { show: false },
           itemStyle: { borderColor: '#0a1633', borderWidth: 2 },
-          data: bst.map(x => ({ name: x.name === 'using' ? '使用中' : x.name === 'none' ? '空闲' : x.name, value: x.count })),
+          data: bst.map(x => ({ name: cn(BATTERY_STATUS_CN, x.key || x.name), value: x.count })),
         }],
       });
 
@@ -1585,7 +1631,7 @@ const COMPONENTS = {
       { label: '处理中工单', value: s.work_order_doing, cls: 'danger' },
     ]) + `<div class="grid-2">` + chartBox('区域网点分布', 320) + chartBox('区域30天换电', 320) + `</div>`
       + card('网点样本', tableHtml(['网点名称', '城市', '区域', '类型', '状态', '联系人', '地址'],
-        (list.items || []).map(x => [esc(x.name), esc(x.city), esc(x.area || '-'), esc(String(x.type_text ?? x.type)), x.site_status === 'on' ? tag('在营', 'tag-ok') : tag('停业', 'tag-off'), esc(x.contact_person_name || '-'), esc(x.address || '-')])));
+        (list.items || []).map(x => [esc(x.name), esc(x.city), esc(x.area || '-'), esc(String(x.type_text ?? x.type)), siteStatusTag(x.site_status), esc(x.contact_person_name || '-'), esc(x.address || '-')])));
     setTimeout(() => {
       drawChart(firstChartId(el, 0), { tooltip: {}, grid: { left: 60, right: 20, bottom: 60 }, xAxis: { type: 'category', data: r.map(x => bsShort(x.city)), axisLabel: { rotate: 30 } }, yAxis: { type: 'value' }, series: [{ type: 'bar', data: r.map(x => x.site_count), itemStyle: { color: '#2563eb' } }] });
       drawChart(firstChartId(el, 1), { tooltip: {}, grid: { left: 60, right: 20, bottom: 60 }, xAxis: { type: 'category', data: r.map(x => bsShort(x.city)), axisLabel: { rotate: 30 } }, yAxis: { type: 'value' }, series: [{ type: 'bar', data: r.map(x => x.exchange_30d), itemStyle: { color: '#16a34a' } }] });
@@ -1601,13 +1647,13 @@ const COMPONENTS = {
       { label: '电池', value: b.total, cls: 'blue' }, { label: '电池在线', value: b.online, cls: 'ok' }, { label: '电池离线', value: b.offline, cls: 'warn' },
       { label: '车辆', value: k.total, cls: 'blue' }, { label: '网点', value: s.total, cls: 'blue' },
     ]) + `<div class="grid-2">` + chartBox('设备在线构成', 320) + chartBox('电池状态分布', 320) + `</div>`
-      + card('电池状态明细', tableHtml(['状态', '数量'], (bs || []).map(x => [esc(x.status || x.name), (x.count || 0).toLocaleString()])));
+      + card('电池状态明细', tableHtml(['状态', '数量'], (bs || []).map(x => [esc(x.name_cn || cn(BATTERY_STATUS_CN, x.status || x.name)), (x.count || 0).toLocaleString()])));
     setTimeout(() => {
       drawChart(firstChartId(el, 0), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: [
         { name: '柜在线', value: e.online }, { name: '柜离线', value: e.offline },
         { name: '电池在线', value: b.online }, { name: '电池离线', value: b.offline },
       ] }] });
-      drawChart(firstChartId(el, 1), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: (bs || []).map(x => ({ name: x.status || x.name, value: x.count })) }] });
+      drawChart(firstChartId(el, 1), { tooltip: {}, series: [{ type: 'pie', radius: '60%', data: (bs || []).map(x => ({ name: x.name_cn || cn(BATTERY_STATUS_CN, x.status || x.name), value: x.count })) }] });
     }, 0);
   },
 
@@ -1763,7 +1809,7 @@ const COMPONENTS = {
         document.getElementById('ssl_box').innerHTML =
           tableHtml(['网点名称', '城市', '区域', '类型', '状态', '联系人', '电话', '地址', '创建时间'],
             (d.items || []).map(x => [esc(x.name), esc(x.city), esc(x.area || '-'), esc(String(x.type_text ?? x.type)),
-              x.site_status === 'on' ? tag('在营', 'tag-ok') : tag('停业', 'tag-off'), esc(x.contact_person_name || '-'),
+              siteStatusTag(x.site_status), esc(x.contact_person_name || '-'),
               esc(x.contact_person_tel || '-'), esc(x.address || '-'), fmtTs(x.create_time)]))
           + pager(d.total, d.page, d.page_size, 'loadSalesSiteList');
       } catch (e) { console.error(e); document.getElementById('ssl_box').innerHTML = dbErrorHtml(e); }
@@ -1797,13 +1843,13 @@ const COMPONENTS = {
     const r = (regions || []).slice(0, 12);
     el.innerHTML = kpiGrid([
       { label: '网点总数', value: s.site_total, cls: 'blue' },
-      { label: '在营率', value: (s.site_total ? (s.site_open / s.site_total * 100).toFixed(1) : 0) + '%', cls: 'ok' },
+      { label: '在营率', value: pct(s.site_open, s.site_total), cls: 'ok' },
       { label: '覆盖城市', value: (regions || []).length, cls: 'blue' },
       { label: '处理中工单', value: s.work_order_doing, cls: 'warn' },
     ]) + `<div class="grid-2">` + chartBox('城市网点数 TOP12', 320) + chartBox('城市30天换电 TOP12', 320) + `</div>`
       + card('重点网点样本', tableHtml(['网点名称', '城市', '区域', '类型', '状态', '联系人', '地址'],
         (list.items || []).map(x => [esc(x.name), esc(x.city), esc(x.area || '-'), esc(String(x.type_text ?? x.type)),
-          x.site_status === 'on' ? tag('在营', 'tag-ok') : tag('停业', 'tag-off'), esc(x.contact_person_name || '-'), esc(x.address || '-')])));
+          siteStatusTag(x.site_status), esc(x.contact_person_name || '-'), esc(x.address || '-')])));
     setTimeout(() => {
       drawChart(firstChartId(el, 0), { tooltip: {}, grid: { left: 60, right: 20, bottom: 60 }, xAxis: { type: 'category', data: r.map(x => bsShort(x.city)), axisLabel: { rotate: 30 } }, yAxis: { type: 'value' }, series: [{ type: 'bar', data: r.map(x => x.site_count), itemStyle: { color: '#2563eb' } }] });
       drawChart(firstChartId(el, 1), { tooltip: {}, grid: { left: 60, right: 20, bottom: 60 }, xAxis: { type: 'category', data: r.map(x => bsShort(x.city)), axisLabel: { rotate: 30 } }, yAxis: { type: 'value' }, series: [{ type: 'bar', data: r.map(x => x.exchange_30d), itemStyle: { color: '#16a34a' } }] });
@@ -1825,7 +1871,7 @@ const COMPONENTS = {
         document.getElementById('st_box').innerHTML =
           tableHtml(['网点名称', '城市', '区域', '类型', '状态', '联系人', '电话', '经理', '客户', '地址', '创建时间'],
             (d.items || []).map(x => [esc(x.name), esc(x.city), esc(x.area || '-'), esc(String(x.type_text ?? x.type)),
-              x.site_status === 'on' ? tag('在营', 'tag-ok') : tag('停业', 'tag-off'), esc(x.contact_person_name || '-'),
+              siteStatusTag(x.site_status), esc(x.contact_person_name || '-'),
               esc(x.contact_person_tel || '-'), esc(x.store_manager_name || '-'), esc(x.customer_name || '-'),
               esc(x.address || '-'), fmtTs(x.create_time)]))
           + pager(d.total, d.page, d.page_size, 'loadSiteTables');
@@ -1924,8 +1970,8 @@ const COMPONENTS = {
         ]);
         document.getElementById('ab_box').innerHTML =
           tableHtml(['电池SN', '客户', '电池状态', '在线', '类型', '电量%', '电压V', '充电', '所在柜', '供应商', '地址', '最后上报'],
-            d.items.map(x => [esc(x.device_sn), esc(x.customer_name), esc(x.battery_status || '-'), statusTag(x.online_status),
-              esc(x.type || '-'), x.power != null ? x.power : '-', x.voltage != null ? x.voltage : '-',
+            d.items.map(x => [esc(x.device_sn), esc(x.customer_name), esc(cn(BATTERY_STATUS_CN, x.battery_status)), statusTag(x.online_status),
+              esc(cn(BATTERY_TYPE_CN, x.type)), x.power != null ? x.power : '-', x.voltage != null ? x.voltage : '-',
               x.charging === '1' ? tag('充电中', 'tag-ok') : '-', esc(x.last_upload_exchange_sn || '-'),
               esc(x.supplier_name || '-'), esc(x.last_location_address || '-'), fmtTs(x.last_battery_upload_time)]))
           + pager(d.total, d.page, d.page_size, 'loadAssetBattery');
@@ -2042,6 +2088,94 @@ const COMPONENTS = {
     el.innerHTML = placeholderHtml();
   },
 };
+
+/* ---------- 设备总览看板 · 紧急告警中心 / 检测板六类告警（真实数据驱动） ---------- */
+function sectionHead(title, sub) {
+  return `<div class="card-head" style="margin:4px 2px 10px"><h3 style="font-size:16px">${esc(title)}</h3>
+    <span class="muted">${sub || ''}</span></div>`;
+}
+
+function emergencyCenterHtml(ec) {
+  ec = ec || {};
+  const b = ec.battery || {}, em = ec.emergency || {};
+  const bms = ec.bms || [];
+  const batRows = (em.batteries || []).map(x => [
+    x.rank,
+    esc(x.sn === '-' ? '未关联SN（按告警记录聚合）' : x.sn),
+    tag(x.kinds + ' 类', x.kinds > 1 ? 'tag-p0' : 'tag-p1'),
+    fmtNum(x.count),
+    esc(x.customer_name || '-'),
+  ]);
+  const itemRows = (em.items || []).map(x => [esc(x.name), fmtNum(x.count)]);
+  const CONF_CN = { high: '高', mid: '中', todo: '待确认' };
+  const CONF_CLS = { high: 'tag-ok', mid: 'tag-p1', todo: 'tag-off' };
+  const bmsRows = bms.map(x => [
+    esc(x.name),
+    x.pending ? '<span class="muted">待接入</span>' : fmtNum(x.count),
+    x.records ? fmtNum(x.records) : '-',
+    esc(x.bit_text || '-'),
+    tag(CONF_CN[x.confidence] || '待确认', CONF_CLS[x.confidence] || 'tag-off'),
+    esc(x.last_time || '-'),
+  ]);
+  const bits = ec.bms_bits || [];
+  const bitRows = bits.map(x => [
+    esc(x.bit), fmtNum(x.batteries), fmtNum(x.records),
+    esc(x.temp_range), esc(x.vmin_range), esc(x.vmax_range), esc(x.last_time),
+  ]);
+  const bmsBats = (ec.bms_batteries || []).slice(0, 50).map(x => [
+    esc(x.sn), esc(x.customer_name || '-'), esc(x.classes || '-'), esc(x.bits || '-'),
+    x.soc != null ? x.soc : '-', x.temp != null ? x.temp + '℃' : '-',
+    esc(x.addr || '-'), esc(x.last_time || '-'),
+  ]);
+  const btTotals = ec.bms_totals || {};
+  return sectionHead('紧急告警中心',
+      `柜内/柜外判定：${esc(ec.battery_inside_rule || '-')}；BMS 告警：${esc(ec.bms_note || '-')}`)
+    + kpiGrid([
+      { label: '电池总数', value: fmtNum(b.total), cls: 'blue' },
+      { label: '电池在线', value: fmtNum(b.online), cls: 'ok' },
+      { label: '电池离线', value: fmtNum(b.offline), cls: 'warn' },
+      { label: '柜内电池', value: fmtNum(b.inside), cls: 'blue' },
+      { label: '柜外电池', value: fmtNum(b.outside), cls: 'blue' },
+      { label: '柜内在线 / 离线', value: fmtNum(b.inside_online) + ' / ' + fmtNum(b.inside_offline) },
+      { label: '紧急告警电池', value: fmtNum(em.battery_count), cls: 'danger' },
+      { label: '紧急告警事项', value: fmtNum(em.item_count) + ' 类 / ' + fmtNum(em.alarm_total) + ' 条', cls: 'danger' },
+    ])
+    + `<div class="grid-2">` + chartBox('电池柜内 / 柜外分布', 280) + chartBox('电池状态分布（库字段中文映射）', 280) + `</div>`
+    + card('紧急告警电池（按告警种类与次数排序）',
+        tableHtml(['#', '电池SN', '告警种类', '告警次数', '客户'], batRows),
+        `<span class="muted">共 ${fmtNum(em.battery_count)} 块电池 / ${fmtNum(em.alarm_total)} 条告警记录`
+        + (em.no_sn_alarm_count ? `（另有 ${fmtNum(em.no_sn_alarm_count)} 条事件明细缺 SN，未计入排行）` : '')
+        + `</span>`)
+    + `<div class="grid-2">`
+      + card('紧急告警事项', tableHtml(['告警事项', '数量'], itemRows))
+      + card('6 类电池 BMS 告警（物联网库实时故障位）',
+          tableHtml(['告警名称', '命中电池', '上报记录', '故障位', '置信度', '最近上报'], bmsRows),
+          `<span class="muted">源：${esc(ec.bms_source || '-')}；命中 ${fmtNum(btTotals.sns)} 块电池 / ${fmtNum(btTotals.docs)} 条记录；`
+          + `窗口 ${esc(btTotals.first_time || '-')} ~ ${esc(btTotals.last_time || '-')}；抓取于 ${esc(ec.bms_fetched_at || '-')}`
+          + (ec.bms_confidence_note ? `；${esc(ec.bms_confidence_note)}` : '') + `</span>`)
+    + `</div>`
+    + card('BMS 故障位实况（组.位）',
+        tableHtml(['故障位', '命中电池', '上报记录', '最高温区间(℃)', '最低单体压区间(mV)', '最高单体压区间(mV)', '最近上报'], bitRows),
+        '<span class="muted">位号 = 故障组.位（bms_faultN 按位解码）；区间统计已排除哨兵脏值</span>')
+    + card('BMS 告警电池明细（按命中告警类数与故障位数排序）',
+        tableHtml(['电池SN', '客户', '命中告警', '故障位', 'SOC', '最高温', '最近位置', '最近上报'], bmsBats),
+        `<span class="muted">共 ${fmtNum(btTotals.sns)} 块电池；下表最多展示 50 块</span>`);
+}
+
+function boardAlarmSectionHtml(ec) {
+  const bd = (ec || {}).board || {};
+  const items = bd.items || [];
+  return sectionHead('换电柜检测板告警（6 类）',
+      `数据源：${esc(bd.source || '-')}；本期统计上报记录 ${fmtNum(bd.total)} 台`)
+    + kpiGrid(items.map(x => ({ label: x.name, value: fmtNum(x.count), cls: x.count ? 'danger' : 'ok' })))
+    + `<div class="grid-2">`
+      + chartBox('检测板六类告警分布', 280)
+      + card('检测板告警与平台监控事件对照',
+          tableHtml(['告警项', '平台监控事件', '触发数'],
+            items.map(x => [esc(x.name), esc(x.event_name || '-'), fmtNum(x.count)])),
+          `<span class="muted">合计 ${fmtNum(bd.sum)} 项次</span>`)
+    + `</div>`;
+}
 
 function firstChartId(el, idx) {
   const cards = el.querySelectorAll('.chart');

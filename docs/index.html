@@ -450,31 +450,74 @@ ROUTES["user-growth"] = function () {
 ROUTES["user-map"] = function () {
   var s = g("api_users_city-detail");
   var items = (s && s.items) || [];
+  var tot = items.reduce(function (a, x) { return a + (Number(x.users) || 0); }, 0);
+  var top = items.slice().sort(function (a, b) { return (b.users || 0) - (a.users || 0); }).slice(0, 10);
   var c = $id("content");
-  c.innerHTML = '<div class="grid">' + panel("用户城市分布明细", "按城市聚合", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "占比"], items.map(function (r) { return [r.city || r.name, fmt(r.count || r.users), pct(r.count || r.users, items.reduce(function (a, x) { return a + (x.count || x.users || 0); }, 0))]; })) + '</div>', "col-12") + '</div>';
+  c.innerHTML = '<div class="grid">' +
+    chartPanel("用户城市占比 TOP10", "按用户数 · 城市维度聚合", "umChart", "col-7") +
+    panel("用户城市分布明细", "按城市聚合", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "占比"], top.map(function (r) { return [r.city || r.name, fmt(r.users), pct(r.users, tot)]; })) + '</div>', "col-5") + '</div>';
+  var bt = top.slice().reverse();
+  mkChart($id("umChart"), barOpt(bt.map(function (r) { return (r.city || r.name).replace(/省|市|壮族自治区|自治区/g, ""); }), bt.map(function (r) { return r.users; }), { horizontal: true, label: true }));
 };
 
 ROUTES["user-tier"] = function () {
-  var s = g("api_users_tier");
+  var s = g("api_users_tier") || {};
+  var val = s.value || {};
+  var freq = s.frequency || {};
+  var thr = s.threshold || {};
+  var thF = (thr.frequency) || {}, thV = (thr.value) || {};
   var c = $id("content");
-  var rows = [];
-  if (s && s.value && s.threshold) {
-    rows = Object.keys(s.value).map(function (k) {
-      return [k, fmt(s.value[k]), fmt(s.threshold[k]), fmt((s.total_users && s.total_users[k]) || 0), s.days != null ? s.days + "天" : "-", s.frequency || "-"];
-    });
-  }
-  c.innerHTML = '<div class="kpi-grid">' + (s && s.total_users ? kpiHTML([{ label: "分层用户总数", value: fmt(s.total_users), unit: "人", trend: "统计周期 " + (s.days || "-") + " 天 / " + (s.frequency || "-") }]) : "") + '</div>' +
-    '<div class="grid">' + panel("用户价值分层", "高频/中价值/低频", '<div class="scroll-tbl">' + tableHTML(["层级", "用户数", "阈值", "占比", "周期", "频率"], rows.map(function (r) { var tot = (s && s.total_users) || 0; var totv = typeof tot === "object" ? Object.values(tot).reduce(function (a, b) { return a + Number(b || 0); }, 0) : Number(tot || 0); return [r[0], r[1], r[2], pct(r[3], totv), r[4], r[5]]; })) + '</div>', "col-12") + '</div>';
+  var rows = [
+    ["高价值", val.high, thV.high_fen != null ? "≥" + thV.high_fen : "-"],
+    ["中价值", val.medium, thV.medium_fen != null ? "≥" + thV.medium_fen : "-"],
+    ["低价值", val.low, "-"]
+  ];
+  var totV = (val.high || 0) + (val.medium || 0) + (val.low || 0);
+  c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
+    { label: "分层用户总数", value: fmt(s.total_users), unit: "人", trend: "统计周期 " + (s.days || "-") + " 天", cls: "" },
+    { label: "高频用户", value: fmt(freq.high), unit: "人", trend: "阈值 ≥" + (thF.high != null ? thF.high : "-") + " 次/周期", cls: "k2" },
+    { label: "中频用户", value: fmt(freq.medium), unit: "人", trend: "阈值 ≥" + (thF.medium != null ? thF.medium : "-") + " 次/周期", cls: "k3" },
+    { label: "低频用户", value: fmt(freq.low), unit: "人", trend: "低于中频阈值", cls: "k4" }
+  ]) + '</div>' +
+  '<div class="grid">' +
+  chartPanel("用户价值分层", "按消费价值", "utVal", "col-6 chart-sm") +
+  chartPanel("用户使用频率分层", "按换电频率", "utFreq", "col-6 chart-sm") +
+  '</div>' +
+  '<div class="grid">' + panel("用户价值分层明细", "价值阈值（元）", '<div class="scroll-tbl">' + tableHTML(["层级", "用户数", "价值阈值", "占比"], rows.map(function (r) { return [r[0], fmt(r[1]), r[2], pct(r[1], totV)]; })) + '</div>', "col-12") + '</div>';
+  mkChart($id("utVal"), pieOpt([
+    { name: "高价值", value: val.high || 0 },
+    { name: "中价值", value: val.medium || 0 },
+    { name: "低价值", value: val.low || 0 }
+  ], ["#fbbf24", "#38bdf8", "#8aa3c4"]));
+  mkChart($id("utFreq"), pieOpt([
+    { name: "高频", value: freq.high || 0 },
+    { name: "中频", value: freq.medium || 0 },
+    { name: "低频", value: freq.low || 0 }
+  ], ["#f87171", "#fbbf24", "#8aa3c4"]));
 };
 
 ROUTES["sales-overview"] = function () {
   var s = g("api_sales_summary");
+  var trend = g("api_finance_income-trend") || [];
   var c = $id("content");
   c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
     { label: "换电次数", value: fmt(s.exchange_count), unit: "次", trend: "周期 " + (s.days || "-") + " 天", cls: "" },
     { label: "换电收入", value: "¥" + fmtMoney(s.exchange_fee), unit: "", trend: "服务订单收入 ¥" + fmtMoney(s.service_order_fee), cls: "k4" },
     { label: "服务订单", value: fmt(s.service_order_count), unit: "单", trend: "新增协议 " + fmt(s.new_agreement), cls: "k2" }
-  ]) + '</div>' + '<div class="grid">' + panel("说明", "", '<div class="placeholder"><div class="big">📈</div>销售总览聚合数据（脱敏快照），明细板块见网点销售情况。</div>', "col-12") + '</div>';
+  ]) + '</div>' +
+  '<div class="grid">' +
+  chartPanel("销售收入构成", "服务订单收入 vs 换电收入", "soPie", "col-5 chart-sm") +
+  chartPanel("销售趋势", "近 12 个月收入 / 利润（万元）", "soTrend", "col-7") +
+  '</div>' +
+  '<div class="grid">' + panel("说明", "", '<div class="placeholder" style="padding:26px 16px;">销售总览聚合数据（脱敏快照），网点销售明细见「网点销售情况」。</div>', "col-12") + '</div>';
+  mkChart($id("soPie"), pieOpt([
+    { name: "服务订单收入", value: Math.round(s.service_order_fee || 0) },
+    { name: "换电收入", value: Math.round(s.exchange_fee || 0) }
+  ], ["#38bdf8", "#fbbf24"]));
+  mkChart($id("soTrend"), lineOpt(trend.map(function (t) { return t.month; }), [
+    { name: "收入(万)", data: trend.map(function (t) { return Math.round((t.income || 0) / 10000 * 100) / 100; }) },
+    { name: "利润(万)", data: trend.map(function (t) { return Math.round((t.profit || 0) / 10000 * 100) / 100; }) }
+  ], ["万元", "万元"]));
 };
 
 ROUTES["sales-site"] = function () {
@@ -502,7 +545,17 @@ ROUTES["site-overview"] = function () {
     { label: "网点总数", value: fmt(s.site_total), unit: "个", trend: "在营 " + fmt(s.site_open), cls: "" },
     { label: "停业网点", value: fmt(s.site_closed), unit: "个", trend: "24小时网点 " + fmt(s.site_allday), cls: "k4" },
     { label: "独立电表", value: fmt(s.site_meter), unit: "个", trend: "工单处理中 " + fmt(s.work_order_doing), cls: "k2" }
-  ]) + '</div>' + '<div class="grid">' + panel("说明", "", '<div class="placeholder"><div class="big">🏪</div>网点聚合概览（脱敏快照）。网点明细、对账单、评估等板块涉及网点级经营明细，公网快照已省略，本地完整版可查看。</div>', "col-12") + '</div>';
+  ]) + '</div>' +
+  '<div class="grid">' +
+  chartPanel("网点状态分布", "在营 / 停业", "soChart", "col-5 chart-sm") +
+  chartPanel("经营设施分布", "24小时网点 / 独立电表 / 处理中工单", "soBar", "col-7") +
+  '</div>' +
+  '<div class="grid">' + panel("说明", "", '<div class="placeholder" style="padding:26px 16px;">网点聚合概览（脱敏快照）。网点明细、对账单、评估等板块涉及网点级经营明细，公网快照已省略，本地完整版可查看。</div>', "col-12") + '</div>';
+  mkChart($id("soChart"), pieOpt([
+    { name: "在营", value: s.site_open || 0 },
+    { name: "停业", value: s.site_closed || 0 }
+  ], ["#34d399", "#f87171"]));
+  mkChart($id("soBar"), barOpt(["24小时网点", "独立电表", "处理中工单"], [s.site_allday || 0, s.site_meter || 0, s.work_order_doing || 0], { label: true }));
 };
 
 ROUTES["asset-exchange"] = function () {
@@ -539,11 +592,30 @@ ROUTES["asset-battery"] = function () {
 ROUTES["asset-bike"] = function () {
   var a = g("api_assets_summary");
   var bike = (a && a.bike) || {};
+  var dev = g("api_overview_device-dimension") || {};
+  var bk = (dev.bike) || {};
+  var online = bike.online != null ? bike.online : bk.online;
+  var offline = bike.offline != null ? bike.offline : bk.offline;
+  var total = bike.total || ((online || 0) + (offline || 0));
   var c = $id("content");
   c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
-    { label: "车辆总数", value: fmt(bike.total), unit: "辆", trend: "在线 " + fmt(bike.online) + " / 离线 " + fmt(bike.offline), cls: "" },
-    { label: "在线率", value: pct(bike.online, bike.total), unit: "", trend: "资产概览", cls: "k3" }
-  ]) + '</div>';
+    { label: "车辆总数", value: fmt(total), unit: "辆", trend: "平台登记车辆口径", cls: "" },
+    { label: "在线车辆", value: fmt(online), unit: "辆", trend: "离线 " + fmt(offline), cls: "k2" },
+    { label: "在线率", value: pct(online, total), unit: "", trend: "实时通信口径", cls: "k3" }
+  ]) + '</div>' +
+  '<div class="grid">' +
+  chartPanel("车辆在线状态", "在线 / 离线", "abChart2", "col-5 chart-sm") +
+  panel("车辆资产说明", "平台登记车辆", '<div class="scroll-tbl">' + tableHTML(["指标", "数值"], [
+    ["平台登记车辆总数", fmt(total)],
+    ["在线车辆（实时通信）", fmt(online)],
+    ["离线车辆", fmt(offline)],
+    ["在线率", pct(online, total)]
+  ]) + '</div>' + '<div class="placeholder" style="padding:24px 16px;">车辆资产为平台登记的在运营车辆（含用户自购电池匹配车辆），明细（车牌 / 车架号 / 归属人）属隐私数据，公网脱敏版不开放。</div>', "col-7") +
+  '</div>';
+  mkChart($id("abChart2"), pieOpt([
+    { name: "在线", value: online || 0 },
+    { name: "离线", value: offline || 0 }
+  ], ["#34d399", "#f87171"]));
 };
 
 ROUTES.coupon = function () {
@@ -551,9 +623,15 @@ ROUTES.coupon = function () {
   var c = $id("content");
   c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
     { label: "优惠券总数", value: fmt(s.coupon_total), unit: "张", trend: "发放中 " + fmt(s.on), cls: "" },
-    { label: "已停用", value: fmt(s.off), unit: "张", trend: "占 " + pct(s.off, s.coupon_total), cls: "k4" }
+    { label: "已停用", value: fmt(s.off), unit: "张", trend: "占 " + pct(s.off, s.coupon_total), cls: "k4" },
+    { label: "发放中占比", value: pct(s.on, s.coupon_total), unit: "", trend: "在用券池", cls: "k3" }
   ]) + '</div>' +
-  '<div class="grid">' + chartPanel("优惠券状态分布", "", "cpChart", "col-6") + '</div>';
+  '<div class="grid">' + chartPanel("优惠券状态分布", "发放中 / 已停用", "cpChart", "col-5 chart-sm") +
+  panel("状态占比说明", "优惠券池构成", '<div class="scroll-tbl">' + tableHTML(["状态", "数量", "占比"], [
+    ["发放中", fmt(s.on), pct(s.on, s.coupon_total)],
+    ["已停用", fmt(s.off), pct(s.off, s.coupon_total)],
+    ["合计", fmt(s.coupon_total), "100%"]
+  ]) + '</div>' + '<div class="placeholder" style="padding:24px 16px;">当前快照仅提供发放中 / 已停用两类状态聚合；券面额、领取与核销明细属业务隐私明细，公网脱敏版不开放。</div>', "col-7") + '</div>';
   mkChart($id("cpChart"), pieOpt([{ name: "发放中", value: s.on || 0 }, { name: "已停用", value: s.off || 0 }], ["#34d399", "#f87171"]));
 };
 
@@ -649,11 +727,14 @@ ROUTES["deep-analysis"] = function () {
   var c = $id("content");
   c.innerHTML = '<div class="grid">' +
     chartPanel("电池年龄分布", "电池使用年限", "daAge", "col-6") +
-    chartPanel("换电高峰时段", "24 小时换电分布", "daPeak", "col-6") + '</div>' +
+    chartPanel("电池年龄占比", "按年限构成", "daAgePie", "col-6 chart-sm") + '</div>' +
     '<div class="grid">' +
-    panel("收支对比", "近 7 个月", '<div class="scroll-tbl">' + tableHTML(["月份", "收入", "利润", "服务费"], cmp.map(function (r) { return [r.month, "¥" + fmtMoney(r.income), "¥" + fmtMoney(r.profit), "¥" + fmtMoney(r.service_fee)]; })) + '</div>', "col-7") +
-    panel("首次取电分析", "再次取电 vs 首次", '<div class="placeholder" style="padding:30px 16px;">再次取电 ' + fmt(ft.again) + ' 次<br>首次取电 ' + fmt(ft.first_take) + ' 次<br>占比 ' + pct(ft.again, (Number(ft.again) + Number(ft.first_take))) + '</div>', "col-5") + '</div>';
+    chartPanel("换电高峰时段", "24 小时换电分布", "daPeak", "col-6") +
+    panel("首次取电分析", "再次取电 vs 首次", '<div class="placeholder" style="padding:30px 16px;">再次取电 ' + fmt(ft.again) + ' 次<br>首次取电 ' + fmt(ft.first_take) + ' 次<br>占比 ' + pct(ft.again, (Number(ft.again) + Number(ft.first_take))) + '</div>', "col-6") + '</div>' +
+    '<div class="grid">' +
+    panel("收支对比", "近 7 个月", '<div class="scroll-tbl">' + tableHTML(["月份", "收入", "利润", "服务费"], cmp.map(function (r) { return [r.month, "¥" + fmtMoney(r.income), "¥" + fmtMoney(r.profit), "¥" + fmtMoney(r.service_fee)]; })) + '</div>', "col-12") + '</div>';
   mkChart($id("daAge"), barOpt(age.map(function (r) { return r.age_range; }), age.map(function (r) { return r.count; }), { label: true }));
+  mkChart($id("daAgePie"), pieOpt(age.map(function (r) { return { name: r.age_range, value: r.count }; }), ["#38bdf8", "#34d399", "#fbbf24", "#f87171"]));
   mkChart($id("daPeak"), lineOpt(peak.map(function (r) { return r.hour + "时"; }), [{ name: "换电次数", data: peak.map(function (r) { return r.count; }) }], ["次数"]));
 };
 
@@ -681,6 +762,7 @@ ROUTES.decision = function () {
   var fin = g("api_finance_summary");
   var us = g("api_users_summary");
   var s = g("api_bigscreen_summary");
+  var rows = g("api_overview_monthly-trend") || [];
   var c = $id("content");
   c.innerHTML = '<div class="kpi-grid">' + kpiHTML([
     { label: "累计用户", value: fmt(us.user_total || ov.total_users || s.total_users), unit: "人", trend: "今日新增 " + fmt(ov.today_new_users || s.today_new_users), cls: "" },
@@ -689,7 +771,13 @@ ROUTES.decision = function () {
     { label: "周期利润", value: "¥" + fmtMoney(fin.profit_fee), unit: "", trend: "支出 ¥" + fmtMoney(fin.expense_fee), cls: "k3" },
     { label: "协议在用", value: fmt(us.agreement_using), unit: "份", trend: "已终止 " + fmt(us.agreement_stop), cls: "k5" }
   ]) + '</div>' +
+  '<div class="grid">' + chartPanel("月度经营趋势", "换电次数 / 营收 / 利润", "dcTrend", "col-12") + '</div>' +
   '<div class="grid">' + panel("经营决策摘要", "基于真实业务聚合数据（脱敏快照）", '<div class="placeholder" style="padding:30px 16px;">核心结论以本地完整看板为准<br>本页为公网脱敏快照的决策概览</div>', "col-12") + '</div>';
+  mkChart($id("dcTrend"), lineOpt(rows.map(function (r) { return r.month; }), [
+    { name: "换电次数", data: rows.map(function (r) { return r.exchange_count; }) },
+    { name: "营收(万)", data: rows.map(function (r) { return Math.round((r.income || 0) / 10000 * 100) / 100; }) },
+    { name: "利润(万)", data: rows.map(function (r) { return Math.round((r.profit || 0) / 10000 * 100) / 100; }) }
+  ], ["次数", "万元", "万元"]));
 };
 
 ROUTES.command = function () {
@@ -709,14 +797,241 @@ ROUTES.command = function () {
   ], ["次数", "用户"]));
 };
 
+/* ================= 补充板块（真实数据驱动） ================= */
+/* 站点名称脱敏：按原始排行顺序映射为 网点01~网点20 */
+function siteRankRows(rows) {
+  return (rows || []).slice(0, 20).map(function (r, i) {
+    var n = i + 1, sn = (n < 10 ? "0" : "") + n;
+    return { site: "网点" + sn, exchange_count: r.exchange_count, active_users: r.active_users, fee: r.fee, profit_fee: r.profit_fee };
+  });
+}
+function sumBy(rows, key) { return (rows || []).reduce(function (a, r) { return a + (Number(r[key]) || 0); }, 0); }
+
+ROUTES["sales-package"] = function () {
+  var s = g("api_sales_summary");
+  var trend = g("api_finance_income-trend") || [];
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "服务订单数", value: fmt(s.service_order_count), unit: "单", trend: "周期 " + (s.days || "-") + " 天", cls: "" },
+      { label: "服务订单收入", value: "¥" + fmtMoney(s.service_order_fee), unit: "", trend: "套餐购买主口径", cls: "k4" },
+      { label: "换电收入", value: "¥" + fmtMoney(s.exchange_fee), unit: "", trend: "换电次数 " + fmt(s.exchange_count) + " 次", cls: "k2" },
+      { label: "新增协议", value: fmt(s.new_agreement), unit: "份", trend: "周期内新增", cls: "k3" }
+    ]) + '</div>' +
+    '<div class="grid">' +
+    chartPanel("套餐购买构成", "服务订单收入 vs 换电收入", "spPie", "col-5 chart-sm") +
+    chartPanel("服务费收入趋势", "近 12 个月（万元）", "spTrend", "col-7") +
+    '</div>' +
+    '<div class="grid">' + panel("套餐概览明细", "api_sales_summary 真实聚合快照", '<div class="scroll-tbl">' + tableHTML(["指标", "数值"], [
+      ["统计周期(天)", fmt(s.days)],
+      ["换电次数", fmt(s.exchange_count)],
+      ["换电收入(元)", "¥" + fmtMoney(s.exchange_fee)],
+      ["服务订单数", fmt(s.service_order_count)],
+      ["服务订单收入(元)", "¥" + fmtMoney(s.service_order_fee)],
+      ["新增协议(份)", fmt(s.new_agreement)]
+    ]) + '</div>', "col-12") + '</div>';
+  mkChart($id("spPie"), pieOpt([
+    { name: "服务订单收入", value: Math.round(s.service_order_fee || 0) },
+    { name: "换电收入", value: Math.round(s.exchange_fee || 0) }
+  ], ["#38bdf8", "#fbbf24"]));
+  mkChart($id("spTrend"), lineOpt(trend.map(function (t) { return t.month; }), [
+    { name: "服务费(万)", data: trend.map(function (t) { return Math.round((t.service_fee || 0) / 10000 * 100) / 100; }) }
+  ], ["万元"]));
+};
+
+ROUTES["sales-agreement"] = function () {
+  var us = g("api_users_summary");
+  var lc = g("api_users_lifecycle");
+  var st = g("api_staff_summary");
+  var items = (lc && lc.items) || [];
+  var rank = (st && st.staff_rank) || [];
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "协议总数", value: fmt(us.agreement_total), unit: "份", trend: "生效中 " + fmt(us.agreement_using), cls: "" },
+      { label: "租期卡收入", value: "¥" + fmtMoney(us.rent_total), unit: "", trend: "租期卡口径", cls: "k4" },
+      { label: "押金总额", value: "¥" + fmtMoney(us.deposit_total), unit: "", trend: "押金口径", cls: "k2" },
+      { label: "已终止协议", value: fmt(us.agreement_stop), unit: "份", trend: "占比 " + pct(us.agreement_stop, us.agreement_total), cls: "k3" }
+    ]) + '</div>' +
+    '<div class="grid">' +
+    chartPanel("协议状态分布", "当前协议生命周期", "agLife", "col-5 chart-sm") +
+    panel("签约人员排行 TOP20", "按签约协议数 · 姓名已匿名化", '<div class="scroll-tbl">' + tableHTML(["人员", "签约协议数", "占协议总数"], rank.map(function (r) { return [r.name, fmt(r.agreement_count), pct(r.agreement_count, us.agreement_total)]; })) + '</div>', "col-7") +
+    '</div>';
+  mkChart($id("agLife"), pieOpt(items.map(function (i) { return { name: i.name, value: i.count }; }), ["#34d399", "#fbbf24", "#93c5fd", "#a78bfa", "#f87171", "#64748b"]));
+};
+
+ROUTES["sales-site-list"] = function () {
+  var rows = siteRankRows(g("api_sales_site-rank"));
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "网点数(快照)", value: fmt(rows.length), unit: "个", trend: "公网快照 TOP20", cls: "" },
+      { label: "合计换电次数", value: fmt(sumBy(rows, "exchange_count")), unit: "次", trend: "TOP20 汇总", cls: "k2" },
+      { label: "合计利润", value: "¥" + fmtMoney(sumBy(rows, "profit_fee")), unit: "", trend: "TOP20 汇总", cls: "k4" }
+    ]) + '</div>' +
+    '<div class="grid">' + panel("名下网点列表", "按换电次数排序 · 站点名称已脱敏", '<div class="scroll-tbl">' + tableHTML(["序号", "网点", "换电次数", "活跃用户", "利润"], rows.map(function (r, i) { return [i + 1, r.site, fmt(r.exchange_count), fmt(r.active_users), "¥" + fmtMoney(r.profit_fee)]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES["site-statement"] = function () {
+  var rows = siteRankRows(g("api_sales_site-rank"));
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="grid">' +
+    chartPanel("网点利润排行 TOP10", "利润（元）", "stmChart", "col-7") +
+    panel("网点收支明细", "按利润排序 · 站点名称已脱敏", '<div class="scroll-tbl">' + tableHTML(["网点", "换电次数", "活跃用户", "收入(未聚合)", "利润"], rows.slice(0, 10).map(function (r) { return [r.site, fmt(r.exchange_count), fmt(r.active_users), "¥" + fmtMoney(r.fee), "¥" + fmtMoney(r.profit_fee)]; })) + '</div>', "col-5") +
+    '</div>' +
+    '<div class="grid">' + panel("说明", "", '<div class="placeholder" style="padding:26px 16px;">网点收支对账单：利润为已聚合真实值；收入字段在当前快照中未单独聚合（为 0），本地完整版看板可查逐网点收支流水。</div>', "col-12") + '</div>';
+  var top = rows.slice(0, 10).slice().reverse();
+  mkChart($id("stmChart"), barOpt(top.map(function (r) { return r.site; }), top.map(function (r) { return r.profit_fee; }), { horizontal: true, label: true }));
+};
+
+ROUTES["site-eval"] = function () {
+  var rows = siteRankRows(g("api_sales_site-rank"));
+  var maxCnt = Math.max.apply(null, rows.map(function (r) { return r.exchange_count; }));
+  var maxAct = Math.max.apply(null, rows.map(function (r) { return r.active_users; }));
+  var maxPft = Math.max.apply(null, rows.map(function (r) { return r.profit_fee; }));
+  var scored = rows.map(function (r) {
+    var score = (r.exchange_count / maxCnt) * 50 + (r.active_users / maxAct) * 30 + (r.profit_fee / maxPft) * 20;
+    return { site: r.site, score: Math.round(score * 10) / 10, exchange_count: r.exchange_count, active_users: r.active_users, profit_fee: r.profit_fee };
+  }).sort(function (a, b) { return b.score - a.score; });
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "评估网点数", value: fmt(scored.length), unit: "个", trend: "综合评分 TOP20", cls: "" },
+      { label: "评分 TOP1", value: scored.length ? scored[0].score : "-", unit: "分", trend: scored.length ? scored[0].site : "-", cls: "k4" }
+    ]) + '</div>' +
+    '<div class="grid">' + panel("网点综合评分 TOP 榜", "评分 = 换电次数×50% + 活跃用户×30% + 利润×20%（各自按最大值归一化）· 站点名称已脱敏", '<div class="scroll-tbl">' + tableHTML(["排名", "网点", "综合评分", "换电次数", "活跃用户", "利润"], scored.map(function (r, i) { return [i + 1, r.site, r.score, fmt(r.exchange_count), fmt(r.active_users), "¥" + fmtMoney(r.profit_fee)]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES["site-tables"] = function () {
+  var s = g("api_sites_summary");
+  var rows = siteRankRows(g("api_sales_site-rank"));
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "网点总数", value: fmt(s.site_total), unit: "个", trend: "在营 " + fmt(s.site_open), cls: "" },
+      { label: "停业网点", value: fmt(s.site_closed), unit: "个", trend: "占比 " + pct(s.site_closed, s.site_total), cls: "k4" },
+      { label: "24小时网点", value: fmt(s.site_allday), unit: "个", trend: "独立电表 " + fmt(s.site_meter), cls: "k2" },
+      { label: "工单处理中", value: fmt(s.work_order_doing), unit: "单", trend: "运维工单", cls: "k3" }
+    ]) + '</div>' +
+    '<div class="grid">' + panel("网点基本表", "TOP20 网点经营快照 · 站点名称已脱敏", '<div class="scroll-tbl">' + tableHTML(["网点", "换电次数", "活跃用户", "利润"], rows.map(function (r) { return [r.site, fmt(r.exchange_count), fmt(r.active_users), "¥" + fmtMoney(r.profit_fee)]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES["site-sales"] = function () {
+  var rows = siteRankRows(g("api_sales_site-rank"));
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "统计网点数", value: fmt(rows.length), unit: "个", trend: "公网快照 TOP20", cls: "" },
+      { label: "合计换电次数", value: fmt(sumBy(rows, "exchange_count")), unit: "次", trend: "TOP20 汇总", cls: "k2" },
+      { label: "合计利润", value: "¥" + fmtMoney(sumBy(rows, "profit_fee")), unit: "", trend: "TOP20 汇总", cls: "k4" }
+    ]) + '</div>' +
+    '<div class="grid">' +
+    chartPanel("网点销售排行 TOP10", "换电次数", "ssChart2", "col-7") +
+    panel("网点销售明细", "按换电次数排序 · 站点名称已脱敏", '<div class="scroll-tbl">' + tableHTML(["网点", "换电次数", "活跃用户", "利润"], rows.map(function (r) { return [r.site, fmt(r.exchange_count), fmt(r.active_users), "¥" + fmtMoney(r.profit_fee)]; })) + '</div>', "col-5") +
+    '</div>';
+  var top = rows.slice(0, 10).slice().reverse();
+  mkChart($id("ssChart2"), barOpt(top.map(function (r) { return r.site; }), top.map(function (r) { return r.exchange_count; }), { horizontal: true, label: true }));
+};
+
+ROUTES["site-detail"] = function () {
+  var rows = siteRankRows(g("api_sales_site-rank"));
+  var top = rows[0] || {};
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "当前网点", value: top.site || "-", unit: "", trend: "换电次数排名第 1（快照）", cls: "" },
+      { label: "换电次数", value: fmt(top.exchange_count), unit: "次", trend: "活跃用户 " + fmt(top.active_users), cls: "k2" },
+      { label: "利润", value: "¥" + fmtMoney(top.profit_fee), unit: "", trend: "收入字段未单独聚合", cls: "k4" }
+    ]) + '</div>' +
+    '<div class="grid">' + panel("单网点视图", "TOP1 网点详情 · 站点名称已脱敏", '<div class="scroll-tbl">' + tableHTML(["指标", "数值"], [
+      ["网点", top.site || "-"],
+      ["换电次数", fmt(top.exchange_count)],
+      ["活跃用户", fmt(top.active_users)],
+      ["收入(未聚合)", "¥" + fmtMoney(top.fee)],
+      ["利润", "¥" + fmtMoney(top.profit_fee)]
+    ]) + '</div>' + '<div class="placeholder" style="padding:24px 16px;">单网点维度明细（地址 / 设备 / 人员）属隐私信息，公网脱敏版未开放；本地完整版看板可查任意网点详情。</div>', "col-12") + '</div>';
+};
+
+ROUTES["user-tables"] = function () {
+  var items = ((g("api_users_city-detail") || {}).items) || [];
+  var top = items.slice().sort(function (a, b) { return (b.users || 0) - (a.users || 0); });
+  var totU = sumBy(top, "users"), totA = sumBy(top, "active_users"), totG = sumBy(top, "agreements"), totE = sumBy(top, "exchange_30d");
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "覆盖城市数", value: fmt(items.length), unit: "个", trend: "城市维度聚合", cls: "" },
+      { label: "用户总数", value: fmt(totU), unit: "人", trend: "活跃用户 " + fmt(totA), cls: "k2" },
+      { label: "协议数", value: fmt(totG), unit: "份", trend: "30天换电 " + fmt(totE), cls: "k3" }
+    ]) + '</div>' +
+    '<div class="grid">' + panel("用户基本表（城市维度）", "按用户数排序 TOP20 · 单用户明细公网脱敏版不开放", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "活跃用户", "协议数", "30天换电"], top.slice(0, 20).map(function (r) { return [r.city, fmt(r.users), fmt(r.active_users), fmt(r.agreements), fmt(r.exchange_30d)]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES["user-detail"] = function () {
+  var items = ((g("api_users_city-detail") || {}).items) || [];
+  var top = items.slice().sort(function (a, b) { return (b.users || 0) - (a.users || 0); }).slice(0, 5);
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "TOP1 城市", value: top.length ? top[0].city : "-", unit: "", trend: "用户 " + fmt(top[0] && top[0].users), cls: "" },
+      { label: "TOP1 活跃用户", value: fmt(top[0] && top[0].active_users), unit: "人", trend: "协议 " + fmt(top[0] && top[0].agreements), cls: "k2" },
+      { label: "TOP1 30天换电", value: fmt(top[0] && top[0].exchange_30d), unit: "次", trend: "城市画像口径", cls: "k4" }
+    ]) + '</div>' +
+    '<div class="grid">' + panel("城市画像卡片 TOP5", "用户 / 活跃 / 协议 / 30天换电", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "活跃用户", "协议数", "30天换电"], top.map(function (r) { return [r.city, fmt(r.users), fmt(r.active_users), fmt(r.agreements), fmt(r.exchange_30d)]; })) + '</div>' + '<div class="placeholder" style="padding:24px 16px;">单用户明细（手机号 / 姓名 / 协议 / 订单）属隐私数据，公网脱敏版不开放；本地完整版看板支持按用户实时查询。</div>', "col-12") + '</div>';
+};
+
+ROUTES["user-query"] = function () {
+  var items = ((g("api_users_city-detail") || {}).items) || [];
+  var top = items.slice().sort(function (a, b) { return (b.exchange_30d || 0) - (a.exchange_30d || 0); });
+  var c = $id("content");
+  c.innerHTML =
+    '<div class="grid">' + panel("实时全量查询", "", '<div class="placeholder" style="padding:26px 16px;"><div class="big">🔍</div>本地完整版看板支持按手机号 / 协议号 / 姓名实时全量查询用户明细；<br>公网脱敏版仅提供城市维度聚合数据（见下表），不开放任何单用户字段。</div>', "col-12") +
+    '</div>' +
+    '<div class="grid">' + panel("城市维度聚合", "按 30 天换电排序 TOP20", '<div class="scroll-tbl">' + tableHTML(["城市", "用户数", "活跃用户", "协议数", "30天换电"], top.slice(0, 20).map(function (r) { return [r.city, fmt(r.users), fmt(r.active_users), fmt(r.agreements), fmt(r.exchange_30d)]; })) + '</div>', "col-12") + '</div>';
+};
+
+ROUTES["asset-fault"] = function () {
+  var a = g("api_assets_summary");
+  var ba = (a && a.battery) || {};
+  var s = g("api_dashboard_alarm-stats");
+  var b = (s && s.battery) || {}, ex = (s && s.exchange) || {};
+  var c = $id("content");
+  var defs = [
+    { name: "电池低电量(hungry)", cnt: b.hungry, cls: "lv-p0" },
+    { name: "电池未识别", cnt: b.unrecognized, cls: "lv-p1" },
+    { name: "电池异常充电(break_charge)", cnt: b.break_charge, cls: "lv-p1" },
+    { name: "换电柜仓门/卡槽异常", cnt: ex.slot, cls: "lv-p1" },
+    { name: "换电柜水浸", cnt: ex.flooded, cls: "lv-p0" },
+    { name: "换电柜烟感", cnt: ex.smoke, cls: "lv-p1" }
+  ].filter(function (d) { return d.cnt != null && d.cnt > 0; });
+  c.innerHTML =
+    '<div class="kpi-grid">' + kpiHTML([
+      { label: "电池故障数", value: fmt(ba.fault), unit: "块", trend: "电池总数 " + fmt(ba.total), cls: "k4" },
+      { label: "电池告警", value: fmt(b.total), unit: "起", trend: "低电量 " + fmt(b.hungry), cls: "" },
+      { label: "换电柜告警", value: fmt(ex.total), unit: "起", trend: "水浸 " + fmt(ex.flooded), cls: "k2" }
+    ]) + '</div>' +
+    '<div class="grid">' +
+    chartPanel("故障告警分布", "电池 vs 换电柜告警", "afPie", "col-5 chart-sm") +
+    panel("故障告警清单", "按告警类型", '<ul class="risk-list">' + (defs.length ? defs.map(function (r) { return '<li class="risk-item"><span class="risk-lv ' + r.cls + '">' + r.cnt + ' 起</span><span class="risk-name">' + r.name + '</span></li>'; }).join("") : '<li class="risk-item"><span class="risk-name">当前无告警</span></li>') + '</ul>', "col-7") +
+    '</div>';
+  mkChart($id("afPie"), pieOpt([
+    { name: "电池告警", value: b.total || 0 },
+    { name: "换电柜告警", value: ex.total || 0 }
+  ], ["#f87171", "#fbbf24"]));
+};
+
 /* ================= 占位 ================= */
-var DETAIL_PLACEHOLDER = "该板块包含用户 / 网点 / 设备明细数据，公网快照已按隐私要求脱敏省略；<br>本地完整版看板保留全部真实明细数据。";
-["user-detail", "user-tables", "user-query", "sales-package", "sales-agreement", "sales-site-list",
- "site-statement", "site-eval", "site-tables", "site-sales", "site-detail",
- "asset-warehouse", "asset-flow", "asset-transfer", "asset-inout", "asset-fault",
+var DETAIL_PLACEHOLDER = {
+  "asset-warehouse": "仓库板块需要仓库存货明细（SKU / 批次 / 库位 / 出入库流水）支撑，公网脱敏版未开放；本地完整版看板可查实时仓存与库存周转。",
+  "asset-flow": "流通板块需要电池 / 换电柜流转轨迹明细（设备 SN 级）支撑，属设备级隐私数据，公网脱敏版未开放；本地完整版看板可查单设备全生命周期流通记录。",
+  "asset-transfer": "调拨板块需要调拨单 / 批次 / 目的地等明细支撑，公网脱敏版未开放；本地完整版看板可查调拨申请与执行记录。",
+  "asset-inout": "出入库板块需要逐笔出入库流水（单据号 / 设备 SN / 操作人）支撑，公网脱敏版未开放；本地完整版看板可查完整出入库台账。",
+  "service-desk": "客服服务台需要工单 / 会话 / 用户诉求明细支撑，含用户联系方式等隐私字段，公网脱敏版未开放；本地完整版看板保留客服工单全流程。"
+};
+["asset-warehouse", "asset-flow", "asset-transfer", "asset-inout",
  "service-desk"].forEach(function (k) {
   ROUTES[k] = function () {
-    $id("content").innerHTML = '<div class="grid">' + panel("内容说明", "", placeholderHTML(DETAIL_PLACEHOLDER), "col-12") + '</div>';
+    $id("content").innerHTML = '<div class="grid">' + panel("内容说明", "", placeholderHTML(DETAIL_PLACEHOLDER[k]), "col-12") + '</div>';
   };
 });
 ROUTES.placeholder = ROUTES["service-desk"];

@@ -128,6 +128,24 @@ def merchant_options(oem_ids=None):
             for r in rows if r.get("id") is not None]
 
 
+def customer_options(oem_ids=None):
+    """客户（OEM）列表：sys_oem（base 库），仅返回启用客户，并按权限范围收敛"""
+    from core.customers import get_customers
+    try:
+        rows = get_customers() or []
+    except Exception:  # noqa: BLE001
+        return []
+    allow = set(str(i) for i in oem_ids) if oem_ids else None
+    out = []
+    for r in rows:
+        cid = str(r.get("id"))
+        if allow is not None and cid not in allow:
+            continue
+        label = r.get("name") or r.get("code") or f"客户#{cid}"
+        out.append({"value": cid, "label": label})
+    return out
+
+
 def options(oem_ids=None, city=""):
     """汇总全部维度选项（/api/filters/options）"""
     return {
@@ -142,4 +160,5 @@ def options(oem_ids=None, city=""):
         "sites": site_options(oem_ids),
         "employees": employee_options(oem_ids),
         "merchants": merchant_options(oem_ids),
+        "customers": customer_options(oem_ids),
     }
