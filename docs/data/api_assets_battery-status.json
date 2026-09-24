@@ -1,20 +1,21 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
-   "count": 51458,
+   "count": 51495,
+   "name_cn": "未使用",
    "status": "none"
   },
   {
-   "count": 23621,
+   "count": 23584,
+   "name_cn": "使用中",
    "status": "using"
   },
   {
    "count": 1,
+   "name_cn": "报废",
    "status": "scrap"
   }
- ]
+ ],
+ "msg": "ok"
 }

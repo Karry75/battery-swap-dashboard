@@ -1,28 +1,26 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": {
   "battery": {
-   "offline": 45788,
-   "online": 29292,
+   "offline": 45723,
+   "online": 29357,
    "total": 75080
   },
   "bike": {
-   "offline": 169614,
+   "offline": 170115,
    "online": 2,
-   "total": 169616
+   "total": 170117
   },
   "exchange": {
-   "offline": 5013,
-   "online": 3609,
-   "total": 8628
+   "offline": 5020,
+   "online": 3603,
+   "total": 8629
   },
   "site": {
    "closed": 2022,
-   "open": 9116,
-   "total": 11138
+   "open": 9126,
+   "total": 11148
   }
- }
+ },
+ "msg": "ok"
 }

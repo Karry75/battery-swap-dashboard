@@ -1,91 +1,89 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": {
   "staff_rank": [
    {
-    "agreement_count": 22288,
-    "name": "员工01"
+    "agreement_count": 22393,
+    "name": "帅冠"
    },
    {
     "agreement_count": 19749,
-    "name": "员工02"
+    "name": "李媚"
    },
    {
     "agreement_count": 11547,
-    "name": "员工03"
+    "name": "朱永建"
    },
    {
-    "agreement_count": 6717,
-    "name": "员工04"
+    "agreement_count": 6721,
+    "name": "张俊隆"
    },
    {
-    "agreement_count": 4953,
-    "name": "员工05"
+    "agreement_count": 4959,
+    "name": "冯选钊"
    },
    {
-    "agreement_count": 4815,
-    "name": "员工06"
+    "agreement_count": 4821,
+    "name": "罗卫"
    },
    {
     "agreement_count": 4346,
-    "name": "员工07"
+    "name": "杜永星"
    },
    {
-    "agreement_count": 3917,
-    "name": "员工08"
+    "agreement_count": 3925,
+    "name": "易生斌-阳朔"
    },
    {
     "agreement_count": 3774,
-    "name": "员工09"
+    "name": "郭超龙"
    },
    {
     "agreement_count": 3513,
-    "name": "员工10"
+    "name": "黄燕锋"
    },
    {
-    "agreement_count": 3022,
-    "name": "员工11"
+    "agreement_count": 3028,
+    "name": "冯亮"
    },
    {
-    "agreement_count": 2737,
-    "name": "员工12"
+    "agreement_count": 2748,
+    "name": "罗文广"
    },
    {
-    "agreement_count": 2614,
-    "name": "员工13"
+    "agreement_count": 2701,
+    "name": "叶建伟"
    },
    {
     "agreement_count": 1994,
-    "name": "员工14"
+    "name": "李艳玲"
    },
    {
     "agreement_count": 1959,
-    "name": "员工15"
+    "name": "王宝贺"
    },
    {
     "agreement_count": 1834,
-    "name": "员工16"
+    "name": "陈翔"
    },
    {
     "agreement_count": 1699,
-    "name": "员工17"
+    "name": "王延召"
    },
    {
     "agreement_count": 1491,
-    "name": "员工18"
+    "name": "谭托福"
    },
    {
-    "agreement_count": 1455,
-    "name": "员工19"
+    "agreement_count": 1456,
+    "name": "叶嘉锨"
    },
    {
     "agreement_count": 1322,
-    "name": "员工20"
+    "name": "李钗"
    }
   ],
   "total_staff": 184
- }
+ },
+ "msg": "ok"
 }

@@ -1,43 +1,40 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
-   "active_users": 20131,
-   "exchange_count": 87617,
-   "fee": 26196341.74,
+   "active_users": 9790,
+   "exchange_count": 17004,
+   "fee": 5071387.9,
    "month": "2025-09",
-   "profit_fee": 26142801.0
+   "profit_fee": 5060348.0
   },
   {
    "active_users": 25665,
    "exchange_count": 299830,
-   "fee": 83141073.3,
+   "fee": 83141423.3,
    "month": "2025-10",
-   "profit_fee": 82939552.0
+   "profit_fee": 82939722.0
   },
   {
    "active_users": 25895,
    "exchange_count": 318472,
-   "fee": 85126731.87,
+   "fee": 85127004.87,
    "month": "2025-11",
-   "profit_fee": 84942592.0
+   "profit_fee": 84942865.0
   },
   {
-   "active_users": 25414,
+   "active_users": 25415,
    "exchange_count": 329537,
-   "fee": 86553847.1,
+   "fee": 86554944.5,
    "month": "2025-12",
-   "profit_fee": 86375556.0
+   "profit_fee": 86376277.0
   },
   {
    "active_users": 24540,
    "exchange_count": 303339,
-   "fee": 78793091.62,
+   "fee": 78794138.32,
    "month": "2026-01",
-   "profit_fee": 78609238.0
+   "profit_fee": 78610343.0
   },
   {
    "active_users": 22110,
@@ -49,51 +46,52 @@
   {
    "active_users": 24650,
    "exchange_count": 301264,
-   "fee": 78051963.05,
+   "fee": 78053092.55,
    "month": "2026-03",
-   "profit_fee": 77848938.0
+   "profit_fee": 77850369.0
   },
   {
    "active_users": 24646,
    "exchange_count": 287760,
-   "fee": 72825807.31,
+   "fee": 72827661.91,
    "month": "2026-04",
-   "profit_fee": 72619818.0
+   "profit_fee": 72621936.0
   },
   {
-   "active_users": 24392,
+   "active_users": 24393,
    "exchange_count": 284738,
-   "fee": 72033439.05,
+   "fee": 72037634.75,
    "month": "2026-05",
-   "profit_fee": 71875845.0
+   "profit_fee": 71879065.0
   },
   {
-   "active_users": 23527,
+   "active_users": 23528,
    "exchange_count": 261962,
-   "fee": 66478370.92,
+   "fee": 66489003.82,
    "month": "2026-06",
-   "profit_fee": 66337343.0
+   "profit_fee": 66345694.0
   },
   {
    "active_users": 23404,
    "exchange_count": 264488,
-   "fee": 66098171.34,
+   "fee": 66129360.94,
    "month": "2026-07",
-   "profit_fee": 65627182.0
+   "profit_fee": 65652900.0
   },
   {
-   "active_users": 23237,
+   "active_users": 23238,
    "exchange_count": 269422,
-   "fee": 63444911.55,
+   "fee": 63644204.0,
    "month": "2026-08",
-   "profit_fee": 63307763.0
+   "profit_fee": 63507398.0
   },
   {
-   "active_users": 21167,
-   "exchange_count": 138565,
-   "fee": 24980825.43,
+   "active_users": 22467,
+   "exchange_count": 208871,
+   "fee": 39351093.84,
    "month": "2026-09",
-   "profit_fee": 24963428.0
+   "profit_fee": 40663634.0
   }
- ]
+ ],
+ "msg": "ok"
 }

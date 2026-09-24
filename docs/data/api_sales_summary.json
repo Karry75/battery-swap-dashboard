@@ -1,14 +1,12 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": {
   "days": 30,
-  "exchange_count": 263886,
-  "exchange_fee": 53140388.98,
-  "new_agreement": 1535,
-  "service_order_count": 39653,
-  "service_order_fee": 107329070.0
- }
+  "exchange_count": 264334,
+  "exchange_fee": 51460024.84,
+  "new_agreement": 1480,
+  "service_order_count": 40346,
+  "service_order_fee": 108392155.0
+ },
+ "msg": "ok"
 }

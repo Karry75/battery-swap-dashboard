@@ -1,20 +1,61 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": {
   "battery": {
-   "break_charge": 431,
-   "hungry": 3018,
-   "total": 4073,
-   "unrecognized": 624
+   "break_charge": 428,
+   "hungry": 3047,
+   "total": 4074,
+   "unrecognized": 599
+  },
+  "board": {
+   "items": [
+    {
+     "count": 2,
+     "event_name": "检测板风扇状态",
+     "key": "fan",
+     "name": "检测板风扇状态"
+    },
+    {
+     "count": 553,
+     "event_name": "检测板备电状态",
+     "key": "backup_power",
+     "name": "检测板备电状态"
+    },
+    {
+     "count": 133,
+     "event_name": "检测板后仓门状态",
+     "key": "back_door",
+     "name": "检测板后仓门状态"
+    },
+    {
+     "count": 4,
+     "event_name": "换电柜烟感告警",
+     "key": "smoke",
+     "name": "检测板烟雾告警"
+    },
+    {
+     "count": 25,
+     "event_name": "换电柜水浸告警",
+     "key": "flooded",
+     "name": "检测板水浸告警"
+    },
+    {
+     "count": 2644,
+     "event_name": "换电柜检测板通讯告警",
+     "key": "acq_comm",
+     "name": "检测板通讯告警"
+    }
+   ],
+   "source": "t_exchange_last_upload 实时上报字段",
+   "sum": 3361,
+   "total": 6159
   },
   "exchange": {
-   "flooded": 67,
-   "slot": 317,
-   "smoke": 41,
-   "total": 425
+   "flooded": 65,
+   "slot": 359,
+   "smoke": 40,
+   "total": 464
   }
- }
+ },
+ "msg": "ok"
 }

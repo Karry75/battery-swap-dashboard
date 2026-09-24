@@ -1,148 +1,146 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
-   "active_users": 29,
-   "exchange_count": 162,
-   "fee": 0.0,
-   "profit_fee": 24835.0,
-   "site_name": "绿佳电动车-甘坑店"
-  },
-  {
-   "active_users": 22,
-   "exchange_count": 39,
-   "fee": 0.0,
-   "profit_fee": 7142.0,
-   "site_name": "科之艺钢印工业园"
-  },
-  {
-   "active_users": 97,
-   "exchange_count": 185,
-   "fee": 0.0,
-   "profit_fee": 40628.0,
-   "site_name": "福永意库便民换电站"
-  },
-  {
-   "active_users": 23,
-   "exchange_count": 57,
-   "fee": 0.0,
-   "profit_fee": 13005.0,
-   "site_name": "欧派-元成路店"
-  },
-  {
-   "active_users": 81,
-   "exchange_count": 238,
-   "fee": 0.0,
-   "profit_fee": 51117.0,
-   "site_name": "海华社区换电站"
-  },
-  {
-   "active_users": 152,
-   "exchange_count": 334,
-   "fee": 0.0,
-   "profit_fee": 73062.0,
-   "site_name": "赤尾站E出口"
-  },
-  {
    "active_users": 59,
-   "exchange_count": 650,
+   "exchange_count": 155,
    "fee": 0.0,
-   "profit_fee": 50183.0,
-   "site_name": "赞赞出行-建国中路240号店"
+   "profit_fee": 43305.0,
+   "site_name": "桃源居15区东门"
   },
   {
-   "active_users": 21,
-   "exchange_count": 31,
+   "active_users": 74,
+   "exchange_count": 180,
    "fee": 0.0,
-   "profit_fee": 7840.0,
-   "site_name": "稔田社区便民充电站"
+   "profit_fee": 27515.0,
+   "site_name": "台铃-铭雅苑东区店"
   },
   {
-   "active_users": 15,
-   "exchange_count": 21,
+   "active_users": 62,
+   "exchange_count": 153,
    "fee": 0.0,
-   "profit_fee": 4875.0,
-   "site_name": "绿源-兰陵街店"
+   "profit_fee": 28171.0,
+   "site_name": "绿源电动车-文津路店"
   },
   {
-   "active_users": 106,
-   "exchange_count": 259,
+   "active_users": 66,
+   "exchange_count": 190,
    "fee": 0.0,
-   "profit_fee": 56770.0,
-   "site_name": "绿源电动车-湘湖家园店"
+   "profit_fee": 42891.0,
+   "site_name": "五星钻豹-丰庆路8号"
   },
   {
-   "active_users": 262,
-   "exchange_count": 948,
+   "active_users": 20,
+   "exchange_count": 91,
    "fee": 0.0,
-   "profit_fee": 219481.0,
-   "site_name": "宝民花园3号岗亭"
+   "profit_fee": 15811.0,
+   "site_name": "香溢便利店–五星社区店"
   },
   {
-   "active_users": 27,
-   "exchange_count": 67,
+   "active_users": 54,
+   "exchange_count": 177,
    "fee": 0.0,
-   "profit_fee": 16188.0,
-   "site_name": "碧湖新村一巷13号"
+   "profit_fee": 36284.0,
+   "site_name": "龙林出行-网商路店"
   },
   {
-   "active_users": 48,
-   "exchange_count": 145,
+   "active_users": 5,
+   "exchange_count": 43,
    "fee": 0.0,
-   "profit_fee": 28450.0,
-   "site_name": "雅迪电动车-观光路总店"
+   "profit_fee": 4465.0,
+   "site_name": "庙溪新村北14-1"
   },
   {
-   "active_users": 14,
-   "exchange_count": 25,
+   "active_users": 46,
+   "exchange_count": 106,
    "fee": 0.0,
-   "profit_fee": 6301.0,
-   "site_name": "金源社区警务室对面"
-  },
-  {
-   "active_users": 44,
-   "exchange_count": 958,
-   "fee": 0.0,
-   "profit_fee": 70788.0,
-   "site_name": "哈啰-长生路店"
-  },
-  {
-   "active_users": 35,
-   "exchange_count": 150,
-   "fee": 0.0,
-   "profit_fee": 23935.0,
-   "site_name": "五星钻豹电动车-甲来路15号店"
-  },
-  {
-   "active_users": 29,
-   "exchange_count": 439,
-   "fee": 0.0,
-   "profit_fee": 94890.0,
-   "site_name": "宁河区桥北街道大杨道垃圾转运站12仓"
-  },
-  {
-   "active_users": 1023,
-   "exchange_count": 3122,
-   "fee": 0.0,
-   "profit_fee": 598618.0,
-   "site_name": "剑桥公社–B座换电站"
+   "profit_fee": 30669.0,
+   "site_name": "爱玛-悦盛三路"
   },
   {
    "active_users": 33,
-   "exchange_count": 99,
+   "exchange_count": 102,
    "fee": 0.0,
-   "profit_fee": 17879.0,
-   "site_name": "黄埔雅苑二期邮政报刊亭旁"
+   "profit_fee": 29439.0,
+   "site_name": "台铃电动车-观音塘店"
   },
   {
-   "active_users": 39,
-   "exchange_count": 156,
+   "active_users": 61,
+   "exchange_count": 150,
    "fee": 0.0,
-   "profit_fee": 35166.0,
-   "site_name": "爱玛电动车-平吉大道店"
+   "profit_fee": 27037.0,
+   "site_name": "企鹅共享洗衣房-九堡家苑三区店"
+  },
+  {
+   "active_users": 31,
+   "exchange_count": 96,
+   "fee": 0.0,
+   "profit_fee": 22214.0,
+   "site_name": "宝琴烟酒副食品-老虎洞店"
+  },
+  {
+   "active_users": 118,
+   "exchange_count": 510,
+   "fee": 0.0,
+   "profit_fee": 93680.0,
+   "site_name": "龙华民治国安居换电站"
+  },
+  {
+   "active_users": 63,
+   "exchange_count": 265,
+   "fee": 0.0,
+   "profit_fee": 59202.0,
+   "site_name": "爱玛电动车-环观中路店"
+  },
+  {
+   "active_users": 117,
+   "exchange_count": 253,
+   "fee": 0.0,
+   "profit_fee": 47347.0,
+   "site_name": "爱玛-庆春路24号店"
+  },
+  {
+   "active_users": 65,
+   "exchange_count": 203,
+   "fee": 0.0,
+   "profit_fee": 39163.0,
+   "site_name": "莲花一村18栋充电棚"
+  },
+  {
+   "active_users": 76,
+   "exchange_count": 171,
+   "fee": 0.0,
+   "profit_fee": 42679.0,
+   "site_name": "马安山桔子酒店出入口"
+  },
+  {
+   "active_users": 45,
+   "exchange_count": 261,
+   "fee": 0.0,
+   "profit_fee": 41275.0,
+   "site_name": "钱塘御景–正门换电站"
+  },
+  {
+   "active_users": 55,
+   "exchange_count": 149,
+   "fee": 0.0,
+   "profit_fee": 38008.0,
+   "site_name": "雅迪宝安智慧体验中心"
+  },
+  {
+   "active_users": 118,
+   "exchange_count": 532,
+   "fee": 0.0,
+   "profit_fee": 96931.0,
+   "site_name": "荣华里小区"
+  },
+  {
+   "active_users": 85,
+   "exchange_count": 395,
+   "fee": 0.0,
+   "profit_fee": 70864.0,
+   "site_name": "天安高尔夫花园"
   }
- ]
+ ],
+ "msg": "ok"
 }

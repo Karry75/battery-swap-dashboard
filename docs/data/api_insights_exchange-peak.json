@@ -1,104 +1,102 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
-   "count": 1623,
+   "count": 1751,
    "hour": 0
   },
   {
-   "count": 1063,
+   "count": 1029,
    "hour": 1
   },
   {
-   "count": 769,
+   "count": 857,
    "hour": 2
   },
   {
-   "count": 659,
+   "count": 683,
    "hour": 3
   },
   {
-   "count": 577,
+   "count": 568,
    "hour": 4
   },
   {
-   "count": 627,
+   "count": 592,
    "hour": 5
   },
   {
-   "count": 1071,
+   "count": 1066,
    "hour": 6
   },
   {
-   "count": 2354,
+   "count": 2440,
    "hour": 7
   },
   {
-   "count": 3141,
+   "count": 3268,
    "hour": 8
   },
   {
-   "count": 2754,
+   "count": 2832,
    "hour": 9
   },
   {
-   "count": 3142,
+   "count": 3025,
    "hour": 10
   },
   {
-   "count": 2798,
+   "count": 2774,
    "hour": 11
   },
   {
-   "count": 3339,
+   "count": 3325,
    "hour": 12
   },
   {
-   "count": 2964,
+   "count": 3016,
    "hour": 13
   },
   {
-   "count": 2992,
+   "count": 2912,
    "hour": 14
   },
   {
-   "count": 3066,
+   "count": 3132,
    "hour": 15
   },
   {
-   "count": 3525,
+   "count": 3485,
    "hour": 16
   },
   {
-   "count": 4062,
+   "count": 4091,
    "hour": 17
   },
   {
-   "count": 4715,
+   "count": 5087,
    "hour": 18
   },
   {
-   "count": 4300,
+   "count": 4619,
    "hour": 19
   },
   {
-   "count": 4217,
+   "count": 4365,
    "hour": 20
   },
   {
-   "count": 3640,
+   "count": 4001,
    "hour": 21
   },
   {
-   "count": 3138,
+   "count": 3311,
    "hour": 22
   },
   {
-   "count": 2189,
+   "count": 2440,
    "hour": 23
   }
- ]
+ ],
+ "msg": "ok"
 }

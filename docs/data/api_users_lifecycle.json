@@ -1,33 +1,30 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": {
   "items": [
    {
-    "count": 21651,
+    "count": 21520,
     "key": "using",
     "name": "生效中",
-    "percent": 17.48
+    "percent": 17.32
    },
    {
-    "count": 1369,
+    "count": 1393,
     "key": "arrears",
     "name": "欠费",
-    "percent": 1.11
+    "percent": 1.12
    },
    {
-    "count": 2180,
+    "count": 2206,
     "key": "paused",
     "name": "已暂停",
-    "percent": 1.76
+    "percent": 1.78
    },
    {
-    "count": 773,
+    "count": 777,
     "key": "unsubscribing",
     "name": "退订中",
-    "percent": 0.62
+    "percent": 0.63
    },
    {
     "count": 27,
@@ -36,12 +33,13 @@
     "percent": 0.02
    },
    {
-    "count": 97883,
+    "count": 98316,
     "key": "stop",
     "name": "已终止",
-    "percent": 79.01
+    "percent": 79.13
    }
   ],
-  "total": 123883
- }
+  "total": 124239
+ },
+ "msg": "ok"
 }

@@ -1,24 +1,21 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
    "battery": {
-    "offline": 28770,
-    "online": 27485,
+    "offline": 28722,
+    "online": 27533,
     "total": 56255
    },
-   "battery_alarm": 4038,
+   "battery_alarm": 4026,
    "customer_id": 20210518110,
    "customer_name": "城市出行公司",
    "exchange": {
-    "offline": 4744,
-    "online": 3419,
+    "offline": 4749,
+    "online": 3414,
     "total": 8168
    },
-   "exchange_alarm": 402
+   "exchange_alarm": 440
   },
   {
    "battery": {
@@ -30,11 +27,11 @@
    "customer_id": 20240603310,
    "customer_name": "广交集团二运公司",
    "exchange": {
-    "offline": 3,
-    "online": 0,
+    "offline": 1,
+    "online": 2,
     "total": 3
    },
-   "exchange_alarm": 2
+   "exchange_alarm": 0
   },
   {
    "battery": {
@@ -86,8 +83,8 @@
   },
   {
    "battery": {
-    "offline": 16526,
-    "online": 0,
+    "offline": 16525,
+    "online": 1,
     "total": 16526
    },
    "battery_alarm": 6,
@@ -118,16 +115,16 @@
   },
   {
    "battery": {
-    "offline": 7,
-    "online": 31,
+    "offline": 6,
+    "online": 32,
     "total": 38
    },
-   "battery_alarm": 4,
+   "battery_alarm": 5,
    "customer_id": 20241217320,
    "customer_name": "济南和弘区域能源有限公司",
    "exchange": {
-    "offline": 13,
-    "online": 2,
+    "offline": 15,
+    "online": 0,
     "total": 15
    },
    "exchange_alarm": 12
@@ -150,19 +147,20 @@
   },
   {
    "battery": {
-    "offline": 132,
-    "online": 1473,
+    "offline": 119,
+    "online": 1486,
     "total": 1605
    },
-   "battery_alarm": 1,
+   "battery_alarm": 12,
    "customer_id": 20250807001,
    "customer_name": "葫芦换电",
    "exchange": {
-    "offline": 25,
-    "online": 145,
-    "total": 170
+    "offline": 27,
+    "online": 144,
+    "total": 171
    },
-   "exchange_alarm": 0
+   "exchange_alarm": 4
   }
- ]
+ ],
+ "msg": "ok"
 }

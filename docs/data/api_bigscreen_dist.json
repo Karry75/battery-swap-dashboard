@@ -1,21 +1,21 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": {
   "battery_status": [
    {
-    "count": 51459,
-    "name": "none"
+    "count": 51495,
+    "key": "none",
+    "name": "未使用"
    },
    {
-    "count": 23620,
-    "name": "using"
+    "count": 23584,
+    "key": "using",
+    "name": "使用中"
    },
    {
     "count": 1,
-    "name": "scrap"
+    "key": "scrap",
+    "name": "报废"
    }
   ],
   "exchange_types": [
@@ -60,5 +60,6 @@
     "name": "DD9012OR-N01"
    }
   ]
- }
+ },
+ "msg": "ok"
 }

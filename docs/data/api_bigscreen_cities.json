@@ -1,43 +1,40 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
    "city": "浙江省杭州市",
    "core": "浙江杭州",
-   "orders": 6927147,
-   "users": 57279
+   "orders": 6960380,
+   "users": 57388
   },
   {
    "city": "广东省深圳市",
    "core": "广东深圳",
-   "orders": 4340693,
-   "users": 52011
+   "orders": 4375101,
+   "users": 52217
   },
   {
    "city": "浙江省宁波市",
    "core": "浙江宁波",
-   "orders": 98065,
+   "orders": 98107,
    "users": 1590
   },
   {
    "city": "广西壮族自治区桂林市",
    "core": "广西桂林",
-   "orders": 37906,
-   "users": 4404
+   "orders": 38445,
+   "users": 4449
   },
   {
    "city": "天津市天津城区",
    "core": "天津天津城区",
-   "orders": 31560,
-   "users": 1546
+   "orders": 33211,
+   "users": 1593
   },
   {
    "city": "江苏省苏州市",
    "core": "江苏苏州",
-   "orders": 5908,
+   "orders": 6265,
    "users": 111
   },
   {
@@ -49,7 +46,7 @@
   {
    "city": "山东省济南市",
    "core": "山东济南",
-   "orders": 2208,
+   "orders": 2223,
    "users": 35
   },
   {
@@ -61,19 +58,19 @@
   {
    "city": "河南省安阳市",
    "core": "河南安阳",
-   "orders": 1162,
+   "orders": 1198,
    "users": 33
   },
   {
    "city": "浙江省金华市",
    "core": "浙江金华",
-   "orders": 687,
+   "orders": 690,
    "users": 25
   },
   {
    "city": "江西省南昌市",
    "core": "江西南昌",
-   "orders": 641,
+   "orders": 646,
    "users": 19
   },
   {
@@ -85,7 +82,7 @@
   {
    "city": "江苏省南通市",
    "core": "江苏南通",
-   "orders": 334,
+   "orders": 335,
    "users": 11
   },
   {
@@ -94,5 +91,6 @@
    "orders": 30,
    "users": 6
   }
- ]
+ ],
+ "msg": "ok"
 }

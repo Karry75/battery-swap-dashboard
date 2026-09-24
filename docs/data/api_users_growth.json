@@ -1,29 +1,26 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": {
   "months": 6,
   "register_source": [
    {
-    "cnt": 341414,
+    "cnt": 342773,
     "register_source": "未知"
    },
    {
-    "cnt": 2530,
+    "cnt": 2561,
     "register_source": "homerentPackage"
    },
    {
-    "cnt": 2347,
+    "cnt": 2361,
     "register_source": "homeBuyBattery"
    },
    {
-    "cnt": 952,
+    "cnt": 990,
     "register_source": "homeUpgradeBattery"
    },
    {
-    "cnt": 405,
+    "cnt": 414,
     "register_source": "homeRentalCar"
    },
    {
@@ -31,7 +28,7 @@
     "register_source": "homeBuyCar"
    },
    {
-    "cnt": 99,
+    "cnt": 101,
     "register_source": "default"
    },
    {
@@ -49,11 +46,11 @@
     "month": "2026-04"
    },
    {
-    "cnt": 7376,
+    "cnt": 7375,
     "month": "2026-05"
    },
    {
-    "cnt": 5903,
+    "cnt": 5902,
     "month": "2026-06"
    },
    {
@@ -65,9 +62,10 @@
     "month": "2026-08"
    },
    {
-    "cnt": 3262,
+    "cnt": 4721,
     "month": "2026-09"
    }
   ]
- }
+ },
+ "msg": "ok"
 }

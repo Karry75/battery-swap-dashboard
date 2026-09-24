@@ -1,28 +1,26 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
-   "count": 403,
-   "fee": 29147138.0,
+   "count": 459,
+   "fee": 34012157.0,
    "fee_type": "withdraw"
   },
   {
-   "count": 1581,
-   "fee": 20584346.0,
+   "count": 1566,
+   "fee": 20576183.0,
    "fee_type": "costOut"
   },
   {
-   "count": 160520,
-   "fee": 7991929.0,
+   "count": 155493,
+   "fee": 7913615.0,
    "fee_type": "profitOut"
   },
   {
-   "count": 36967,
-   "fee": 1164492.0,
+   "count": 37857,
+   "fee": 1173021.0,
    "fee_type": "manageOut"
   }
- ]
+ ],
+ "msg": "ok"
 }

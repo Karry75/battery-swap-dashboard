@@ -1,24 +1,22 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
    "age_range": "6个月内",
    "count": 1999
   },
   {
-   "age_range": "6-12个月",
-   "count": 3336
-  },
-  {
    "age_range": "2年以上",
    "count": 62940
+  },
+  {
+   "age_range": "6-12个月",
+   "count": 3336
   },
   {
    "age_range": "1-2年",
    "count": 6805
   }
- ]
+ ],
+ "msg": "ok"
 }

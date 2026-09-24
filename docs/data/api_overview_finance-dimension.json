@@ -1,43 +1,40 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
-   "expense": 10605280.0,
-   "expense_count": 71677,
-   "income": 26196341.74,
+   "expense": 1161723.0,
+   "expense_count": 14243,
+   "income": 5071387.9,
    "month": "2025-09",
-   "profit": 26142801.0
+   "profit": 5060348.0
   },
   {
    "expense": 79909712.0,
    "expense_count": 250916,
-   "income": 83141073.3,
+   "income": 83141423.3,
    "month": "2025-10",
-   "profit": 82939552.0
+   "profit": 82939722.0
   },
   {
    "expense": 76063279.0,
    "expense_count": 271798,
-   "income": 85126731.87,
+   "income": 85127004.87,
    "month": "2025-11",
-   "profit": 84942592.0
+   "profit": 84942865.0
   },
   {
    "expense": 74482575.0,
    "expense_count": 282920,
-   "income": 86553847.1,
+   "income": 86554944.5,
    "month": "2025-12",
-   "profit": 86375556.0
+   "profit": 86376277.0
   },
   {
    "expense": 71336470.0,
    "expense_count": 267711,
-   "income": 78793091.62,
+   "income": 78794138.32,
    "month": "2026-01",
-   "profit": 78609238.0
+   "profit": 78610343.0
   },
   {
    "expense": 59514431.0,
@@ -49,51 +46,52 @@
   {
    "expense": 70497300.0,
    "expense_count": 264290,
-   "income": 78051963.05,
+   "income": 78053092.55,
    "month": "2026-03",
-   "profit": 77848938.0
+   "profit": 77850369.0
   },
   {
    "expense": 73349334.0,
    "expense_count": 236806,
-   "income": 72825807.31,
+   "income": 72827661.91,
    "month": "2026-04",
-   "profit": 72619818.0
+   "profit": 72621936.0
   },
   {
    "expense": 65611413.0,
    "expense_count": 233156,
-   "income": 72033439.05,
+   "income": 72037634.75,
    "month": "2026-05",
-   "profit": 71875845.0
+   "profit": 71879065.0
   },
   {
    "expense": 62708954.0,
    "expense_count": 216569,
-   "income": 66478370.92,
+   "income": 66489003.82,
    "month": "2026-06",
-   "profit": 66337343.0
+   "profit": 66345694.0
   },
   {
    "expense": 58211771.0,
    "expense_count": 217788,
-   "income": 66098171.34,
+   "income": 66129360.94,
    "month": "2026-07",
-   "profit": 65627182.0
+   "profit": 65652900.0
   },
   {
    "expense": 60543682.0,
    "expense_count": 210561,
-   "income": 63444911.55,
+   "income": 63644204.0,
    "month": "2026-08",
-   "profit": 63307763.0
+   "profit": 63507398.0
   },
   {
-   "expense": 43794924.0,
-   "expense_count": 105926,
-   "income": 24981181.4,
+   "expense": 56138870.0,
+   "expense_count": 154628,
+   "income": 39351093.84,
    "month": "2026-09",
-   "profit": 24963902.0
+   "profit": 40663634.0
   }
- ]
+ ],
+ "msg": "ok"
 }

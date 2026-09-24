@@ -1,113 +1,111 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
    "area": "宝安区",
-   "exchanges": 1048,
-   "income_today": 26849.78,
-   "orders_today": 1095,
-   "users": 36066
+   "exchanges": 1046,
+   "income_today": 4517.26,
+   "orders_today": 464,
+   "users": 36177
   },
   {
    "area": "上城区",
-   "exchanges": 232,
-   "income_today": 16659.6,
-   "orders_today": 376,
-   "users": 10567
+   "exchanges": 230,
+   "income_today": 2527.36,
+   "orders_today": 175,
+   "users": 10605
   },
   {
    "area": "西湖区",
    "exchanges": 193,
-   "income_today": 9354.0,
-   "orders_today": 407,
-   "users": 9443
+   "income_today": 1452.84,
+   "orders_today": 133,
+   "users": 9472
   },
   {
    "area": "拱墅区",
-   "exchanges": 164,
-   "income_today": 7965.13,
-   "orders_today": 271,
-   "users": 7813
+   "exchanges": 163,
+   "income_today": 1213.68,
+   "orders_today": 116,
+   "users": 7832
   },
   {
    "area": "福田区",
-   "exchanges": 449,
-   "income_today": 16361.39,
-   "orders_today": 712,
-   "users": 7220
-  },
-  {
-   "area": "余杭区",
-   "exchanges": 177,
-   "income_today": 8843.61,
-   "orders_today": 386,
-   "users": 6786
+   "exchanges": 441,
+   "income_today": 2158.27,
+   "orders_today": 272,
+   "users": 7262
   },
   {
    "area": "龙华区",
+   "exchanges": 170,
+   "income_today": 110.48,
+   "orders_today": 82,
+   "users": 6868
+  },
+  {
+   "area": "余杭区",
    "exchanges": 176,
-   "income_today": 1985.94,
-   "orders_today": 204,
-   "users": 6840
+   "income_today": 398.18,
+   "orders_today": 128,
+   "users": 6810
   },
   {
    "area": "钱塘区",
    "exchanges": 90,
-   "income_today": 4625.31,
-   "orders_today": 165,
-   "users": 6549
-  },
-  {
-   "area": "临平区",
-   "exchanges": 146,
-   "income_today": 10332.78,
-   "orders_today": 267,
-   "users": 5240
+   "income_today": 155.3,
+   "orders_today": 40,
+   "users": 6569
   },
   {
    "area": "阳朔县",
-   "exchanges": 406,
-   "income_today": 8048.7,
-   "orders_today": 46,
-   "users": 5441
+   "exchanges": 404,
+   "income_today": 0.0,
+   "orders_today": 0,
+   "users": 5495
+  },
+  {
+   "area": "临平区",
+   "exchanges": 147,
+   "income_today": 1178.17,
+   "orders_today": 116,
+   "users": 5255
   },
   {
    "area": "萧山区",
    "exchanges": 149,
-   "income_today": 9778.45,
-   "orders_today": 233,
-   "users": 5122
+   "income_today": 559.46,
+   "orders_today": 65,
+   "users": 5140
   },
   {
    "area": "龙岗区",
    "exchanges": 201,
-   "income_today": 1844.55,
-   "orders_today": 108,
-   "users": 4736
+   "income_today": 0.94,
+   "orders_today": 33,
+   "users": 4763
   },
   {
    "area": "滨江区",
    "exchanges": 53,
-   "income_today": 2915.99,
-   "orders_today": 83,
-   "users": 2741
+   "income_today": 610.0,
+   "orders_today": 24,
+   "users": 2742
   },
   {
    "area": "南山区",
    "exchanges": 135,
-   "income_today": 320.31,
-   "orders_today": 57,
-   "users": 2638
+   "income_today": 162.0,
+   "orders_today": 22,
+   "users": 2655
   },
   {
    "area": "南开区",
-   "exchanges": 57,
-   "income_today": 78.4,
-   "orders_today": 30,
-   "users": 1016
+   "exchanges": 59,
+   "income_today": 117.6,
+   "orders_today": 12,
+   "users": 1040
   }
- ]
+ ],
+ "msg": "ok"
 }

@@ -1,57 +1,55 @@
 {
- "meta": {
-  "generated_at": "2026-09-16 17:51:49",
-  "source": "真实业务库最近一次聚合查询结果（经脱敏检查）"
- },
+ "code": 0,
  "data": [
   {
-   "income": 28447988.06,
+   "income": 9162660.46,
    "month": "2026-03",
-   "order_count": 110805,
-   "profit": 28379127.0,
-   "service_fee": 41918563.0
+   "order_count": 35788,
+   "profit": 9137844.0,
+   "service_fee": 13836660.0
   },
   {
-   "income": 72825807.31,
+   "income": 72827661.91,
    "month": "2026-04",
    "order_count": 287760,
-   "profit": 72619818.0,
+   "profit": 72621936.0,
    "service_fee": 108333016.0
   },
   {
-   "income": 72033439.05,
+   "income": 72037634.75,
    "month": "2026-05",
    "order_count": 284738,
-   "profit": 71875845.0,
+   "profit": 71879065.0,
    "service_fee": 108241133.0
   },
   {
-   "income": 66478370.92,
+   "income": 66489003.82,
    "month": "2026-06",
    "order_count": 261962,
-   "profit": 66337343.0,
+   "profit": 66345694.0,
    "service_fee": 98580019.0
   },
   {
-   "income": 66098171.34,
+   "income": 66129360.94,
    "month": "2026-07",
    "order_count": 264488,
-   "profit": 65627182.0,
+   "profit": 65652900.0,
    "service_fee": 103845612.0
   },
   {
-   "income": 63444911.55,
+   "income": 63644204.0,
    "month": "2026-08",
    "order_count": 269422,
-   "profit": 63307763.0,
+   "profit": 63507398.0,
    "service_fee": 101918288.0
   },
   {
-   "income": 24981325.4,
+   "income": 39350903.84,
    "month": "2026-09",
-   "order_count": 138569,
-   "profit": 24963902.0,
-   "service_fee": 59610276.0
+   "order_count": 208869,
+   "profit": 40663368.0,
+   "service_fee": 86511902.0
   }
- ]
+ ],
+ "msg": "ok"
 }
